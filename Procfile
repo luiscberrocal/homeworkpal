@@ -1,0 +1,1 @@
+web: gunicorn --pythonpath homeworkpal_project homeworkpal_project.wsgi
