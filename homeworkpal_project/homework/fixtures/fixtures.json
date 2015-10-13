@@ -1,0 +1,696 @@
+[
+{
+    "pk": 1,
+    "fields": {
+        "slug": "jedi-academy",
+        "name": "Jedi Academy"
+    },
+    "model": "homework.school"
+},
+{
+    "pk": 2,
+    "fields": {
+        "slug": "sith-school",
+        "name": "Sith School"
+    },
+    "model": "homework.school"
+},
+{
+    "pk": 1,
+    "fields": {
+        "slug": "padaw",
+        "school": 1,
+        "name": "Padawan-1"
+    },
+    "model": "homework.schoollevel"
+},
+{
+    "pk": 2,
+    "fields": {
+        "slug": "padaw",
+        "school": 1,
+        "name": "Padawan-2"
+    },
+    "model": "homework.schoollevel"
+},
+{
+    "pk": 3,
+    "fields": {
+        "slug": "padaw",
+        "school": 1,
+        "name": "Padawan-3"
+    },
+    "model": "homework.schoollevel"
+},
+{
+    "pk": 4,
+    "fields": {
+        "slug": "appre",
+        "school": 2,
+        "name": "Apprentice"
+    },
+    "model": "homework.schoollevel"
+},
+{
+    "pk": 5,
+    "fields": {
+        "slug": "a-2",
+        "school": 2,
+        "name": "A-2"
+    },
+    "model": "homework.schoollevel"
+},
+{
+    "pk": 1,
+    "fields": {
+        "slug": "levitation",
+        "teacher": 1,
+        "name": "Levitation",
+        "school_level": 1
+    },
+    "model": "homework.subject"
+},
+{
+    "pk": 2,
+    "fields": {
+        "slug": "light-saber-training",
+        "teacher": 2,
+        "name": "Light saber training",
+        "school_level": 1
+    },
+    "model": "homework.subject"
+},
+{
+    "pk": 3,
+    "fields": {
+        "slug": "rember-the-future",
+        "teacher": 3,
+        "name": "Rember the Future",
+        "school_level": 1
+    },
+    "model": "homework.subject"
+},
+{
+    "pk": 1,
+    "fields": {
+        "teacher": 1,
+        "subject": 1,
+        "evaluation": "SUM",
+        "due_date": "2015-10-14",
+        "description": "Levitates faste"
+    },
+    "model": "homework.homework"
+},
+{
+    "pk": 2,
+    "fields": {
+        "teacher": 2,
+        "subject": 2,
+        "evaluation": "FRM",
+        "due_date": "2015-10-15",
+        "description": "Fight"
+    },
+    "model": "homework.homework"
+},
+{
+    "pk": 3,
+    "fields": {
+        "teacher": 3,
+        "subject": 3,
+        "evaluation": "SUM",
+        "due_date": "2015-10-16",
+        "description": "dfasdfasdf"
+    },
+    "model": "homework.homework"
+},
+{
+    "pk": 1,
+    "fields": {
+        "content_type": [
+            "auth",
+            "permission"
+        ],
+        "name": "Can add permission",
+        "codename": "add_permission"
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 2,
+    "fields": {
+        "content_type": [
+            "auth",
+            "permission"
+        ],
+        "name": "Can change permission",
+        "codename": "change_permission"
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 3,
+    "fields": {
+        "content_type": [
+            "auth",
+            "permission"
+        ],
+        "name": "Can delete permission",
+        "codename": "delete_permission"
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 4,
+    "fields": {
+        "content_type": [
+            "auth",
+            "group"
+        ],
+        "name": "Can add group",
+        "codename": "add_group"
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 5,
+    "fields": {
+        "content_type": [
+            "auth",
+            "group"
+        ],
+        "name": "Can change group",
+        "codename": "change_group"
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 6,
+    "fields": {
+        "content_type": [
+            "auth",
+            "group"
+        ],
+        "name": "Can delete group",
+        "codename": "delete_group"
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 7,
+    "fields": {
+        "content_type": [
+            "auth",
+            "user"
+        ],
+        "name": "Can add user",
+        "codename": "add_user"
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 8,
+    "fields": {
+        "content_type": [
+            "auth",
+            "user"
+        ],
+        "name": "Can change user",
+        "codename": "change_user"
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 9,
+    "fields": {
+        "content_type": [
+            "auth",
+            "user"
+        ],
+        "name": "Can delete user",
+        "codename": "delete_user"
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 10,
+    "fields": {
+        "content_type": [
+            "contenttypes",
+            "contenttype"
+        ],
+        "name": "Can add content type",
+        "codename": "add_contenttype"
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 11,
+    "fields": {
+        "content_type": [
+            "contenttypes",
+            "contenttype"
+        ],
+        "name": "Can change content type",
+        "codename": "change_contenttype"
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 12,
+    "fields": {
+        "content_type": [
+            "contenttypes",
+            "contenttype"
+        ],
+        "name": "Can delete content type",
+        "codename": "delete_contenttype"
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 13,
+    "fields": {
+        "content_type": [
+            "sessions",
+            "session"
+        ],
+        "name": "Can add session",
+        "codename": "add_session"
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 14,
+    "fields": {
+        "content_type": [
+            "sessions",
+            "session"
+        ],
+        "name": "Can change session",
+        "codename": "change_session"
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 15,
+    "fields": {
+        "content_type": [
+            "sessions",
+            "session"
+        ],
+        "name": "Can delete session",
+        "codename": "delete_session"
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 16,
+    "fields": {
+        "content_type": [
+            "sites",
+            "site"
+        ],
+        "name": "Can add site",
+        "codename": "add_site"
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 17,
+    "fields": {
+        "content_type": [
+            "sites",
+            "site"
+        ],
+        "name": "Can change site",
+        "codename": "change_site"
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 18,
+    "fields": {
+        "content_type": [
+            "sites",
+            "site"
+        ],
+        "name": "Can delete site",
+        "codename": "delete_site"
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 19,
+    "fields": {
+        "content_type": [
+            "admin",
+            "logentry"
+        ],
+        "name": "Can add log entry",
+        "codename": "add_logentry"
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 20,
+    "fields": {
+        "content_type": [
+            "admin",
+            "logentry"
+        ],
+        "name": "Can change log entry",
+        "codename": "change_logentry"
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 21,
+    "fields": {
+        "content_type": [
+            "admin",
+            "logentry"
+        ],
+        "name": "Can delete log entry",
+        "codename": "delete_logentry"
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 22,
+    "fields": {
+        "content_type": [
+            "homework",
+            "school"
+        ],
+        "name": "Can add school",
+        "codename": "add_school"
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 23,
+    "fields": {
+        "content_type": [
+            "homework",
+            "school"
+        ],
+        "name": "Can change school",
+        "codename": "change_school"
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 24,
+    "fields": {
+        "content_type": [
+            "homework",
+            "school"
+        ],
+        "name": "Can delete school",
+        "codename": "delete_school"
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 25,
+    "fields": {
+        "content_type": [
+            "homework",
+            "teacher"
+        ],
+        "name": "Can add teacher",
+        "codename": "add_teacher"
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 26,
+    "fields": {
+        "content_type": [
+            "homework",
+            "teacher"
+        ],
+        "name": "Can change teacher",
+        "codename": "change_teacher"
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 27,
+    "fields": {
+        "content_type": [
+            "homework",
+            "teacher"
+        ],
+        "name": "Can delete teacher",
+        "codename": "delete_teacher"
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 28,
+    "fields": {
+        "content_type": [
+            "homework",
+            "student"
+        ],
+        "name": "Can add student",
+        "codename": "add_student"
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 29,
+    "fields": {
+        "content_type": [
+            "homework",
+            "student"
+        ],
+        "name": "Can change student",
+        "codename": "change_student"
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 30,
+    "fields": {
+        "content_type": [
+            "homework",
+            "student"
+        ],
+        "name": "Can delete student",
+        "codename": "delete_student"
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 31,
+    "fields": {
+        "content_type": [
+            "homework",
+            "schoollevel"
+        ],
+        "name": "Can add school level",
+        "codename": "add_schoollevel"
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 32,
+    "fields": {
+        "content_type": [
+            "homework",
+            "schoollevel"
+        ],
+        "name": "Can change school level",
+        "codename": "change_schoollevel"
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 33,
+    "fields": {
+        "content_type": [
+            "homework",
+            "schoollevel"
+        ],
+        "name": "Can delete school level",
+        "codename": "delete_schoollevel"
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 34,
+    "fields": {
+        "content_type": [
+            "homework",
+            "subject"
+        ],
+        "name": "Can add subject",
+        "codename": "add_subject"
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 35,
+    "fields": {
+        "content_type": [
+            "homework",
+            "subject"
+        ],
+        "name": "Can change subject",
+        "codename": "change_subject"
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 36,
+    "fields": {
+        "content_type": [
+            "homework",
+            "subject"
+        ],
+        "name": "Can delete subject",
+        "codename": "delete_subject"
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 37,
+    "fields": {
+        "content_type": [
+            "homework",
+            "homework"
+        ],
+        "name": "Can add homework",
+        "codename": "add_homework"
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 38,
+    "fields": {
+        "content_type": [
+            "homework",
+            "homework"
+        ],
+        "name": "Can change homework",
+        "codename": "change_homework"
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 39,
+    "fields": {
+        "content_type": [
+            "homework",
+            "homework"
+        ],
+        "name": "Can delete homework",
+        "codename": "delete_homework"
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 1,
+    "fields": {
+        "is_superuser": true,
+        "last_name": "",
+        "email": "lberrocal@pancanal.com",
+        "date_joined": "2015-10-13T14:52:09.614Z",
+        "is_active": true,
+        "is_staff": true,
+        "groups": [],
+        "password": "pbkdf2_sha256$20000$OiZQAkMpWyWD$bt3yQjeMxm57+BM/n+op0E0hz5rVA2OpzvxsLFbGJJI=",
+        "username": "lberrocal",
+        "last_login": "2015-10-13T22:35:29.624Z",
+        "first_name": "",
+        "user_permissions": []
+    },
+    "model": "auth.user"
+},
+{
+    "pk": 2,
+    "fields": {
+        "is_superuser": false,
+        "last_name": "Windu",
+        "email": "macewindu@jedi.org",
+        "date_joined": "2015-10-13T18:05:16Z",
+        "is_active": true,
+        "is_staff": false,
+        "groups": [],
+        "password": "pbkdf2_sha256$20000$OKE2XJjryhFa$NmBhMLeXFgkta+TdXHYXDYCPA1jae6cCyk0Rk7b/Sh0=",
+        "username": "macewindu",
+        "last_login": null,
+        "first_name": "Mace",
+        "user_permissions": []
+    },
+    "model": "auth.user"
+},
+{
+    "pk": 3,
+    "fields": {
+        "is_superuser": false,
+        "last_name": "Yoda",
+        "email": "masteryoda@jedi.org",
+        "date_joined": "2015-10-13T18:05:48Z",
+        "is_active": true,
+        "is_staff": false,
+        "groups": [],
+        "password": "pbkdf2_sha256$20000$C9CTpmFKE65t$5BGeYaKRwo5kCcKPkMshGY4VocSnQqDR/FR1yQRjn7s=",
+        "username": "masteryoda",
+        "last_login": null,
+        "first_name": "Master",
+        "user_permissions": []
+    },
+    "model": "auth.user"
+},
+{
+    "pk": 4,
+    "fields": {
+        "is_superuser": false,
+        "last_name": "",
+        "email": "",
+        "date_joined": "2015-10-13T22:47:01.303Z",
+        "is_active": true,
+        "is_staff": false,
+        "groups": [],
+        "password": "pbkdf2_sha256$20000$2rwaG9ygr5UA$lmtWcrEyRxZgTVrJQGP6meMKn5jtqxnD5DOWA6pswOc=",
+        "username": "lukeskywalker",
+        "last_login": null,
+        "first_name": "",
+        "user_permissions": []
+    },
+    "model": "auth.user"
+},
+{
+    "pk": 1,
+    "fields": {
+        "user": [
+            "macewindu"
+        ],
+        "middle_name": ""
+    },
+    "model": "homework.teacher"
+},
+{
+    "pk": 2,
+    "fields": {
+        "user": [
+            "masteryoda"
+        ],
+        "middle_name": ""
+    },
+    "model": "homework.teacher"
+},
+{
+    "pk": 3,
+    "fields": {
+        "user": [
+            "lukeskywalker"
+        ],
+        "middle_name": ""
+    },
+    "model": "homework.teacher"
+}
+]
