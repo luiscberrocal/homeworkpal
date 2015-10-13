@@ -116,6 +116,6 @@ Versions
 
 0.2.0 :  Added a validator and a unique together constraint
 
-
+0.2.1 :  Bug fixes on unique together
 
 

@@ -40,7 +40,7 @@ class SchoolLevel(models.Model):
     school = models.ForeignKey(School)
 
     class Meta:
-        unique_toguether = ('name', 'school')
+        unique_together = ('name', 'school')
 
     def __str__(self):
         return self.name
