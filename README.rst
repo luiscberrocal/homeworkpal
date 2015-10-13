@@ -107,6 +107,8 @@ This project follows best practices as espoused in `Two Scoops of Django: Best P
 
 .. _`Two Scoops of Django: Best Practices for Django 1.6`: http://twoscoopspress.org/products/two-scoops-of-django-1-6
 
+python manage.py dumpdata homework auth --indent 4 --natural-foreign --settings=homeworkpal_project.settings.local_acp
+
 
 Versions
 ===========
@@ -118,4 +120,4 @@ Versions
 
 0.2.1 :  Bug fixes on unique together
 
-
+0.3.0 : Added fixtures, command to dumpdata
