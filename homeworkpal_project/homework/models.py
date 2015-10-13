@@ -3,6 +3,9 @@ from django.conf import settings
 from django.db import models
 
 # Create your models here.
+from .validators import date_not_past
+
+
 class School(models.Model):
     name = models.CharField(max_length=100)
     slug = AutoSlugField(populate_from='name', max_length=50)
@@ -36,8 +39,12 @@ class SchoolLevel(models.Model):
     slug = AutoSlugField(populate_from='name', max_length=5)
     school = models.ForeignKey(School)
 
+    class Meta:
+        unique_toguether = ('name', 'school')
+
     def __str__(self):
         return self.name
+
 
 
 class Subject(models.Model):
@@ -58,7 +65,7 @@ class Homework(models.Model):
         (FORMATIVE_TYPE, 'Formative')
     )
     subject = models.ForeignKey(Subject)
-    due_date = models.DateField()
+    due_date = models.DateField(validators=[date_not_past])
     description = models.TextField()
     evaluation = models.CharField(max_length=3,choices=HOMEWORK_TYPES)
     teacher = models.ForeignKey(Teacher)
