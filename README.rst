@@ -114,4 +114,8 @@ Versions
 
 0.1.1 :  Basic model with basic admin functions
 
+0.2.0 :  Added a validator and a unique together constraint
+
+
+
 
