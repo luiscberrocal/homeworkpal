@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block page_title %}Homeworks{% endblock page_title %}
+{% block content %}
+
+    <ul>
+        {% for homework in object_list %}
+            <li>{{ homework.subject.name }}</li>
+        {% endfor %}
+    </ul>
+{% endblock content %}
