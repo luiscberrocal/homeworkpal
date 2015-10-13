@@ -107,10 +107,11 @@ This project follows best practices as espoused in `Two Scoops of Django: Best P
 
 .. _`Two Scoops of Django: Best Practices for Django 1.6`: http://twoscoopspress.org/products/two-scoops-of-django-1-6
 
-Acknowledgements
-================
 
-- Many thanks to Randall Degges for the inspiration to write the book and django-skel.
-- All of the contributors_ to this project.
+Versions
+===========
 
-.. _contributors: https://github.com/twoscoops/django-twoscoops-project/blob/master/CONTRIBUTORS.txt
+
+0.1.1 :  Basic model with basic admin functions
+
+
