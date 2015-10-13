@@ -39,8 +39,12 @@ class SchoolLevel(models.Model):
     slug = AutoSlugField(populate_from='name', max_length=5)
     school = models.ForeignKey(School)
 
+    class Meta:
+        unique_toguether = ('name', 'school')
+
     def __str__(self):
         return self.name
+
 
 
 class Subject(models.Model):
