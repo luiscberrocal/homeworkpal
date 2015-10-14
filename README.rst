@@ -121,3 +121,5 @@ Versions
 0.2.1 :  Bug fixes on unique together
 
 0.3.0 : Added fixtures, command to dumpdata
+
+0.4.0 : Implemented ListView with Bootstrap CSS
