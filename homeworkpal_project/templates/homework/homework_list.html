@@ -2,9 +2,14 @@
 {% block page_title %}Homeworks{% endblock page_title %}
 {% block content %}
 
-    <ul>
-        {% for homework in object_list %}
-            <li>{{ homework.subject.name }}</li>
-        {% endfor %}
-    </ul>
+<div>
+    {% for homework in object_list %}
+    <div class="alert alert-info" role="alert">
+        <div><strong>Due Date:</strong>{{ homework.due_date }}</div>
+        <div> <strong>Subject: </strong> {{ homework.subject.name }} <strong>Teacher:</strong> {{ homework.teacher }}</div>
+        <div> <strong>Type:</strong> {{ homework.evaluation }}</div>
+        <div>{{ homework.description }}</div>
+    </div>
+    {% endfor %}
+</div>
 {% endblock content %}
