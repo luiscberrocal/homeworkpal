@@ -13,6 +13,18 @@ class School(models.Model):
     def __str__(self):
         return self.name
 
+class SchoolLevel(models.Model):
+    name = models.CharField(max_length=10)
+    slug = AutoSlugField(populate_from='name', max_length=5, unique=True)
+    school = models.ForeignKey(School)
+
+    class Meta:
+        unique_together = ('name', 'school')
+
+    def __str__(self):
+        return self.name
+
+
 class SchoolMember(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     middle_name = models.CharField(max_length=30, null=True, blank=True)
@@ -30,21 +42,10 @@ class SchoolMember(models.Model):
 class Teacher(SchoolMember):
     pass
 
+
 class Student(SchoolMember):
-    pass
-
-
-class SchoolLevel(models.Model):
-    name = models.CharField(max_length=10)
-    slug = AutoSlugField(populate_from='name', max_length=5, unique=True)
     school = models.ForeignKey(School)
-
-    class Meta:
-        unique_together = ('name', 'school')
-
-    def __str__(self):
-        return self.name
-
+    school_level = models.ForeignKey(SchoolLevel)
 
 
 class Subject(models.Model):
