@@ -8,7 +8,7 @@ from .validators import date_not_past
 
 class School(models.Model):
     name = models.CharField(max_length=100)
-    slug = AutoSlugField(populate_from='name', max_length=50)
+    slug = AutoSlugField(populate_from='name', max_length=50, unique=True)
 
     def __str__(self):
         return self.name
@@ -36,7 +36,7 @@ class Student(SchoolMember):
 
 class SchoolLevel(models.Model):
     name = models.CharField(max_length=10)
-    slug = AutoSlugField(populate_from='name', max_length=5)
+    slug = AutoSlugField(populate_from='name', max_length=5, unique=True)
     school = models.ForeignKey(School)
 
     class Meta:
@@ -49,7 +49,7 @@ class SchoolLevel(models.Model):
 
 class Subject(models.Model):
     name = models.CharField(max_length=30)
-    slug = AutoSlugField(populate_from='name', max_length=30)
+    slug = AutoSlugField(populate_from='name', max_length=30, unique=True)
     school_level = models.ForeignKey(SchoolLevel)
     teacher = models.ForeignKey(Teacher)
 
