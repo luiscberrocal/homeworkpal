@@ -50,9 +50,12 @@ class Student(SchoolMember):
 
 class Subject(models.Model):
     name = models.CharField(max_length=30)
-    slug = AutoSlugField(populate_from='name', max_length=30, unique=True)
+    slug = AutoSlugField(populate_from='name', max_length=30)
     school_level = models.ForeignKey(SchoolLevel)
     teacher = models.ForeignKey(Teacher)
+
+    class Meta:
+        unique_together = ('slug', 'school_level')
 
     def __str__(self):
         return '%s (%s)' % (self.name, self.school_level.name)
