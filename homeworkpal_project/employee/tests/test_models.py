@@ -7,7 +7,7 @@ from django.core.exceptions import ValidationError
 from django.test import TestCase
 from employee.models import Employee, Position, CompanyGroupEmployeeAssignment
 from employee.tests.factories import UserFactory, EmployeeFactory, PositionFactory, \
-    CompanyGroupEmployeeAssignmentFactory
+    CompanyGroupEmployeeAssignmentFactory, CompanyGroupFactory
 
 __author__ = 'luiscberrocal'
 
@@ -60,7 +60,7 @@ class TestCompanyGroupEmployeeAssignment(TestCase):
                                                              group_assignment.start_date.strftime('%Y-%m-%d')))
         self.assertEqual(CompanyGroupEmployeeAssignment.objects.all().count(), 1)
 
-    def test_close_previous_assingment(self):
+    def test_previous_assingment(self):
         group_assignment = CompanyGroupEmployeeAssignmentFactory.create()
         logger.debug('Employee: %s Group: %s started: %s' % (group_assignment.employee,
                                                              group_assignment.group,
@@ -76,5 +76,21 @@ class TestCompanyGroupEmployeeAssignment(TestCase):
             self.fail()
         except ValidationError:
             pass
-        
+
+class TestCompanyGroup(TestCase):
+
+    def test_assign(self):
+        assignment = CompanyGroupEmployeeAssignmentFactory.create()
+        group = CompanyGroupFactory.create()
+        start_date = assignment.start_date + timedelta(days=90)
+        group.assign(employee=assignment.employee, start_date=start_date)
+        employee = Employee.objects.get(pk=assignment.employee.id)
+        self.assertEqual(group.id, employee.group.id)
+
+        assingments = CompanyGroupEmployeeAssignment.objects.filter(employee__exact=employee)
+        for assign in assingments:
+            logger.debug('Employee: %s Group: %s started: %s' % (assign.employee,
+                                                             assign.group,
+                                                             assign.start_date.strftime('%Y-%m-%d')))
+        self.assertEqual(2, len(assingments))
 
