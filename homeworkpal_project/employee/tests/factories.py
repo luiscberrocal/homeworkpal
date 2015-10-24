@@ -5,7 +5,7 @@ from factory import LazyAttribute, lazy_attribute, SubFactory, Iterator
 from factory.django import DjangoModelFactory
 from factory.fuzzy import FuzzyText
 from faker import Factory as FakerFactory
-from employee.models import TENURE_TYPES, Employee
+from employee.models import TENURE_TYPES, Employee, Position
 
 __author__ = 'luiscberrocal'
 
@@ -36,6 +36,17 @@ class EmployeeFactory(DjangoModelFactory):
     middle_name = LazyAttribute(lambda x: faker.first_name())
     company_id = FuzzyText(length=7, chars=string.digits)
     tenure = Iterator(TENURE_TYPES, getter=lambda c: c[0])
+
+class PositionFactory(DjangoModelFactory):
+
+    class Meta:
+        model = Position
+
+    number = FuzzyText(length=6, chars=string.digits)
+    grade = Iterator(['NM-07', 'NM-09', 'NM-11', 'NM-12', 'NM-13'])
+    type = Iterator(TENURE_TYPES, getter=lambda c: c[0])
+
+
 
 
 
