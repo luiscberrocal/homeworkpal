@@ -59,7 +59,13 @@ class TestPositions(TestCase):
         self.assertEqual(Position.objects.all().count(), 1)
 
     def test_assign_2_postions(self):
-        self.fail()
+        position = PositionFactory.create()
+        position_assignment = PositionAssignmentFactory.create()
+        start_date = position_assignment.start_date + timedelta(days=90)
+        position.assign(employee=position_assignment.employee, start_date=start_date)
+        employee = Employee.objects.get(pk=position_assignment.employee.pk)
+        self.assertEqual(employee.position, position)
+
 
 
 class TestCompanyGroupEmployeeAssignment(TestCase):

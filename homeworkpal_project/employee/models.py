@@ -23,9 +23,9 @@ class Position(models.Model):
 
     def assign(self, employee, start_date):
         try:
-            prev_position_assignment = PositionAssignment.objects.get(employee=employee,
-                                                                 start_date=None)
+            prev_position_assignment = PositionAssignment.objects.get(employee=employee, end_date=None)
             prev_position_assignment.end_date = start_date - timedelta(days=1)
+            prev_position_assignment.save()
         except PositionAssignment.DoesNotExist:
             pass
         postion_assingment = PositionAssignment(employee=employee,
