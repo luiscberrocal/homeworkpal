@@ -61,7 +61,7 @@ class CompanyGroupEmployeeAssignmentFactory(DjangoModelFactory):
 
     group = SubFactory(CompanyGroupFactory)
     employee = SubFactory(EmployeeFactory)
-    start_date = LazyAttribute(lambda x: faker.date_time_between(start_date="-30y", end_date="now"))
+    start_date = LazyAttribute(lambda x: faker.date_time_between(start_date="-30y", end_date="-1y"))
 
 
 

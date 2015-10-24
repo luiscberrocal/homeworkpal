@@ -1,6 +1,9 @@
+
 import logging
+from datetime import timedelta
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from django.test import TestCase
 from employee.models import Employee, Position, CompanyGroupEmployeeAssignment
 from employee.tests.factories import UserFactory, EmployeeFactory, PositionFactory, \
@@ -25,6 +28,21 @@ class TestEmployees(TestCase):
         logger.debug(employee)
         self.assertEqual(Employee.objects.all().count(), 1)
 
+    def test_get_current_group(self):
+        group_assignment = CompanyGroupEmployeeAssignmentFactory.create()
+        employee = group_assignment.employee
+        logger.debug('Employee: %s Group: %s started: %s' % (group_assignment.employee,
+                                                             group_assignment.group,
+                                                             group_assignment.start_date.strftime('%Y-%m-%d')))
+        self.assertEqual(employee.group.id, group_assignment.group.id)
+
+    def test_no_current_group(self):
+        employee = EmployeeFactory.create()
+        self.assertIsNone(employee.group)
+
+
+
+
 class TestPositions(TestCase):
 
     def test_create(self):
@@ -36,8 +54,27 @@ class TestPositions(TestCase):
 class TestCompanyGroupEmployeeAssignment(TestCase):
 
     def test_create(self):
-        group_assignemt = CompanyGroupEmployeeAssignmentFactory.create()
-        logger.debug('Employee: %s Group: %s started: %s' % (group_assignemt.employee,
-                                                             group_assignemt.group,
-                                                             group_assignemt.start_date.strftime('%Y-%m-%d')))
+        group_assignment = CompanyGroupEmployeeAssignmentFactory.create()
+        logger.debug('Employee: %s Group: %s started: %s' % (group_assignment.employee,
+                                                             group_assignment.group,
+                                                             group_assignment.start_date.strftime('%Y-%m-%d')))
         self.assertEqual(CompanyGroupEmployeeAssignment.objects.all().count(), 1)
+
+    def test_close_previous_assingment(self):
+        group_assignment = CompanyGroupEmployeeAssignmentFactory.create()
+        logger.debug('Employee: %s Group: %s started: %s' % (group_assignment.employee,
+                                                             group_assignment.group,
+                                                             group_assignment.start_date.strftime('%Y-%m-%d')))
+        new_start_date = group_assignment.start_date + timedelta(days=90)
+        new_group_assingment = CompanyGroupEmployeeAssignmentFactory.build(employee=group_assignment.employee,
+                                                                           start_date=new_start_date)
+        logger.debug('New assingment Employee: %s Group: %s started: %s' % (new_group_assingment.employee,
+                                                             new_group_assingment.group,
+                                                             new_group_assingment.start_date.strftime('%Y-%m-%d')))
+        try:
+            new_group_assingment.save()
+            self.fail()
+        except ValidationError:
+            pass
+        
+
