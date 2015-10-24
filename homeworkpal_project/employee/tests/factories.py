@@ -5,7 +5,8 @@ from factory import LazyAttribute, lazy_attribute, SubFactory, Iterator
 from factory.django import DjangoModelFactory
 from factory.fuzzy import FuzzyText
 from faker import Factory as FakerFactory
-from employee.models import TENURE_TYPES, Employee, Position, CompanyGroup, CompanyGroupEmployeeAssignment
+from employee.models import TENURE_TYPES, Employee, Position, CompanyGroup, CompanyGroupEmployeeAssignment, \
+    PositionAssignment
 
 __author__ = 'luiscberrocal'
 
@@ -62,6 +63,16 @@ class CompanyGroupEmployeeAssignmentFactory(DjangoModelFactory):
     group = SubFactory(CompanyGroupFactory)
     employee = SubFactory(EmployeeFactory)
     start_date = LazyAttribute(lambda x: faker.date_time_between(start_date="-30y", end_date="-1y"))
+
+class PositionAssignmentFactory(DjangoModelFactory):
+
+    class Meta:
+        model = PositionAssignment
+
+    position = SubFactory(PositionFactory)
+    employee = SubFactory(EmployeeFactory)
+    start_date = LazyAttribute(lambda x: faker.date_time_between(start_date="-30y", end_date="-1y"))
+
 
 
 

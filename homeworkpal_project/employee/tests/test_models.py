@@ -7,7 +7,7 @@ from django.core.exceptions import ValidationError
 from django.test import TestCase
 from employee.models import Employee, Position, CompanyGroupEmployeeAssignment
 from employee.tests.factories import UserFactory, EmployeeFactory, PositionFactory, \
-    CompanyGroupEmployeeAssignmentFactory, CompanyGroupFactory
+    CompanyGroupEmployeeAssignmentFactory, CompanyGroupFactory, PositionAssignmentFactory
 
 __author__ = 'luiscberrocal'
 
@@ -40,6 +40,14 @@ class TestEmployees(TestCase):
         employee = EmployeeFactory.create()
         self.assertIsNone(employee.group)
 
+    def test_no_current_position(self):
+        employee = EmployeeFactory.create()
+        self.assertIsNone(employee.position)
+
+    def test_get_current_position(self):
+        position_assignment = PositionAssignmentFactory.create()
+        self.assertEqual(position_assignment.employee.position, position_assignment.position)
+
 
 
 
@@ -49,6 +57,9 @@ class TestPositions(TestCase):
         position = PositionFactory.create()
         logger.debug(position)
         self.assertEqual(Position.objects.all().count(), 1)
+
+    def test_assign_2_postions(self):
+        self.fail()
 
 
 class TestCompanyGroupEmployeeAssignment(TestCase):
@@ -93,4 +104,19 @@ class TestCompanyGroup(TestCase):
                                                              assign.group,
                                                              assign.start_date.strftime('%Y-%m-%d')))
         self.assertEqual(2, len(assingments))
+
+
+class TestPositionAssignment(TestCase):
+
+    def test_create_2_active_positions(self):
+        position_assignment = PositionAssignmentFactory.create()
+        position = PositionFactory.create()
+        start_date = position_assignment.start_date + timedelta(days=90)
+        try:
+            PositionAssignmentFactory.create(employee=position_assignment.employee,
+                                             position=position,
+                                             start_date=start_date)
+            self.fail('Allowed the creation of duplicate current positions')
+        except ValidationError:
+            pass
 
