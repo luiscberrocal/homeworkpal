@@ -15,7 +15,7 @@ class School(models.Model):
 
 class SchoolLevel(models.Model):
     name = models.CharField(max_length=10)
-    slug = AutoSlugField(populate_from='name', max_length=5, unique=True)
+    slug = AutoSlugField(populate_from='name', max_length=10, unique=True)
     school = models.ForeignKey(School)
 
     class Meta:

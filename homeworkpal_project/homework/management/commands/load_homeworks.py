@@ -17,15 +17,25 @@ class Command(BaseCommand):
         for row in teachers_sheet.rows:
             if row_num > 1:
                 values = self._to_list_of_values(row)
-                user = User.objects.create()
-                user.username = values[0]
-                user.first_name = values[1]
-                user.last_name = values[3]
-                user.email = values[5]
-                user.password = values[7]
-                user.save()
-                self.stdout.write(str(values))
+                user_dict = self._to_user_dictionary(values)
+                user, created = User.objects.get_or_create(**user_dict)
+                if created:
+                    self.stdout.write('Created: user %s' % user.username)
+                else:
+                    self.stdout.write('Updated: user %s' % user.username)
+                #user.save()
+                #self.stdout.write(str(values))
             row_num += 1
+
+    def _to_user_dictionary(self,value_list):
+        data = dict()
+        data['username'] = value_list[0]
+        data['first_name'] = value_list[1]
+        data['last_name'] = value_list[3]
+        data['email'] = value_list[5]
+        data['password'] = value_list[7]
+        return data
+
 
     def _to_list_of_values(self, row):
         value_list = []
