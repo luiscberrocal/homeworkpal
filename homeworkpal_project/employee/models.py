@@ -44,6 +44,9 @@ class Employee(models.Model):
     company_id = models.CharField(max_length=7)
     tenure = models.CharField(max_length=4, choices=TENURE_TYPES)
 
+    class Meta:
+        ordering = ['user__last_name', 'user__first_name']
+
     def _group(self):
         try:
             group_assignment = CompanyGroupEmployeeAssignment.objects.get(employee=self, end_date=None)
