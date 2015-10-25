@@ -10,7 +10,7 @@ class ProjectAdmin(admin.ModelAdmin):
 class ProjectGoalAdmin(admin.ModelAdmin):
     list_display = ['project', 'employee', 'weight', 'expected_advancement']
     list_editable = ['weight']
-    ordering = ['project', 'employee']
+    ordering = ['employee', 'project']
 
 admin.site.register(Project, ProjectAdmin)
 admin.site.register(ProjectGoal, ProjectGoalAdmin)
