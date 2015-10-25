@@ -196,6 +196,7 @@ DJANGO_APPS = (
 LOCAL_APPS = (
     'homework',
     'employee',
+    'project_admin',
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -249,7 +250,13 @@ LOGGING = {
             'handlers': ['console'],
             'level': 'DEBUG',
             'propagate': True,
+        },
+        'project_admin': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
         }
+
     }
 }
 ########## END LOGGING CONFIGURATION

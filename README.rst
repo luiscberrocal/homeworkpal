@@ -94,6 +94,13 @@ For production::
 *note: We install production requirements this way because many Platforms as a
 Services expect a requirements.txt file in the root of projects.*
 
+Running Commands
+==================
+
+::
+
+  $ python manage.py load_employees C:\Users\lberrocal\PycharmProjects\homeworkpal\test_data\collaborator.xlsx --settings=homeworkpal_project.settings.local_acp
+
 Follows Best Practices
 ======================
 
