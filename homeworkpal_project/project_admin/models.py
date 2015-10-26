@@ -23,6 +23,10 @@ class Project(models.Model):
     planned_man_hours = models.DecimalField(max_digits=7, decimal_places=2)
     type = models.CharField(max_length=8, choices=PROJECT_TYPES, default=MAIN_PROJECT)
     group = models.ForeignKey(CompanyGroup, null=True)
+    priority = models.IntegerField(default=10, help_text='The lower the number the higher the priority')
+
+    class Meta:
+        ordering = ['priority', 'planned_man_hours']
 
     def __str__(self):
         return self.short_name

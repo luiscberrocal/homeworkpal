@@ -49,7 +49,7 @@ class Command(BaseCommand):
                 current_username = goal.employee.user.username
                 pos = 1
                 sheet = wb.create_sheet(title=current_username)
-                sheet['A1'] = 'Nombres: %s  Ip: %s' % (goal.employee, goal.employee.company_id)
+                sheet['A1'] = '%s  IP: %s' % (goal.employee, goal.employee.company_id)
                 self._title_font(sheet['A1'])
                 col = 1
                 for title in headers:

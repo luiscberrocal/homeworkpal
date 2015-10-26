@@ -16,28 +16,6 @@ TENURE_TYPES = (
     )
 
 
-class Position(models.Model):
-    number = models.CharField(max_length=6, unique=True)
-    grade = models.CharField(max_length=5)
-    type = models.CharField(max_length=4, choices=TENURE_TYPES)
-
-    def assign(self, employee, start_date):
-        try:
-            prev_position_assignment = PositionAssignment.objects.get(employee=employee, end_date=None)
-            prev_position_assignment.end_date = start_date - timedelta(days=1)
-            prev_position_assignment.save()
-        except PositionAssignment.DoesNotExist:
-            pass
-        postion_assingment = PositionAssignment(employee=employee,
-                                                position=self,
-                                                start_date=start_date)
-        postion_assingment.save()
-
-
-    def __str__(self):
-        return '%s %s' % (self.number, self.grade)
-
-
 class Employee(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     middle_name = models.CharField(max_length=30, null=True, blank=True)
@@ -70,6 +48,28 @@ class Employee(models.Model):
             return '%s, %s' % (self.user.last_name, self.user.first_name)
         else:
             return self.user.username
+
+class Position(models.Model):
+    number = models.CharField(max_length=6, unique=True)
+    grade = models.CharField(max_length=5)
+    type = models.CharField(max_length=4, choices=TENURE_TYPES)
+    owner = models.OneToOneField(Employee, null=True, blank=True, related_name='permanent_position')
+
+    def assign(self, employee, start_date):
+        try:
+            prev_position_assignment = PositionAssignment.objects.get(employee=employee, end_date=None)
+            prev_position_assignment.end_date = start_date - timedelta(days=1)
+            prev_position_assignment.save()
+        except PositionAssignment.DoesNotExist:
+            pass
+        postion_assingment = PositionAssignment(employee=employee,
+                                                position=self,
+                                                start_date=start_date)
+        postion_assingment.save()
+
+
+    def __str__(self):
+        return '%s %s' % (self.number, self.grade)
 
 
 class CompanyGroup(models.Model):
@@ -114,8 +114,6 @@ class CompanyGroupEmployeeAssignment(models.Model):
 
         super(CompanyGroupEmployeeAssignment, self).save(force_insert=force_insert, force_update=force_update, using=using,
                                                                      update_fields=update_fields)
-
-
 
 
 class PositionAssignment(models.Model):

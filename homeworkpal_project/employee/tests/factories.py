@@ -46,6 +46,7 @@ class PositionFactory(DjangoModelFactory):
     number = FuzzyText(length=6, chars=string.digits)
     grade = Iterator(['NM-07', 'NM-09', 'NM-11', 'NM-12', 'NM-13'])
     type = Iterator(TENURE_TYPES, getter=lambda c: c[0])
+    owner = None
 
 class CompanyGroupFactory(DjangoModelFactory):
 
