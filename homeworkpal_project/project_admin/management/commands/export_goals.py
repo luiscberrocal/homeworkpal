@@ -2,7 +2,7 @@ from datetime import datetime
 import os
 from django.core.management import BaseCommand
 from openpyxl import Workbook
-from openpyxl.styles import Alignment
+from openpyxl.styles import Alignment, Font, PatternFill
 from employee.models import CompanyGroup
 from homeworkpal_project.settings.base import TEST_DATA_PATH
 from project_admin.models import ProjectGoal
@@ -22,39 +22,50 @@ class Command(BaseCommand):
         goals = ProjectGoal.objects.filter(project__group__name__exact=options['group']).order_by('employee')
         pos = 1
         current_username = None
-        headers = ['No', 'Proyecto', 'Descripción', 'Totalmente Satifactorio', 'Peso']
+        headers = ['No', 'Proyecto', 'Descripción', 'Totalmente Satifactorio', 'Peso', 'Entregables']
         for goal in goals:
             if goal.employee.user.username != current_username:
                 current_username = goal.employee.user.username
                 pos = 1
                 sheet = wb.create_sheet(title=current_username)
                 sheet['A1'] = 'Nombres: %s  Ip: %s' % (goal.employee, goal.employee.company_id)
+                self._title_font(sheet['A1'])
                 col = 1
                 for title in headers:
-                    sheet.cell(column=col, row=3, value=title)
+                    cell = sheet.cell(column=col, row=3, value=title)
+                    self._format_header(cell)
                     col += 1
                 row = 4
+            ## No Proyecto A
             col = 1
             sheet.cell(column=col, row=row, value=pos)
+            ## Proyecto B
             col += 1
             cell = sheet.cell(column=col, row=row, value=str(goal.project))
             self._wrap_cell(cell)
+            ## Description C
             col += 1
             cell = sheet.cell(column=col, row=row, value=str(goal.project.description))
             self._wrap_cell(cell)
+            ## Satifactory D
             col += 1
-            statisfactory = '%f debe estar entregado para el %s' % (goal.expected_advancement,
+            statisfactory = '%.0f %% debe estar entregado para el %s' % (goal.expected_advancement*100,
                                                             goal.project.planned_end_date.strftime('%d-%m-%Y'))
             cell = sheet.cell(column=col, row=row, value=statisfactory)
             self._wrap_cell(cell)
+            ## Weight E
             col += 1
-            sheet.cell(column=col, row=row, value=goal.weight)
-
+            cell = sheet.cell(column=col, row=row, value=goal.weight)
+            cell.number_format = '0%'
+            cell.alignment = Alignment(horizontal='general', vertical='top')
+            ## Deliverbales F
+            col += 1
+            dummy = 'Money\nCars\nCanal'
+            cell = sheet.cell(column=col, row=row, value=dummy)
+            self._wrap_cell(cell)
             row += 1
 
             self._set_column_widths(sheet)
-
-
 
             print('%d %-50s %s' % (pos, goal.project, goal.employee))
             pos += 1
@@ -75,8 +86,24 @@ class Command(BaseCommand):
         sheet.column_dimensions["A"].width = 5.0
         sheet.column_dimensions["B"].width = 30.0
         sheet.column_dimensions["C"].width = 50.0
-        sheet.column_dimensions["D"].width = 15.0
+        sheet.column_dimensions["D"].width = 5.0
         sheet.column_dimensions["E"].width = 15.0
+        sheet.column_dimensions["F"].width = 15.0
+
+    def _title_font(self, cell):
+        font = font = Font(name='Calibri', size=18, bold=True, italic=False,
+                           vertAlign=None, underline='none', strike=False, color='FF000000')
+
+        cell.font = font
+
+    def _format_header(self, cell):
+        font = Font(name='Calibri', size=12, bold=True, italic=False,
+                    vertAlign=None, underline='none', strike=False, color='FF000000')
+        fill = PatternFill(fill_type='solid', start_color='CBE800', end_color='CBE800')
+        cell.font = font
+        cell.fill = fill
+
+
 
 
 
