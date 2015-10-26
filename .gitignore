@@ -45,3 +45,5 @@ homeworkpal_project/homeworkpal_project/settings/local_acp.py
 ~$school_data.xlsx
 test_data/collaborator.xlsx
 test_data/~$collaborator.xlsx
+test_data/TINO-NS_*.xlsx
+~$TINO-NS_*.xlsx

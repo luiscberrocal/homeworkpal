@@ -15,6 +15,8 @@ SITE_ROOT = dirname(DJANGO_ROOT)
 # Site name:
 SITE_NAME = basename(DJANGO_ROOT)
 
+TEST_DATA_PATH = abspath(join(DJANGO_ROOT, '..', '..', 'test_data'))
+
 # Add our project to our pythonpath, this way we don't need to type our project
 # name in our dotted import paths:
 path.append(DJANGO_ROOT)
@@ -58,7 +60,7 @@ DATABASES = {
 
 ########## GENERAL CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#time-zone
-TIME_ZONE = 'America/Los_Angeles'
+TIME_ZONE = 'America/Panama'
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#language-code
 LANGUAGE_CODE = 'en-us'
@@ -196,6 +198,7 @@ DJANGO_APPS = (
 LOCAL_APPS = (
     'homework',
     'employee',
+    'project_admin',
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -249,7 +252,13 @@ LOGGING = {
             'handlers': ['console'],
             'level': 'DEBUG',
             'propagate': True,
+        },
+        'project_admin': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
         }
+
     }
 }
 ########## END LOGGING CONFIGURATION
