@@ -46,3 +46,10 @@ class ProjectGoal(models.Model):
     expected_advancement = models.FloatField(validators=[MaxValueValidator(1.0), MinValueValidator(0.0)], default=0.9)
 
 
+class Stakeholder(models.Model):
+    employee = models.ForeignKey(Employee, related_name='projects_as_stakeholder')
+    project = models.ForeignKey(Project, related_name='stakeholders')
+    rank = models.IntegerField(default=10, help_text='Rank of the stakeholder in the project')
+
+    class Meta:
+        ordering = ['project', 'rank']
