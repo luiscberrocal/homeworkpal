@@ -1,22 +1,33 @@
 from django.contrib import admin
 
 # Register your models here.
-from project_admin.models import Project, ProjectGoal, Stakeholder, Deliverable
+from project_admin.models import Project, ProjectGoal, Stakeholder, Deliverable, CorporateGoalAssignment, CorporateGoal
 
 
 class DeliverableInLine(admin.TabularInline):
     model = Deliverable
     extra = 1
 
+
 class StakeholderInLine(admin.TabularInline):
     model = Stakeholder
     extra = 1
 
 
+class CorporateGoalAssignmentInLine(admin.TabularInline):
+    model = CorporateGoalAssignment
+    extra = 1
+
+
+class CorporateGoalAdmin(admin.ModelAdmin):
+    model = CorporateGoal
+    list_display = [ 'fiscal_year', 'number', 'description']
+
+
 class ProjectAdmin(admin.ModelAdmin):
     list_display = ['short_name', 'priority', 'group', 'type', 'planned_start_date', 'planned_end_date', 'planned_man_hours']
     list_editable = ['priority', 'planned_start_date', 'planned_end_date', 'planned_man_hours' ]
-    inlines = [DeliverableInLine, StakeholderInLine]
+    inlines = [DeliverableInLine, StakeholderInLine, CorporateGoalAssignmentInLine]
 
 
 class ProjectGoalAdmin(admin.ModelAdmin):
@@ -37,3 +48,4 @@ admin.site.register(Project, ProjectAdmin)
 admin.site.register(ProjectGoal, ProjectGoalAdmin)
 admin.site.register(Stakeholder, StakeholderAdmin)
 admin.site.register(Deliverable, DeliverableAdmin)
+admin.site.register(CorporateGoal, CorporateGoalAdmin )

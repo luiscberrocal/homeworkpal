@@ -31,6 +31,20 @@ class Project(models.Model):
     def __str__(self):
         return self.short_name
 
+class CorporateGoal(models.Model):
+    number = models.CharField(max_length=4, unique=True)
+    description = models.TextField()
+    fiscal_year = models.IntegerField(default=2016)
+
+    def __str__(self):
+        return '%s - %s' % (self.number, self.description)
+
+
+class CorporateGoalAssignment(models.Model):
+    corporate_goal = models.ForeignKey(CorporateGoal, related_name='projects')
+    project = models.ForeignKey(Project, related_name='corporate_goals')
+
+
 class Deliverable(models.Model):
     project = models.ForeignKey(Project, related_name='deliverables')
     name = models.CharField(max_length=120)
@@ -53,3 +67,5 @@ class Stakeholder(models.Model):
 
     class Meta:
         ordering = ['project', 'rank']
+
+
