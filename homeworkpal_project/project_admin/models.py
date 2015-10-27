@@ -32,7 +32,7 @@ class Project(models.Model):
         return self.short_name
 
 class Deliverable(models.Model):
-    project = models.ForeignKey(Project)
+    project = models.ForeignKey(Project, related_name='deliverables')
     name = models.CharField(max_length=120)
     description = models.TextField()
 
