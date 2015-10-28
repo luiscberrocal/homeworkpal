@@ -17,12 +17,18 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         project = Project.objects.get(pk=int(options['project_id']))
         template_filename = os.path.join(TEST_DATA_PATH, '1680_v2.xlsx')
-        output_filename = os.path.join(TEST_DATA_PATH, '%s_%s.xlsx' % (project.slug.replace('-','_'), timezone.now().strftime('%Y%m%d_%H%M')))
+        now = timezone.localtime(timezone.now())
+        output_filename = os.path.join(TEST_DATA_PATH, '%s_%s.xlsx' % (project.slug.replace('-','_'), now.strftime('%Y%m%d_%H%M')))
         wb = load_workbook(template_filename)
         sheet = wb.active
         sheet['D2'] = project.short_name
         sheet['I3'] = datetime.today()
         sheet['A9'] = project.description
+        row = 12
+        for corporate_goal_assignment in project.corporate_goals.all()[:4]:
+            sheet['A%d'%row] = corporate_goal_assignment.corporate_goal.number
+            sheet['B%d'%row] = corporate_goal_assignment.corporate_goal.description
+            row += 1
         row=20
         for deliverable in project.deliverables.all()[:5]:
             sheet['B%d'%row] = deliverable.name
@@ -33,7 +39,15 @@ class Command(BaseCommand):
             sheet['B%d'%row] = str(stakeholder.employee)
             #sheet['G%d'%row] = deliverable.description
             row += 1
+        row = 42
+        for risk in project.risks.all()[:5]:
+            sheet['B%d'%row] = risk.risk_type
+            sheet['C%d'%row] = risk.description
+            row += 1
 
+        row = 49
+        sheet['A%d'%row] = str(project.planned_start_date)
+        sheet['H%d'%row] = str(project.planned_end_date)
         wb.save(output_filename)
         self.stdout.write('Wrote %s' % output_filename)
 

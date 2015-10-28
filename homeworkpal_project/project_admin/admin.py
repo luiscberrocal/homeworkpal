@@ -1,7 +1,8 @@
 from django.contrib import admin
 
 # Register your models here.
-from project_admin.models import Project, ProjectGoal, Stakeholder, Deliverable, CorporateGoalAssignment, CorporateGoal
+from project_admin.models import Project, ProjectGoal, Stakeholder, Deliverable, CorporateGoalAssignment, CorporateGoal, \
+    Risk
 
 
 class DeliverableInLine(admin.TabularInline):
@@ -18,6 +19,9 @@ class CorporateGoalAssignmentInLine(admin.TabularInline):
     model = CorporateGoalAssignment
     extra = 1
 
+class RiskInLine(admin.TabularInline):
+    model = Risk
+    extra = 1
 
 class CorporateGoalAdmin(admin.ModelAdmin):
     model = CorporateGoal
@@ -27,7 +31,7 @@ class CorporateGoalAdmin(admin.ModelAdmin):
 class ProjectAdmin(admin.ModelAdmin):
     list_display = ['short_name', 'priority', 'group', 'type', 'planned_start_date', 'planned_end_date', 'planned_man_hours']
     list_editable = ['priority', 'planned_start_date', 'planned_end_date', 'planned_man_hours' ]
-    inlines = [DeliverableInLine, StakeholderInLine, CorporateGoalAssignmentInLine]
+    inlines = [DeliverableInLine, StakeholderInLine, CorporateGoalAssignmentInLine, RiskInLine]
 
 
 class ProjectGoalAdmin(admin.ModelAdmin):
@@ -44,8 +48,12 @@ class StakeholderAdmin(admin.ModelAdmin):
 class DeliverableAdmin(admin.ModelAdmin):
     list_display = ['project', 'name']
 
+class RiskAdmin(admin.ModelAdmin):
+    list_display = ['risk_type', 'project', 'priority', 'description']
+
 admin.site.register(Project, ProjectAdmin)
 admin.site.register(ProjectGoal, ProjectGoalAdmin)
 admin.site.register(Stakeholder, StakeholderAdmin)
 admin.site.register(Deliverable, DeliverableAdmin)
-admin.site.register(CorporateGoal, CorporateGoalAdmin )
+admin.site.register(CorporateGoal, CorporateGoalAdmin)
+admin.site.register(Risk, RiskAdmin)

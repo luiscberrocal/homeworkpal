@@ -5,7 +5,6 @@ from django.db import models
 # Create your models here.
 from employee.models import Employee, CompanyGroup
 
-
 class Project(models.Model):
     INTERNAL_PROJECT = 'INTERNAL'
     MAIN_PROJECT = 'PROJECT'
@@ -30,6 +29,19 @@ class Project(models.Model):
 
     def __str__(self):
         return self.short_name
+
+class Risk(models.Model):
+    RISK_THREAT = 'THREAT'
+    RISK_OPPORTUNITY = 'OPPORTUNITY'
+    RISK_TYPES = (
+        (RISK_THREAT, 'Amenaza'),
+        (RISK_OPPORTUNITY, 'Oportunidad')
+    )
+    risk_type = models.CharField(max_length=12, choices=RISK_TYPES, default=RISK_THREAT)
+    priority = models.IntegerField(default=1)
+    description = models.TextField()
+    project = models.ForeignKey(Project, related_name='risks')
+
 
 class CorporateGoal(models.Model):
     number = models.CharField(max_length=4, unique=True)
