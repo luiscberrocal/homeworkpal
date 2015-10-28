@@ -47,3 +47,7 @@ test_data/collaborator.xlsx
 test_data/~$collaborator.xlsx
 test_data/TINO-NS_*.xlsx
 ~$TINO-NS_*.xlsx
+test_data/Copy of 1680.xls
+test_data/1680.xls
+test_data/~$*.xlsx
+test_data/locks_workbenches_*.xlsx
