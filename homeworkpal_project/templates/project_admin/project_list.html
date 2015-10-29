@@ -6,6 +6,7 @@
     <div class="alert alert-info" role="alert">
         <div><strong>Project:</strong>{{ project.short_name }}</div>
         <div> <strong>Fecha de Terminación: </strong> {{ project.planned_end_date }} (Faltan {{project.remaining_days}} días)</div>
+         <div> <strong>Líder: </strong> {{ project.leader }}</div>
     </div>
     {% endfor %}
 </div>

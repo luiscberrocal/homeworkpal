@@ -31,6 +31,15 @@ class Project(models.Model):
     group = models.ForeignKey(CompanyGroup, null=True)
     priority = models.IntegerField(default=10, help_text='The lower the number the higher the priority')
 
+    def _leader(self):
+        try:
+            member = ProjectMember.objects.get(project=self, end_date=None, role=ProjectMember.ROLE_TEAM_LEADER)
+            leader = member.employee
+        except ProjectMember.DoesNotExist:
+            leader = None
+        return leader
+    leader = property(_leader)
+
     def remaining_days(self):
         holidays = Holiday()
         from_date = timezone.localtime(timezone.now()).date()
