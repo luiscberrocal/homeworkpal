@@ -1,8 +1,11 @@
+
 from autoslug import AutoSlugField
+from datetime import timedelta
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 # Create your models here.
+from django.utils import timezone
 from employee.models import Employee, CompanyGroup
 
 class Project(models.Model):
@@ -23,6 +26,13 @@ class Project(models.Model):
     type = models.CharField(max_length=8, choices=PROJECT_TYPES, default=MAIN_PROJECT)
     group = models.ForeignKey(CompanyGroup, null=True)
     priority = models.IntegerField(default=10, help_text='The lower the number the higher the priority')
+
+    def remaining_days(self):
+        from_date = timezone.localtime(timezone.now()).date()
+        day_generator = (from_date + timedelta(x + 1) for x in range((self.planned_end_date - from_date).days))
+        rd = sum(1 for day in day_generator if day.weekday() < 5)
+        return rd
+
 
     class Meta:
         ordering = ['priority', 'planned_man_hours']

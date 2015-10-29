@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block page_title %}Projects {% endblock page_title %}
+{% block content %}
+<div>
+    {% for project in object_list %}
+    <div class="alert alert-info" role="alert">
+        <div><strong>Project:</strong>{{ project.short_name }}</div>
+        <div> <strong>Fecha de Terminación: </strong> {{ project.planned_end_date }} (Faltan {{project.remaining_days}} días)</div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock content %}
