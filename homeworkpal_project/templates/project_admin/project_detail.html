@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block page_title %} {{ project.short_name }} {% endblock page_title %}
+{% block content %}
+<div>
+    <div>
+        {{ project.description }}
+    </div>
+    <div><span class="title">Planned Start Date: </span> {{ project.planned_start_date}}</div>
+    <div><span class="title">Planned End Date: </span> {{ project.planned_end_date}}</div>
+
+</div>
+{% endblock content %}

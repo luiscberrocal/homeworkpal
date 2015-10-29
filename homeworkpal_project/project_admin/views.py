@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 # Create your views here.
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 from .models import Project
 
 
@@ -15,3 +15,7 @@ class ProjectListView(ListView):
         return query_set
         #return query_set.filter(actual_start_date__isnull=False)
 
+
+class ProjectDetailView(DetailView):
+    model = Project
+    context_object_name = 'project'
