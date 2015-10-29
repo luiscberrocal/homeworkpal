@@ -7,6 +7,8 @@ from django.db import models
 # Create your models here.
 from django.utils import timezone
 from employee.models import Employee, CompanyGroup
+from project_admin.utils import Holiday
+
 
 class Project(models.Model):
     INTERNAL_PROJECT = 'INTERNAL'
@@ -28,9 +30,10 @@ class Project(models.Model):
     priority = models.IntegerField(default=10, help_text='The lower the number the higher the priority')
 
     def remaining_days(self):
+        holidays = Holiday()
         from_date = timezone.localtime(timezone.now()).date()
         day_generator = (from_date + timedelta(x + 1) for x in range((self.planned_end_date - from_date).days))
-        rd = sum(1 for day in day_generator if day.weekday() < 5)
+        rd = sum(1 for day in day_generator if day.weekday() < 5 and not holidays.is_holiday(day))
         return rd
 
 
