@@ -1,9 +1,13 @@
 from django.contrib import admin
 
 # Register your models here.
-from project_admin.models import Project, ProjectGoal, Stakeholder, Deliverable, CorporateGoalAssignment, CorporateGoal, \
-    Risk
+from .models import Project, ProjectGoal, Stakeholder, Deliverable, CorporateGoalAssignment, CorporateGoal, \
+    Risk, ProjectMember
 
+
+class ProjectMemberInLine(admin.TabularInline):
+    model = ProjectMember
+    extra = 1
 
 class DeliverableInLine(admin.TabularInline):
     model = Deliverable
@@ -27,11 +31,14 @@ class CorporateGoalAdmin(admin.ModelAdmin):
     model = CorporateGoal
     list_display = [ 'fiscal_year', 'number', 'description']
 
+class ProjectMemberAdmin(admin.ModelAdmin):
+    list_display = ['project','employee', 'role', 'start_date', 'end_date']
+    list_editable = ['employee', 'role', 'start_date', 'end_date']
 
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ['short_name', 'priority', 'group', 'type', 'planned_start_date', 'planned_end_date', 'planned_man_hours']
-    list_editable = ['priority', 'planned_start_date', 'planned_end_date', 'planned_man_hours' ]
-    inlines = [DeliverableInLine, StakeholderInLine, CorporateGoalAssignmentInLine, RiskInLine]
+    list_display = ['short_name', 'priority', 'group', 'type', 'planned_start_date', 'planned_end_date', 'planned_man_hours' , 'actual_start_date', 'actual_end_date']
+    list_editable = ['priority', 'planned_start_date', 'planned_end_date', 'planned_man_hours', 'actual_start_date', 'actual_end_date' ]
+    inlines = [DeliverableInLine, StakeholderInLine, CorporateGoalAssignmentInLine, RiskInLine, ProjectMemberInLine]
 
 
 class ProjectGoalAdmin(admin.ModelAdmin):
@@ -57,3 +64,4 @@ admin.site.register(Stakeholder, StakeholderAdmin)
 admin.site.register(Deliverable, DeliverableAdmin)
 admin.site.register(CorporateGoal, CorporateGoalAdmin)
 admin.site.register(Risk, RiskAdmin)
+admin.site.register(ProjectMember, ProjectMemberAdmin)
