@@ -33,7 +33,7 @@ class Project(models.Model):
 
     def _leader(self):
         try:
-            member = ProjectMember.objects.get(project=self, end_date=None, role=ProjectMember.ROLE_TEAM_LEADER)
+            member = ProjectMember.objects.select_related('employee__user').get(project=self, end_date=None, role=ProjectMember.ROLE_TEAM_LEADER)
             leader = member.employee
         except ProjectMember.DoesNotExist:
             leader = None

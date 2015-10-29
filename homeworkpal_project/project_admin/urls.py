@@ -5,4 +5,6 @@ __author__ = 'LBerrocal'
 
 
 urlpatterns = patterns('',
-                       url(r'^$', ProjectListView.as_view()))
+                       url(r'^$', ProjectListView.as_view(), {'status': 'all'}),
+                       url(r'^running/$', ProjectListView.as_view(), {'status': 'running'})
+                       )
