@@ -22,7 +22,9 @@ class ProjectDetailView(DetailView):
 
 class ProjectUpdateView(UpdateView):
     model = Project
-    fields = ['short_name', 'description', 'planned_start_date', 'planned_end_date', 'actual_start_date']
+    fields = ['short_name', 'description', 'planned_start_date',
+              'planned_end_date', 'actual_start_date', 'actual_end_date',
+              'planned_man_hours', 'type', 'group', 'priority']
 
     # actual_end_date = models.DateField(null=True, blank=True)
     # slug = AutoSlugField(populate_from='short_name', max_length=60, unique=True)

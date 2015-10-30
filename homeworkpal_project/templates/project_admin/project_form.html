@@ -4,6 +4,7 @@
 {% block content %}
 <form action="" method="post">{% csrf_token %}
     {{ form.as_p }}
-    <input type="submit" value="Update" />
+    <input class="btn btn-primary" role="button" type="submit" value="Update" />
+    <a class="btn btn-primary" role="button" href="{% url 'project_detail' project.pk %} ">Cancel</a>
 </form>
 {% endblock content %}
