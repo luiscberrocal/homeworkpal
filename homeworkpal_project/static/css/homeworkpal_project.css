@@ -1,1 +1,4 @@
 /*! project specific CSS goes here. */
+span.title {
+    font-weight: bold;
+}
