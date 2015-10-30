@@ -1,6 +1,7 @@
 
 from autoslug import AutoSlugField
 from datetime import timedelta
+from django.core.urlresolvers import reverse
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
@@ -49,6 +50,9 @@ class Project(models.Model):
 
     class Meta:
         ordering = ['priority', 'planned_man_hours']
+
+    def get_absolute_url(self):
+        return reverse('project_detail', args=[self.pk])
 
     def __str__(self):
         return self.short_name
