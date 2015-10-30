@@ -8,6 +8,6 @@
     </div>
     <div><span class="title">Planned Start Date: </span> {{ project.planned_start_date}}</div>
     <div><span class="title">Planned End Date: </span> {{ project.planned_end_date}}</div>
-
 </div>
+<div><a href="{% url 'project_update' project.pk %}">Edit</a> </div>
 {% endblock content %}
