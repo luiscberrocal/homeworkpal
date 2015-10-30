@@ -15,6 +15,9 @@ class ProjectListView(ListView):
         return query_set
         #return query_set.filter(actual_start_date__isnull=False)
 
+    def status(self):
+        return self.kwargs['status']
+
 
 class ProjectDetailView(DetailView):
     model = Project
