@@ -1,13 +1,9 @@
 from datetimewidget.widgets import DateTimeWidget
-from django.forms import forms
-from .models import Project
+from django.forms import forms, inlineformset_factory
+from .models import Project, Risk
 
 __author__ = 'luiscberrocal'
 
-class ProjectForm(forms.ModelForm):
-    model = Project
-    widgets = {
-            #Use localization and bootstrap 3
-            'datetime': DateTimeWidget(attrs={'id':"yourdatetimeid"}, usel10n = True, bootstrap_version=3)
-        }
-
+RiskFormSet = inlineformset_factory(Project, Risk,
+                                    fields=['risk_type', 'priority', 'description'],
+                                    extra=1)

@@ -1,9 +1,8 @@
 from django.core.urlresolvers import reverse_lazy
-from django.shortcuts import render
-
-# Create your views here.
+from django.forms import inlineformset_factory
 from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView
-from .models import Project, ProjectMember
+from .models import Project, ProjectMember, Risk
+from .forms import RiskFormSet
 
 
 class ProjectListView(ListView):
@@ -37,6 +36,11 @@ class ProjectUpdateView(UpdateView):
               'planned_end_date', 'actual_start_date', 'actual_end_date',
               'planned_man_hours', 'type', 'group', 'priority']
 
+    def get_context_data(self, **kwargs):
+        ctx = super(ProjectUpdateView, self).get_context_data(**kwargs)
+        ctx['risk_form'] = RiskFormSet()
+        return ctx
+
 
 class ProjectCreateView(CreateView):
     model = Project
@@ -44,6 +48,15 @@ class ProjectCreateView(CreateView):
               'planned_end_date', 'actual_start_date', 'actual_end_date',
               'planned_man_hours', 'type', 'group', 'priority']
 
+
+    def get_context_data(self, **kwargs):
+        ctx = super(ProjectCreateView, self).get_context_data(**kwargs)
+        ctx['risk_form'] = RiskFormSet()
+        return ctx
+
 class ProjectDeleteView(DeleteView):
     model = Project
     success_url = reverse_lazy('project:all_projects')
+
+
+
