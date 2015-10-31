@@ -43,16 +43,16 @@
         </div>
         <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="#">Home</a></li>
+                <li class="active"><a href="/">Home</a></li>
                 <li><a href="#about">About</a></li>
                 <li><a href="#contact">Contact</a></li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                        aria-expanded="false">Projects <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a href="{% url 'all_projects' %}">All Projects</a></li>
-                        <li><a href="{% url 'running_projects' %}">Running Projects</a></li>
-                        <li><a href="{% url 'project_create' %}">Add Project</a></li>
+                        <li><a href="{% url 'project:all_projects' %}">All Projects</a></li>
+                        <li><a href="{% url 'project:running_projects' %}">Running Projects</a></li>
+                        <li><a href="{% url 'project:project_create' %}">Add Project</a></li>
                     </ul>
                 </li>
             </ul>

@@ -5,6 +5,11 @@
 <form action="" method="post">{% csrf_token %}
     {{ form.as_p }}
     <input class="btn btn-primary" role="button" type="submit" value="Update" />
-    <a class="btn btn-primary" role="button" href="{% url 'project_detail' project.pk %} ">Cancel</a>
+    {% if project == None %}
+    <a class="btn btn-primary" role="button" href="{% url 'project:all_projects' %} ">Cancel</a>
+    {% else %}
+    <a class="btn btn-primary" role="button" href="{% url 'project:project_detail' project.pk %} ">Cancel</a>
+    {% endif %}
+
 </form>
 {% endblock content %}
