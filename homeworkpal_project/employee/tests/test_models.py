@@ -1,12 +1,12 @@
 
 import logging
-from datetime import timedelta
+from datetime import timedelta, datetime, date
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.test import TestCase
-from employee.models import Employee, Position, CompanyGroupEmployeeAssignment
-from employee.tests.factories import UserFactory, EmployeeFactory, PositionFactory, \
+from ..models import Employee, Position, CompanyGroupEmployeeAssignment
+from .factories import UserFactory, EmployeeFactory, PositionFactory, \
     CompanyGroupEmployeeAssignmentFactory, CompanyGroupFactory, PositionAssignmentFactory
 
 __author__ = 'luiscberrocal'
@@ -93,6 +93,18 @@ class TestCompanyGroupEmployeeAssignment(TestCase):
             self.fail()
         except ValidationError:
             pass
+
+    def test_group_members(self):
+        group_assignment = CompanyGroupEmployeeAssignmentFactory.create()
+        group_assignment.end_date = date.today()
+        group_assignment.save()
+        employees = EmployeeFactory.create_batch(5)
+        for employee in employees[:3]:
+            logger.debug('****')
+            group_assignment.group.assign(employee, date.today())
+        members = CompanyGroupEmployeeAssignment.objects.group_members(group_assignment.group)
+        self.assertEqual(3, len(members))
+
 
 class TestCompanyGroup(TestCase):
 

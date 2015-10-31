@@ -3,6 +3,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 import logging
+from .managers import CompanyGroupEmployeeAssignmentManager
 
 logger = logging.getLogger(__name__)
 
@@ -100,6 +101,8 @@ class CompanyGroupEmployeeAssignment(models.Model):
     employee = models.ForeignKey(Employee)
     start_date = models.DateField()
     end_date = models.DateField(null=True, blank=True)
+
+    objects = CompanyGroupEmployeeAssignmentManager()
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):

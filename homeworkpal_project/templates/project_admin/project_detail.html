@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load staticfiles %}
+{% load i18n %}
 {% block page_title %} {{ project.short_name }} {% endblock page_title %}
 {% block content %}
     <div>
@@ -20,6 +21,12 @@
         <div><span class="title">Priority: </span> {{ project.priority }}</div>
     </div>
     <div>
+        <div>
+            <h2>{% trans "Members" %}</h2>
+            {% for member in members %}
+                <div>{{ member.employee }} </div>
+            {% endfor %}
+            </div>
         <a class="btn btn-primary" role="button" href="{% url 'project:project_update' project.pk %}">Edit</a></div>
 <a class="btn btn-primary" role="button" href="{% url 'project:project_delete' project.pk %}">Delete</a></div>
 {% endblock content %}

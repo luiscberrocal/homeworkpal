@@ -3,7 +3,7 @@ from django.shortcuts import render
 
 # Create your views here.
 from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView
-from .models import Project
+from .models import Project, ProjectMember
 
 
 class ProjectListView(ListView):
@@ -23,6 +23,13 @@ class ProjectListView(ListView):
 class ProjectDetailView(DetailView):
     model = Project
     context_object_name = 'project'
+
+    def get_context_data(self, **kwargs):
+        ctx = super(ProjectDetailView, self).get_context_data(**kwargs)
+        project = self.get_object()
+        ctx['members'] = ProjectMember.objects.assigned_to_project(project)
+        return ctx
+
 
 class ProjectUpdateView(UpdateView):
     model = Project

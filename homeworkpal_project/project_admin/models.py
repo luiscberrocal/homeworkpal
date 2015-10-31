@@ -8,6 +8,7 @@ from django.db import models
 # Create your models here.
 from django.utils import timezone
 from employee.models import Employee, CompanyGroup
+from project_admin.managers import ProjectMemberManager
 from project_admin.utils import Holiday
 
 
@@ -71,6 +72,8 @@ class ProjectMember(models.Model):
     project = models.ForeignKey(Project, related_name='members')
     start_date = models.DateField(default=timezone.now())
     end_date = models.DateField(null=True, blank=True)
+
+    objects = ProjectMemberManager()
 
 
 class Risk(models.Model):
