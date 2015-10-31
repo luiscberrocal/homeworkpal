@@ -24,5 +24,5 @@ class Holiday(object):
         date(2016, 12, 26),
     )
 
-    def is_holiday(self, date):
-        return date in self.holidays
+    def is_holiday(self, event_date):
+        return event_date in self.holidays

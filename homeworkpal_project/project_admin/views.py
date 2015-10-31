@@ -39,4 +39,4 @@ class ProjectCreateView(CreateView):
 
 class ProjectDeleteView(DeleteView):
     model = Project
-    success_url = reverse_lazy('all_projects')
+    success_url = reverse_lazy('project:all_projects')

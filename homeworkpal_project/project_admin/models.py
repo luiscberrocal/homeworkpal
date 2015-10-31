@@ -52,7 +52,7 @@ class Project(models.Model):
         ordering = ['priority', 'planned_man_hours']
 
     def get_absolute_url(self):
-        return reverse('project_detail', args=[self.pk])
+        return reverse('project:project_detail', args=[self.pk])
 
     def __str__(self):
         return self.short_name
