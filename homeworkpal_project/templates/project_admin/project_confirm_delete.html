@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block page_title %} Deleting {{ object.short_name }} {% endblock page_title %}
+{% block content %}
+
+<form action="" method="post">{% csrf_token %}
+    <p>Are you sure you want to delete "{{ object }}"?</p>
+    <input class="btn btn-primary"  type="submit" value="Confirm" />
+</form>
+
+    {% endblock content %}
