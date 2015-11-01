@@ -88,6 +88,9 @@ class Risk(models.Model):
     description = models.TextField()
     project = models.ForeignKey(Project, related_name='risks')
 
+    class Meta:
+        ordering = ('priority', '-risk_type')
+
 
 class CorporateGoal(models.Model):
     number = models.CharField(max_length=4, unique=True)
