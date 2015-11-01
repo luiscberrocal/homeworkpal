@@ -2,7 +2,7 @@ from django.conf.urls import patterns, include, url
 from django.conf.urls.static import static
 from django.conf import settings
 from django.views.generic import TemplateView
-
+from django.contrib.auth.views import login
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 import homework
@@ -21,6 +21,9 @@ urlpatterns = patterns('',
                        url(r'^admin/', include(admin.site.urls)),
                        url(r'^homework/', include('homework.urls')),
                        url(r'^projects/', include('project_admin.urls', namespace='project')),
+                       url(r'^accounts/login/$', 'django.contrib.auth.views.login',
+                           {'template_name': 'admin/login.html'}, name='login'),
+                       url(r'^accounts/logout/$', 'django.contrib.auth.views.logout', name='logout'),
                        )
 
 # Uncomment the next line to serve media files in dev.
