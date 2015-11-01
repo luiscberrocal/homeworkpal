@@ -9,18 +9,13 @@ Add New Project
 {% endblock page_title %}
 {% block content %}
 <form action="" method="post">{% csrf_token %}
-    <ul class="nav nav-tabs" role="tablist" id="project-tabs">
-        <li role="presentation" class="active"><a href="#project-info" aria-controls="project-info" role="tab"
-                                                  data-toggle="tab">Project Info</a></li>
-        <li role="presentation"><a href="#risks" aria-controls="risks" role="tab" data-toggle="tab">Risks</a></li>
-        <li role="presentation"><a href="#members" aria-controls="members" role="tab" data-toggle="tab">Members</a></li>
-    </ul>
+
 
     <div class="tab-content">
 
         <div role="tabpanel" class="tab-pane active" id="project-info"> {{ form.as_p }}</div>
 
-        <div role="tabpanel" class="tab-pane" id="risks">
+        <div role="tabpanel" class="tab-pane active" id="risks">
             <fieldset>
                 <legend>Risks</legend>
                 {{ line_formset.management_form }}
@@ -33,7 +28,7 @@ Add New Project
                 {% endfor %}
             </fieldset>
         </div>
-        <div role="tabpanel" class="tab-pane" id="members">
+        <div role="tabpanel" class="tab-pane active" id="members">
             <fieldset>
                 <legend>Members</legend>
                 {{ members_formset.management_form }}
@@ -72,13 +67,5 @@ Add New Project
 
 
 </script>
-<script>
 
-
-    $('#project-tabs a').click(function (e) {
-  e.preventDefault()
-  $(this).tab('show')
-})
-
-</script>
 {% endblock extra_js %}
