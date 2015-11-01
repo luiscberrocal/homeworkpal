@@ -13,6 +13,7 @@ Add New Project
         <li role="presentation" class="active"><a href="#project-info" aria-controls="project-info" role="tab"
                                                   data-toggle="tab">Project Info</a></li>
         <li role="presentation"><a href="#risks" aria-controls="risks" role="tab" data-toggle="tab">Risks</a></li>
+        <li role="presentation"><a href="#members" aria-controls="members" role="tab" data-toggle="tab">Members</a></li>
     </ul>
 
     <div class="tab-content">
@@ -27,6 +28,19 @@ Add New Project
                 {% for form in line_formset %}
                 {{ form.id }}
                 <div class="link-formset inline {{ risk_form.prefix }}">
+                    {{ form.as_table }}
+                </div>
+                {% endfor %}
+            </fieldset>
+        </div>
+        <div role="tabpanel" class="tab-pane" id="members">
+            <fieldset>
+                <legend>Members</legend>
+                {{ members_formset.management_form }}
+                {{ members_formset.non_form_errors }}
+                {% for form in members_formset %}
+                {{ form.id }}
+                <div class="members-formset inline {{ form.prefix }}">
                     {{ form.as_table }}
                 </div>
                 {% endfor %}
@@ -47,14 +61,19 @@ Add New Project
 <script src="{% static 'js/jquery.formset.js' %}"></script>
 <script>
         $('.link-formset').formset({
-            addText: 'add link',
-            deleteText: 'remove'
+            addText: 'Add Risk',
+            deleteText: 'Delete'
+        });
+
+         $('.members-formset').formset({
+            addText: 'Add Member',
+            deleteText: 'Delete'
         });
 
 
 </script>
 <script>
-$('#project-tabs a:first').tab('show')
+
 
     $('#project-tabs a').click(function (e) {
   e.preventDefault()
