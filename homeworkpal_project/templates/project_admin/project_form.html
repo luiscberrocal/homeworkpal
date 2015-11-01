@@ -1,10 +1,45 @@
 {% extends "base.html" %}
 {% load staticfiles %}
-{% block page_title %} {{ project.short_name }} {% endblock page_title %}
+{% block page_title %}
+{% if project == None %}
+Add New Project
+{% else %}
+{{ project.short_name }}
+{% endif %}
+{% endblock page_title %}
 {% block content %}
 <form action="" method="post">{% csrf_token %}
     {{ form.as_p }}
-    <input class="btn btn-primary" role="button" type="submit" value="Update" />
-    <a class="btn btn-primary" role="button" href="{% url 'project_detail' project.pk %} ">Cancel</a>
+
+    <fieldset>
+        <legend>Risks</legend>
+        {{ line_formset.management_form }}
+        {{ line_formset.non_form_errors }}
+        {% for form in line_formset %}
+        {{ form.id }}
+        <div class="link-formset inline {{ risk_form.prefix }}">
+            {{ form.as_table }}
+        </div>
+        {% endfor %}
+    </fieldset>
+
+
+    <input class="btn btn-primary" role="button" type="submit" value="Update"/>
+    {% if project == None %}
+    <a class="btn btn-primary" role="button" href="{% url 'project:all_projects' %} ">Cancel</a>
+    {% else %}
+    <a class="btn btn-primary" role="button" href="{% url 'project:project_detail' project.pk %} ">Cancel</a>
+    {% endif %}
+
 </form>
 {% endblock content %}
+
+{% block extra_js %}
+<script src="{% static 'js/jquery.formset.js' %}"></script>
+<script>
+        $('.link-formset').formset({
+            addText: 'add link',
+            deleteText: 'remove'
+        });
+    </script>
+{% endblock extra_js %}
