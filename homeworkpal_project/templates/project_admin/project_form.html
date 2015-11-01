@@ -9,21 +9,30 @@ Add New Project
 {% endblock page_title %}
 {% block content %}
 <form action="" method="post">{% csrf_token %}
-    {{ form.as_p }}
+    <ul class="nav nav-tabs" role="tablist" id="project-tabs">
+        <li role="presentation" class="active"><a href="#project-info" aria-controls="project-info" role="tab"
+                                                  data-toggle="tab">Project Info</a></li>
+        <li role="presentation"><a href="#risks" aria-controls="risks" role="tab" data-toggle="tab">Risks</a></li>
+    </ul>
 
-    <fieldset>
-        <legend>Risks</legend>
-        {{ line_formset.management_form }}
-        {{ line_formset.non_form_errors }}
-        {% for form in line_formset %}
-        {{ form.id }}
-        <div class="link-formset inline {{ risk_form.prefix }}">
-            {{ form.as_table }}
+    <div class="tab-content">
+
+        <div role="tabpanel" class="tab-pane active" id="project-info"> {{ form.as_p }}</div>
+
+        <div role="tabpanel" class="tab-pane" id="risks">
+            <fieldset>
+                <legend>Risks</legend>
+                {{ line_formset.management_form }}
+                {{ line_formset.non_form_errors }}
+                {% for form in line_formset %}
+                {{ form.id }}
+                <div class="link-formset inline {{ risk_form.prefix }}">
+                    {{ form.as_table }}
+                </div>
+                {% endfor %}
+            </fieldset>
         </div>
-        {% endfor %}
-    </fieldset>
-
-
+    </div>
     <input class="btn btn-primary" role="button" type="submit" value="Update"/>
     {% if project == None %}
     <a class="btn btn-primary" role="button" href="{% url 'project:all_projects' %} ">Cancel</a>
@@ -41,5 +50,16 @@ Add New Project
             addText: 'add link',
             deleteText: 'remove'
         });
-    </script>
+
+
+</script>
+<script>
+$('#project-tabs a:first').tab('show')
+
+    $('#project-tabs a').click(function (e) {
+  e.preventDefault()
+  $(this).tab('show')
+})
+
+</script>
 {% endblock extra_js %}

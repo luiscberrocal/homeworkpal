@@ -1,3 +1,4 @@
+from braces.views import LoginRequiredMixin
 from django.core.urlresolvers import reverse_lazy
 from django.forms import inlineformset_factory
 from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView
@@ -6,7 +7,7 @@ from .forms import ProjectForm, RiskLineFormSet
 from .mixins import AbstractProjectCreateUpdateMixin
 
 
-class ProjectListView(ListView):
+class ProjectListView(LoginRequiredMixin, ListView):
     model = Project
 
     def get_queryset(self):
@@ -20,7 +21,7 @@ class ProjectListView(ListView):
         return self.kwargs['status']
 
 
-class ProjectDetailView(DetailView):
+class ProjectDetailView(LoginRequiredMixin, DetailView):
     model = Project
     context_object_name = 'project'
 
@@ -31,7 +32,7 @@ class ProjectDetailView(DetailView):
         return ctx
 
 
-class ProjectUpdateView(AbstractProjectCreateUpdateMixin, UpdateView):
+class ProjectUpdateView(LoginRequiredMixin, AbstractProjectCreateUpdateMixin, UpdateView):
     model = Project
     form_class = ProjectForm
     formset_class = RiskLineFormSet
@@ -48,7 +49,7 @@ class ProjectUpdateView(AbstractProjectCreateUpdateMixin, UpdateView):
     #     return ctx
 
 
-class ProjectCreateView(AbstractProjectCreateUpdateMixin, CreateView):
+class ProjectCreateView(LoginRequiredMixin, AbstractProjectCreateUpdateMixin, CreateView):
     model = Project
     form_class = ProjectForm
     formset_class = RiskLineFormSet
@@ -74,7 +75,7 @@ class ProjectCreateView(AbstractProjectCreateUpdateMixin, CreateView):
     #         return super(ProjectCreateView, self).form_invalid(form)
 
 
-class ProjectDeleteView(DeleteView):
+class ProjectDeleteView(LoginRequiredMixin, DeleteView):
     model = Project
     success_url = reverse_lazy('project:all_projects')
 
