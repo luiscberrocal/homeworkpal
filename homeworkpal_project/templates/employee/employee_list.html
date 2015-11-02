@@ -8,15 +8,16 @@
     {% for employee in object_list %}
     <div class="alert alert-info row" role="alert">
         <div class="col-md-8">
-            <div><strong>Employee: </strong> <a href="#">{{ employee }}</a>
+            <div><strong>{% trans "Employee" %}: </strong> <a href="#">{{ employee }}</a>
             </div>
-            <div><strong>Planned End Date: </strong>
+            <div><strong>{% trans "Tenure" %}: </strong> {{ employee.tenure }}
             </div>
         </div>
         <div class="col-md-4">
-            <a class="btn btn-primary btn-sm" role="button" href="#">Edit</a>
-            <a class="btn btn-primary btn-sm" role="button" href="#">View</a>
-            <a class="btn btn-primary btn-sm" role="button" href="#">Delete</a>
+            <a class="btn btn-primary btn-sm" role="button" href="{% url 'employee:employee-projects' employee.pk %}">{% trans "View Projects" %}</a>
+            <a class="btn btn-primary btn-sm" role="button" href="#">{% trans "Edit" %}</a>
+
+            <a class="btn btn-primary btn-sm" role="button" href="#">{% trans "Delete" %}</a>
         </div>
     </div>
     {% endfor %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load staticfiles i18n %}
+{% block page_title %}
+{% trans "Name" %}: {{ employee }}
+{% endblock page_title %}
+{% block content %}
+<div class="table-responsive">
+  <table class="table">
+    {% for project_assign in employee.projects.all %}
+      <tr>
+          <td>{{ project_assign.project.short_name }}</td>
+          <td>{{ project_assign.project.description }}</td>
+          <td>{% if project_assign.project.type != 'SUPPORT' %}
+              Dar a apoyo a las actividades relacionadas al proyecto. Para que concluya exitosamente antes del {{ project_assign.project.planned_end_date }}
+          {% else %}
+              Haber alcanzado el 90% de avance antes del {{ project_assign.project.planned_end_date }}
+              {% endif %}
+          </td>
+          <td>
+              <ul>
+              {% for deliverable in project_assign.project.deliverables.all %}
+                <li>{{ deliverable.name }}</li>
+              {% endfor %}
+                  </ul>
+          </td>
+      </tr>
+      {% endfor %}
+  </table>
+</div>
+{% endblock content %}
