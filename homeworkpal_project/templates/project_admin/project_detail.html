@@ -3,30 +3,39 @@
 {% load i18n %}
 {% block page_title %} {{ project.short_name }} {% endblock page_title %}
 {% block content %}
+<div>
     <div>
-        <div>
-            {{ project.description }}
-        </div>
-        <div class="row">
-            <div class="col-sm-6"><span class="title">Planned Start Date: </span> {{ project.planned_start_date }}</div>
-            <div class="col-sm-6"><span class="title">Planned End Date: </span> {{ project.planned_end_date }}</div>
-        </div>
-        <div class="row">
-            <div class="col-sm-6"><span class="title">Actual Start Date: </span> {{ project.actual_start_date }}</div>
-            <div class="col-sm-6"><span class="title">Actual End Date: </span> {{ project.actual_end_date }}</div>
-        </div>
-        <div><span class="title">Group: </span> {{ project.group }}</div>
-        <div><span class="title">Planned Man Hours </span> {{ project.planned_man_hours }}</div>
-        <div><span class="title">Project Type: </span> {{ project.type }}</div>
-        <div><span class="title">Priority: </span> {{ project.priority }}</div>
+        {{ project.description }}
     </div>
-    <div>
-        <div>
-            <h2>{% trans "Members" %}</h2>
-            {% for member in members %}
-                <div>{{ member.employee }} </div>
-            {% endfor %}
-            </div>
-        <a class="btn btn-primary" role="button" href="{% url 'project:project_update' project.pk %}">Edit</a></div>
+    <div class="row">
+        <div class="col-sm-6"><span class="title">Planned Start Date: </span> {{ project.planned_start_date }}</div>
+        <div class="col-sm-6"><span class="title">Planned End Date: </span> {{ project.planned_end_date }}</div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6"><span class="title">Actual Start Date: </span> {{ project.actual_start_date }}</div>
+        <div class="col-sm-6"><span class="title">Actual End Date: </span> {{ project.actual_end_date }}</div>
+    </div>
+    <div><span class="title">Group: </span> {{ project.group }}</div>
+    <div><span class="title">Planned Man Hours </span> {{ project.planned_man_hours }}</div>
+    <div><span class="title">Project Type: </span> {{ project.type }}</div>
+    <div><span class="title">Priority: </span> {{ project.priority }}</div>
+</div>
+<div>
+    <h2>{% trans "Members" %}</h2>
+    {% for member in members %}
+    <div>{{ member.employee }}</div>
+    {% endfor %}
+</div>
+<div>
+    <h2>{% trans "Risks" %}</h2>
+    {% for risk in project.risks.all %}
+    <div class="row">
+        <div class="col-sm-1">{{ risk.priority }}</div>
+         <div class="col-sm-3">{{ risk.risk_type }}</div>
+         <div class="col-sm-6">{{ risk.description }}</div>
+    </div>
+    {% endfor %}
+</div>
+<a class="btn btn-primary" role="button" href="{% url 'project:project_update' project.pk %}">Edit</a></div>
 <a class="btn btn-primary" role="button" href="{% url 'project:project_delete' project.pk %}">Delete</a></div>
 {% endblock content %}

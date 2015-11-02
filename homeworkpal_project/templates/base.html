@@ -67,13 +67,17 @@
 </div>
 
 <div class="container">
-
-    <h1>{% block page_title %}Example Base Template{% endblock page_title %}</h1>
-
+     <h1>{% block page_title %}{% endblock page_title %}</h1>
     {% block content %}
-    <p>Use this document as a way to quick start any new project.</p>
-    {% endblock content %}
+    <div class="jumbotron">
 
+    <h1>Homework Pal Project</h1>
+
+
+    <p>A tool to help parents and students to follow up on homework</p>
+
+        </div>
+    {% endblock content %}
 </div>
 <!-- /container -->
 
