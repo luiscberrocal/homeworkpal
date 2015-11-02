@@ -36,6 +36,9 @@
     </div>
     {% endfor %}
 </div>
-<a class="btn btn-primary" role="button" href="{% url 'project:project_update' project.pk %}">Edit</a></div>
-<a class="btn btn-primary" role="button" href="{% url 'project:project_delete' project.pk %}">Delete</a></div>
+<div>
+<a class="btn btn-primary" role="button" href="{% url 'project:project_update' project.pk %}">Edit</a>
+<a class="btn btn-primary" role="button" href="{% url 'project:project_delete' project.pk %}">Delete</a>
+</div>
+</div>
 {% endblock content %}

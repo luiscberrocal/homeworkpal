@@ -1,4 +1,7 @@
 __author__ = 'lberrocal'
+import logging
+logger = logging.getLogger(__name__)
+
 
 class AbstractProjectCreateUpdateMixin(object):
     formset_classes = None
@@ -8,13 +11,14 @@ class AbstractProjectCreateUpdateMixin(object):
         context = super().get_context_data(**kwargs)
         if self.request.POST:
             for formset_class in self.formset_classes:
+                logger.debug('POST of Form %s' % formset_class[0])
                 context[formset_class[0]] = formset_class[1](
                     self.request.POST,
                     instance=self.object)
         else:
             for formset_class in self.formset_classes:
-                context[formset_class[0]] = formset_class[1](
-                instance=self.object)
+                logger.debug('GET of Form %s' % formset_class[0])
+                context[formset_class[0]] = formset_class[1](instance=self.object)
         return context
 
     # def get_form(self, form_class=None):
@@ -29,14 +33,17 @@ class AbstractProjectCreateUpdateMixin(object):
         for formset_class in self.formset_classes:
             line_formset = context[formset_class[0]]
             if not line_formset.is_valid():
+                logger.debug('Form %s is Invalid' % formset_class[0])
                 return super().form_invalid(form)
         i = 1
+        logger.debug('All forms are valid')
         for formset_class in self.formset_classes:
             line_formset = context[formset_class[0]]
             if i == 1:
                 self.object = form.save()
             line_formset.instance = self.object
             line_formset.save()
+            logger.debug('Saved Form %s' % formset_class[0])
             i += 1
 
         return super().form_valid(form)

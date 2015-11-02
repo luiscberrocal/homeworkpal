@@ -61,9 +61,13 @@ Add New Project
         });
 
          $('.members-formset').formset({
+            prefix: 'members',
             addText: 'Add Member',
-            deleteText: 'Delete'
+            deleteText: 'Delete',
+            addCssClass: 'btn btn-primary btn-sm',
+            deleteCssClass: 'btn btn-danger btn-sm',
         });
+
 
 
 </script>

@@ -3,7 +3,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 import logging
-from .managers import CompanyGroupEmployeeAssignmentManager
+from .managers import CompanyGroupEmployeeAssignmentManager, EmployeeManager
 
 logger = logging.getLogger(__name__)
 
@@ -43,6 +43,8 @@ class Employee(models.Model):
             position = None
         return position
     position = property(_position)
+
+    objects = EmployeeManager()
 
     def __str__(self):
         if self.user.last_name and self.user.first_name:

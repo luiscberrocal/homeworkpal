@@ -1,7 +1,9 @@
 from datetimewidget.widgets import DateTimeWidget
 from django.forms import forms, inlineformset_factory, BaseFormSet, ModelForm, BaseInlineFormSet
 from .models import Project, Risk, ProjectMember
+import logging
 
+logger = logging.getLogger(__name__)
 __author__ = 'luiscberrocal'
 
 class RequiredFirstInlineFormSet(BaseInlineFormSet):
@@ -11,10 +13,11 @@ class RequiredFirstInlineFormSet(BaseInlineFormSet):
         make-first-required/4951032#4951032
     """
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super(RequiredFirstInlineFormSet, self).__init__(*args, **kwargs)
         if len(self.forms) > 0:
             first_form = self.forms[0]
-            first_form.empty_permitted = False
+            first_form.empty_permitted = True
+            logger.debug('Setting first required for %s prefix %s empty permitted %s' % (type(first_form).__name__, first_form.prefix, first_form.empty_permitted))
 
 
 class ProjectForm(ModelForm):
