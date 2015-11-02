@@ -1,4 +1,4 @@
-{% load staticfiles %}
+{% load staticfiles i18n %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -47,6 +47,13 @@
                 <li><a href="#about">About</a></li>
                 {% if user.is_authenticated %}
                 <li><a href="/admin">Admin</a></li>
+                 <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">{% trans 'Employees' %} <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{% url 'employee:list-group-employees' 'tino-ns' %}">TINO-NS</a></li>
+                    </ul>
+                </li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                        aria-expanded="false">Projects <span class="caret"></span></a>

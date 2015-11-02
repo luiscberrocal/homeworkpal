@@ -19,7 +19,13 @@ Projects
             </div>
             <div><strong>Leader: </strong> {{ project.leader }}</div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-2">
+            <div><strong>Member Count: </strong> {{project.members.count}}</a>
+            </div>
+            <div><strong>Deliverable Count: </strong> {{ project.deliverables.count }}
+            </div>
+        </div>
+        <div class="col-md-2">
             <a class="btn btn-primary btn-sm" role="button" href="{% url 'project:project_update' project.pk %}">Edit</a>
             <a class="btn btn-primary btn-sm" role="button" href="{% url 'project:project_detail' project.pk %}">View</a>
             <a class="btn btn-primary btn-sm" role="button" href="{% url 'project:project_delete' project.pk %}">Delete</a>
