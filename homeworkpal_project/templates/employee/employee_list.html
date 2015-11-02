@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load staticfiles i18n %}
+{% block page_title %}
+{% trans "Employees" %}
+{% endblock page_title %}
+{% block content %}
+<div>
+    {% for employee in object_list %}
+    <div class="alert alert-info row" role="alert">
+        <div class="col-md-8">
+            <div><strong>Employee: </strong> <a href="#">{{ employee }}</a>
+            </div>
+            <div><strong>Planned End Date: </strong>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <a class="btn btn-primary btn-sm" role="button" href="#">Edit</a>
+            <a class="btn btn-primary btn-sm" role="button" href="#">View</a>
+            <a class="btn btn-primary btn-sm" role="button" href="#">Delete</a>
+        </div>
+    </div>
+    {% endfor %}
+
+</div>
+{% endblock content %}
