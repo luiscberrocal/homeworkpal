@@ -5,6 +5,8 @@ from django.views.generic import TemplateView
 from django.contrib.auth.views import login
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
+from rest_framework import routers
+from employee.views import EmployeeViewSet, UserViewSet, GroupViewSet
 import homework
 
 admin.autodiscover()
@@ -14,10 +16,14 @@ admin.autodiscover()
 
 # Uncomment the admin/doc line below to enable admin documentation:
 # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
-
+router = routers.DefaultRouter()
+router.register(r'employees', EmployeeViewSet)
+router.register(r'users', UserViewSet)
+router.register(r'groups', GroupViewSet)
 # Uncomment the next line to enable the admin:
 urlpatterns = patterns('',
                        url(r'^$', TemplateView.as_view(template_name='base.html')),
+                       url(r'^api/', include(router.urls)),
                        url(r'^admin/', include(admin.site.urls)),
                        url(r'^homework/', include('homework.urls')),
                        url(r'^projects/', include('project_admin.urls', namespace='project')),
@@ -25,6 +31,7 @@ urlpatterns = patterns('',
                        url(r'^accounts/login/$', 'django.contrib.auth.views.login',
                            {'template_name': 'admin/login.html'}, name='login'),
                        url(r'^accounts/logout/$', 'django.contrib.auth.views.logout', name='logout'),
+                       url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
                        )
 
 # Uncomment the next line to serve media files in dev.
