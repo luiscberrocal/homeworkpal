@@ -1,9 +1,10 @@
 from datetime import datetime, timedelta
+from autoslug import AutoSlugField
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 import logging
-from .managers import CompanyGroupEmployeeAssignmentManager, EmployeeManager
+from .managers import CompanyGroupEmployeeAssignmentManager
 
 logger = logging.getLogger(__name__)
 
@@ -15,6 +16,23 @@ TENURE_TYPES = (
     (PERMANENT_TYPE, 'Permanent'),
     (TEMPORARY_TYPE, 'Temporary')
     )
+
+
+class EmployeeManager(models.Manager):
+
+    def get_queryset(self):
+        queryset = super(EmployeeManager, self).get_queryset().filter(user__is_active=True).select_related('user')
+        return queryset
+
+    def from_group(self, company_group):
+        if isinstance(company_group, str):
+            group_assignemnts = CompanyGroupEmployeeAssignment.objects.filter(group__slug=company_group).select_related('employee', 'employee__user')
+        else:
+            group_assignemnts = CompanyGroupEmployeeAssignment.objects.filter(group=company_group).select_related('employee', 'employee__user')
+        employees_pk = list()
+        for group in group_assignemnts:
+            employees_pk.append(group.employee.pk)
+        return self.get_queryset().filter(pk__in=employees_pk).select_related('user')
 
 
 class Employee(models.Model):
@@ -78,7 +96,8 @@ class Position(models.Model):
 class CompanyGroup(models.Model):
     name = models.CharField(max_length=10, unique=True)
     description = models.CharField(max_length=120, null=True, blank=True)
-    parent_group = models.ForeignKey('self', null=True, blank=True )
+    parent_group = models.ForeignKey('self', null=True, blank=True)
+    slug = AutoSlugField(populate_from='name', max_length=10, unique=True)
 
     def assign(self, employee, start_date):
         try:

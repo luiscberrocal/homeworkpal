@@ -10,13 +10,26 @@ Projects
 {% block content %}
 <div>
     {% for project in object_list %}
-    <div class="alert alert-info" role="alert">
-        <div><strong>Project: </strong> <a href="{% url 'project:project_detail' project.pk %}">{{ project.short_name}}</a>
+    <div class="alert alert-info row" role="alert">
+        <div class="col-md-8">
+            <div><strong>Project: </strong> <a href="{% url 'project:project_detail' project.pk %}">{{project.short_name}}</a>
+            </div>
+            <div><strong>Planned End Date: </strong> {{ project.planned_end_date }} ({{project.remaining_days}}
+                working days)
+            </div>
+            <div><strong>Leader: </strong> {{ project.leader }}</div>
         </div>
-        <div><strong>Planned End Date: </strong> {{ project.planned_end_date }} (Faltan {{project.remaining_days}}
-            días)
+        <div class="col-md-2">
+            <div><strong>Member Count: </strong> {{project.members.count}}</a>
+            </div>
+            <div><strong>Deliverable Count: </strong> {{ project.deliverables.count }}
+            </div>
         </div>
-        <div><strong>Leader: </strong> {{ project.leader }}</div>
+        <div class="col-md-2">
+            <a class="btn btn-primary btn-sm" role="button" href="{% url 'project:project_update' project.pk %}">Edit</a>
+            <a class="btn btn-primary btn-sm" role="button" href="{% url 'project:project_detail' project.pk %}">View</a>
+            <a class="btn btn-primary btn-sm" role="button" href="{% url 'project:project_delete' project.pk %}">Delete</a>
+        </div>
     </div>
     {% endfor %}
 

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load staticfiles i18n %}
+{% block page_title %}
+{% trans "Employees" %}
+{% endblock page_title %}
+{% block content %}
+<div>
+    {% for employee in object_list %}
+    <div class="alert alert-info row" role="alert">
+        <div class="col-md-6">
+            <div><strong>{% trans "Employee" %}: </strong> <a href="#">{{ employee }}</a>
+            </div>
+             <div><strong>{% trans "Grade" %}: </strong> {{ employee.position.grade }}
+            </div>
+            <div><strong>{% trans "Tenure" %}: </strong> {{ employee.tenure }}
+            </div>
+        </div>
+        <div class="col-md-2">
+           <div><strong>{% trans "Project Count" %}: </strong> {{ employee.projects.count }}
+            </div>
+        </div>
+        <div class="col-md-3">
+            <a class="btn btn-primary btn-sm" role="button" href="{% url 'employee:employee-projects' employee.pk %}">{% trans "View Projects" %}</a>
+            <a class="btn btn-primary btn-sm" role="button" href="#">{% trans "Edit" %}</a>
+        </div>
+    </div>
+    {% endfor %}
+
+</div>
+{% endblock content %}
