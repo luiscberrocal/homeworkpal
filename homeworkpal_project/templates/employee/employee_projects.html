@@ -28,3 +28,19 @@
   </table>
 </div>
 {% endblock content %}
+{% block extra_js %}
+<script>
+$.getJSON( "/api/employees/?group-slug=tino-ns", function( data ) {
+  var items = [];
+  $.each( data, function( key, val ) {
+    items.push( "<li id='" + key + "'>" + val + "</li>" );
+  });
+
+  $( "<ul/>", {
+    "class": "my-new-list",
+    html: items.join( "" )
+  }).appendTo( "body" );
+});
+
+</script>
+{% endblock extra_js %}
