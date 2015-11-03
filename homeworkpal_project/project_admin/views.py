@@ -2,9 +2,21 @@ from braces.views import LoginRequiredMixin
 from django.core.urlresolvers import reverse_lazy
 from django.forms import inlineformset_factory
 from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView
+from rest_framework import viewsets
 from .models import Project, ProjectMember, Risk
 from .forms import ProjectForm, RiskLineFormSet, ProjectMemberLineFormSet
 from .mixins import AbstractProjectCreateUpdateMixin
+from .serializers import ProjectMemberSerializer, ProjectSerializer
+
+
+class ProjectMemberViewSet(viewsets.ModelViewSet):
+    queryset = ProjectMember.objects.all()
+    serializer_class = ProjectMemberSerializer
+
+
+class ProjectViewSet(viewsets.ModelViewSet):
+    queryset = Project.objects.all()
+    serializer_class = ProjectSerializer
 
 
 class ProjectListView(LoginRequiredMixin, ListView):
