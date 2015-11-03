@@ -6,8 +6,9 @@ from django.contrib.auth.views import login
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 from rest_framework import routers
-from employee.views import EmployeeViewSet, UserViewSet, GroupViewSet
+from employee.views import EmployeeViewSet, UserViewSet, GroupViewSet, CompanyGroupViewSet
 import homework
+from project_admin.views import ProjectMemberViewSet, ProjectViewSet
 
 admin.autodiscover()
 # Examples:
@@ -20,6 +21,10 @@ router = routers.DefaultRouter()
 router.register(r'employees', EmployeeViewSet)
 router.register(r'users', UserViewSet)
 router.register(r'groups', GroupViewSet)
+router.register(r'project-members', ProjectMemberViewSet)
+router.register(r'projects', ProjectViewSet)
+router.register(r'company-groups', CompanyGroupViewSet)
+
 # Uncomment the next line to enable the admin:
 urlpatterns = patterns('',
                        url(r'^$', TemplateView.as_view(template_name='base.html')),

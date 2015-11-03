@@ -5,13 +5,18 @@ from django.shortcuts import render
 # Create your views here.
 from django.views.generic import ListView, DetailView
 from rest_framework import viewsets
-from .serializers import EmployeeSerializer, UserSerializer, GroupSerializer
-from .models import Employee
+from .serializers import EmployeeSerializer, UserSerializer, GroupSerializer, CompanyGroupSerializer
+from .models import Employee, CompanyGroup
 
 
 class EmployeeViewSet(viewsets.ModelViewSet):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
+
+
+class CompanyGroupViewSet(viewsets.ModelViewSet):
+    queryset = CompanyGroup.objects.all()
+    serializer_class = CompanyGroupSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
