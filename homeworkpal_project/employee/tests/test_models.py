@@ -48,6 +48,14 @@ class TestEmployees(TestCase):
         position_assignment = PositionAssignmentFactory.create()
         self.assertEqual(position_assignment.employee.position, position_assignment.position)
 
+    def test_from_group(self):
+        group_assignment = CompanyGroupEmployeeAssignmentFactory.create()
+        employees = EmployeeFactory.create_batch(10)
+        for employee in employees[:5]:
+            group_assignment.group.assign(employee, date.today())
+        group_employees = Employee.objects.from_group(group_assignment.group)
+        self.assertEqual(6, len(group_employees))
+
 
 
 
