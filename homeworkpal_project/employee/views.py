@@ -10,8 +10,17 @@ from .models import Employee, CompanyGroup
 
 
 class EmployeeViewSet(viewsets.ModelViewSet):
-    queryset = Employee.objects.all()
+
     serializer_class = EmployeeSerializer
+
+    def get_queryset(self):
+        group_slug = self.request.query_params.get('group-slug', None)
+        if group_slug:
+            qs = Employee.objects.from_group(group_slug)
+        else:
+            qs = Employee.objects.all()
+
+        return qs
 
 
 class CompanyGroupViewSet(viewsets.ModelViewSet):

@@ -18,7 +18,7 @@ admin.autodiscover()
 # Uncomment the admin/doc line below to enable admin documentation:
 # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 router = routers.DefaultRouter()
-router.register(r'employees', EmployeeViewSet)
+router.register(r'employees', EmployeeViewSet, base_name='employee')
 router.register(r'users', UserViewSet)
 router.register(r'groups', GroupViewSet)
 router.register(r'project-members', ProjectMemberViewSet)

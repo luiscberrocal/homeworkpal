@@ -5,16 +5,18 @@ from .models import Employee, CompanyGroup
 __author__ = 'LBerrocal'
 
 
-class EmployeeSerializer(serializers.HyperlinkedModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('url', 'last_name', 'first_name',  'username', 'email', 'groups')
+
+
+class EmployeeSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+
     class Meta:
         model = Employee
         fields = ('user', 'middle_name', 'company_id', 'tenure', 'projects')
-
-
-class UserSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = User
-        fields = ('url', 'username', 'email', 'groups')
 
 
 class GroupSerializer(serializers.HyperlinkedModelSerializer):
