@@ -4,7 +4,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 import logging
-from .managers import CompanyGroupEmployeeAssignmentManager, EmployeeManager
+from .managers import CompanyGroupEmployeeAssignmentManager
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +18,21 @@ TENURE_TYPES = (
     )
 
 
+class EmployeeManager(models.Manager):
 
+    def get_queryset(self):
+        queryset = super(EmployeeManager, self).get_queryset().filter(user__is_active=True).select_related('user')
+        return queryset
+
+    def from_group(self, company_group):
+        if isinstance(company_group, str):
+            group_assignemnts = CompanyGroupEmployeeAssignment.objects.filter(group__slug=company_group).select_related('employee', 'employee__user')
+        else:
+            group_assignemnts = CompanyGroupEmployeeAssignment.objects.filter(group=company_group).select_related('employee', 'employee__user')
+        employees_pk = list()
+        for group in group_assignemnts:
+            employees_pk.append(group.employee.pk)
+        return self.get_queryset().filter(pk__in=employees_pk).select_related('user')
 
 
 class Employee(models.Model):
@@ -44,7 +58,7 @@ class Employee(models.Model):
             position_assingment = PositionAssignment.objects.get(employee=self, end_date=None)
             position = position_assingment.position
         except PositionAssignment.DoesNotExist:
-            position = self.permanent_position
+            position = None
         return position
     position = property(_position)
 
