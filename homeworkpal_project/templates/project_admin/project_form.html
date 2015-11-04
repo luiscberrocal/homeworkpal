@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load staticfiles %}
+{% load staticfiles bootstrap3 i18n %}
 {% block extra_css %}
     <!-- *********** -->
 {{ form.media }}
@@ -19,7 +19,9 @@
 
         <div class="tab-content">
 
-            <div role="tabpanel" class="tab-pane active" id="project-info"> {{ form.as_table }}</div>
+            <div role="tabpanel" class="tab-pane active" id="project-info">
+            {% bootstrap_form form %}
+            </div>
 
             <div role="tabpanel" class="tab-pane active" id="risks">
                 <fieldset>
@@ -29,7 +31,7 @@
                     {% for form in line_formset %}
                         {{ form.id }}
                         <div class="link-formset inline {{ risk_form.prefix }}">
-                            {{ form.as_table }}
+                           {% bootstrap_form form layout='horizontal' %}
                         </div>
                     {% endfor %}
                 </fieldset>

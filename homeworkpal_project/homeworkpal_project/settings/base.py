@@ -198,6 +198,7 @@ DJANGO_APPS = (
 LOCAL_APPS = (
     'rest_framework',
     'datetimewidget',
+    'bootstrap3',
     'homework',
     'employee',
     'project_admin',
