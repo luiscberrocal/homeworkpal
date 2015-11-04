@@ -4,7 +4,7 @@ from django.forms import inlineformset_factory
 from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView
 from rest_framework import viewsets
 from .models import Project, ProjectMember, Risk
-from .forms import ProjectForm, RiskLineFormSet, ProjectMemberLineFormSet
+from .forms import ProjectForm, RiskLineFormSet, ProjectMemberLineFormSet, DeliverableLineFormset
 from .mixins import AbstractProjectCreateUpdateMixin
 from .serializers import ProjectMemberSerializer, ProjectSerializer
 
@@ -48,14 +48,16 @@ class ProjectUpdateView(LoginRequiredMixin, AbstractProjectCreateUpdateMixin, Up
     model = Project
     form_class = ProjectForm
     formset_classes = (('line_formset',RiskLineFormSet),
-                       ('members_formset', ProjectMemberLineFormSet),)
+                       ('members_formset', ProjectMemberLineFormSet),
+                       ('deliverables_formset', DeliverableLineFormset),)
 
 
 class ProjectCreateView(LoginRequiredMixin, AbstractProjectCreateUpdateMixin, CreateView):
     model = Project
     form_class = ProjectForm
     formset_classes = (('line_formset',RiskLineFormSet),
-                       ('members_formset', ProjectMemberLineFormSet),)
+                       ('members_formset', ProjectMemberLineFormSet),
+                       ('deliverables_formset', DeliverableLineFormset),)
 
 
 class ProjectDeleteView(LoginRequiredMixin, DeleteView):

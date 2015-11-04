@@ -1,6 +1,6 @@
 from datetimewidget.widgets import DateTimeWidget
 from django.forms import forms, inlineformset_factory, BaseFormSet, ModelForm, BaseInlineFormSet
-from .models import Project, Risk, ProjectMember
+from .models import Project, Risk, ProjectMember, Deliverable
 import logging
 
 logger = logging.getLogger(__name__)
@@ -39,9 +39,19 @@ class RiskLineForm(ModelForm):
         model = Risk
         fields = ['risk_type','priority','description']
 
+class DeliverableLineForm(ModelForm):
+
+    class Meta:
+        model = Deliverable
+        fields = ['name', 'description']
+
 RiskLineFormSet = inlineformset_factory(Project, Risk, form=RiskLineForm, formset=RequiredFirstInlineFormSet,
                                     extra=1)
 
 ProjectMemberLineFormSet = inlineformset_factory(Project, ProjectMember,
                                                  form = ProjectMemberLineForm,
                                                  formset=RequiredFirstInlineFormSet, extra=1)
+
+DeliverableLineFormset = inlineformset_factory(Project, Deliverable,
+                                               form= DeliverableLineForm,
+                                               formset=RequiredFirstInlineFormSet, extra= 1)
