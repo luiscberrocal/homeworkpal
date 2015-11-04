@@ -41,6 +41,16 @@
     </div>
     {% endfor %}
 </div>
+    <div class="row">
+    <h2>{% trans "Deliverables" %}</h2>
+    {% for deliverable in project.deliverables.all %}
+    <div class="row">
+        <div class="col-sm-4">{{ deliverable.name }}</div>
+         <div class="col-sm-6">{{ deliverable.description }}</div>
+    </div>
+    {% endfor %}
+</div>
+
 <div>
 <a class="btn btn-primary" role="button" href="{% url 'project:project_update' project.pk %}">Edit</a>
 <a class="btn btn-primary" role="button" href="{% url 'project:project_delete' project.pk %}">Delete</a>

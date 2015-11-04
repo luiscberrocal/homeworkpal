@@ -1,66 +1,85 @@
 {% extends "base.html" %}
 {% load staticfiles %}
+{% block extra_css %}
+    <!-- *********** -->
+{{ form.media }}
+    <!-- *********** -->
+{% endblock extra_css %}
 {% block page_title %}
-{% if project == None %}
-Add New Project
-{% else %}
-{{ project.short_name }}
-{% endif %}
-{% endblock page_title %}
-{% block content %}
-<form action="" method="post">{% csrf_token %}
-
-
-    <div class="tab-content">
-
-        <div role="tabpanel" class="tab-pane active" id="project-info"> {{ form.as_p }}</div>
-
-        <div role="tabpanel" class="tab-pane active" id="risks">
-            <fieldset>
-                <legend>Risks</legend>
-                {{ line_formset.management_form }}
-                {{ line_formset.non_form_errors }}
-                {% for form in line_formset %}
-                {{ form.id }}
-                <div class="link-formset inline {{ risk_form.prefix }}">
-                    {{ form.as_table }}
-                </div>
-                {% endfor %}
-            </fieldset>
-        </div>
-        <div role="tabpanel" class="tab-pane active" id="members">
-            <fieldset>
-                <legend>Members</legend>
-                {{ members_formset.management_form }}
-                {{ members_formset.non_form_errors }}
-                {% for form in members_formset %}
-                {{ form.id }}
-                <div class="members-formset inline {{ form.prefix }}">
-                    {{ form.as_table }}
-                </div>
-                {% endfor %}
-            </fieldset>
-        </div>
-    </div>
-    <input class="btn btn-primary" role="button" type="submit" value="Update"/>
     {% if project == None %}
-    <a class="btn btn-primary" role="button" href="{% url 'project:all_projects' %} ">Cancel</a>
+        Add New Project
     {% else %}
-    <a class="btn btn-primary" role="button" href="{% url 'project:project_detail' project.pk %} ">Cancel</a>
+        {{ project.short_name }}
     {% endif %}
+{% endblock page_title %}
 
-</form>
+{% block content %}
+    <form action="" method="post">{% csrf_token %}
+
+
+        <div class="tab-content">
+
+            <div role="tabpanel" class="tab-pane active" id="project-info"> {{ form.as_table }}</div>
+
+            <div role="tabpanel" class="tab-pane active" id="risks">
+                <fieldset>
+                    <legend>Risks</legend>
+                    {{ line_formset.management_form }}
+                    {{ line_formset.non_form_errors }}
+                    {% for form in line_formset %}
+                        {{ form.id }}
+                        <div class="link-formset inline {{ risk_form.prefix }}">
+                            {{ form.as_table }}
+                        </div>
+                    {% endfor %}
+                </fieldset>
+            </div>
+            <div role="tabpanel" class="tab-pane active" id="members">
+                <fieldset>
+                    <legend>Members</legend>
+                    {{ members_formset.management_form }}
+                    {{ members_formset.non_form_errors }}
+                    {% for form in members_formset %}
+                        {{ form.id }}
+                        <div class="members-formset inline {{ form.prefix }}">
+                            {{ form.as_table }}
+                        </div>
+                    {% endfor %}
+                </fieldset>
+            </div>
+            <div role="tabpanel" class="tab-pane active" id="deliverables">
+                <fieldset>
+                    <legend>Deliverables</legend>
+                    {{ deliverables_formset.management_form }}
+                    {{ deliverables_formset.non_form_errors }}
+                    {% for form in deliverables_formset %}
+                        {{ form.id }}
+                        <div class="deliverables-formset inline {{ form.prefix }}">
+                            {{ form.as_table }}
+                        </div>
+                    {% endfor %}
+                </fieldset>
+            </div>
+        </div>
+        <input class="btn btn-primary" role="button" type="submit" value="Update"/>
+        {% if project == None %}
+            <a class="btn btn-primary" role="button" href="{% url 'project:all_projects' %} ">Cancel</a>
+        {% else %}
+            <a class="btn btn-primary" role="button" href="{% url 'project:project_detail' project.pk %} ">Cancel</a>
+        {% endif %}
+
+    </form>
 {% endblock content %}
 
 {% block extra_js %}
-<script src="{% static 'js/jquery.formset.js' %}"></script>
-<script>
+    <script src="{% static 'js/jquery.formset.js' %}"></script>
+    <script>
         $('.link-formset').formset({
             addText: 'Add Risk',
             deleteText: 'Delete'
         });
 
-         $('.members-formset').formset({
+        $('.members-formset').formset({
             prefix: 'members',
             addText: 'Add Member',
             deleteText: 'Delete',
@@ -68,8 +87,16 @@ Add New Project
             deleteCssClass: 'btn btn-danger btn-sm',
         });
 
+         $('.deliverables-formset').formset({
+            prefix: 'deliverables',
+            addText: 'Add Deliverable',
+            deleteText: 'Delete',
+            addCssClass: 'btn btn-primary btn-sm',
+            deleteCssClass: 'btn btn-danger btn-sm',
+        });
 
 
-</script>
+
+    </script>
 
 {% endblock extra_js %}
