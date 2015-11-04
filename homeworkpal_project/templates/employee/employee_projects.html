@@ -26,20 +26,51 @@
       </tr>
       {% endfor %}
   </table>
+    <form action="" method="post">{% csrf_token %}
+    <div id="add-project"></div>
+        <a href="#" class="btn btn-primary" id="add-project-member" onclick="post_project(this)">Add as Member</a>
+    </form>
 </div>
 {% endblock content %}
 {% block extra_js %}
+
 <script>
-$.getJSON( "/api/employees/?group-slug=tino-ns", function( data ) {
+function post_project(){
+    console.log('SENT');
+    var csrftoken = Cookies.get('csrftoken');
+    console.log(csrftoken);
+    var project =  $("#project-list").find(":selected").val();
+    data ={"role": "MEMBER",
+            "employee": {{ employee.pk }},
+            "project" : project,
+            "start_date": "2015-11-04"
+            };
+    console.log(data);
+         $.ajax({
+        type:"POST",
+        url: "/api/project-members/",
+        data: data,
+        sucess: function() { console.log("Success!"); },
+        dataType: "json",
+        traditional:false, /* Should this be true? */
+        crossDomain:false,
+        beforeSend: function(xhr, settings) {
+          xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+        });
+}
+
+$.getJSON( "/api/projects/?limit=100&offset=0", function( data ) {
   var items = [];
-  $.each( data['results'], function( emp ) {
-    items.push( "<li id='" + this.company_id + "'>" + this.user.username + "</li>" );
+  $.each( data['results'], function( proj ) {
+    items.push( "<option value='" + this.pk + "'>" + this.short_name + "</option>" );
   });
 
-  $( "<ul/>", {
-    "class": "my-new-list",
-    html: items.join( "" )
-  }).appendTo( "body" );
+  $( "<select/>", {
+    "class": "project-list",
+    "id": "project-list",
+     html: items.join( "" )
+  }).appendTo( "#add-project" );
 });
 
 </script>
