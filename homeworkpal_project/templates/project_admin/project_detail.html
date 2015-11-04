@@ -21,10 +21,9 @@
     <div><span class="title">Priority: </span> {{ project.priority }}</div>
 </div>
 <div class="row">
-
     <div class="col-sm-6"><h2>{% trans "Members" %}</h2>
     {% for member in members %}
-    <div>{{ member.employee }}</div>
+    <div class="member"> <span class="{{ member.role|lower }}">&nbsp;</span> {{ member.employee }} ({{ member.role }})</div>
     {% endfor %}</div>
      <div class="col-sm-6"><h2>{% trans "Stakholders" %}</h2>
     {% for stakeholder in project.stakeholders.all %}
