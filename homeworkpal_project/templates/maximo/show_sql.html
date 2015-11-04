@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% block page_title %} Maximo Where Clause {% endblock page_title %}
+{% block content %}
+<div id="where-clause">
+{{ sql }}
+    </div>
+<div class="row">
+    <div class="col-md-3 input-group">
+        <label for="start-date">Start Date: </label>
+        <input  id="start-date" type="text" class="form-control" placeholder="Start Date" value="{{ start_date }}">
+    </div>
+    <div class="col-md-3 input-group">
+        <label for="end-date">End Date: </label>
+        <input  id="end-date" type="text" class="form-control" placeholder="End Date" value="{{ end_date }}">
+    </div>
+    <div id="test">
+    bla
+    </div>
+
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+
+<script>
+var i = 0;
+var where = [];
+{% for wp in where_parts %}
+    where[{{ forloop.counter0 }}] = "{{ wp }}";
+{% endfor %}
+function display_where(where_parts){
+    wp ="";
+    for (var i=0; i < where_parts.length; i++) {
+        wp += where_parts[i];
+    }
+     $('#where-clause').html(wp);
+}
+$("input[type='text']").change(function(){
+    str = $(this).val() + " " + $(this).attr('id');
+    console.log(str);
+    if ($(this).attr('id') == 'start-date'){
+        where[3] = $(this).val();
+        display_where(where);
+    }
+    if ($(this).attr('id') == 'end-date'){
+        where[5] = $(this).val();
+        display_where(where);
+    }
+    $('#test').text(str);
+    });
+</script>
+{% endblock extra_js %}

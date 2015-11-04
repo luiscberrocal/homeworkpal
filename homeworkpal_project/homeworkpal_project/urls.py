@@ -28,6 +28,7 @@ router.register(r'company-groups', CompanyGroupViewSet)
 # Uncomment the next line to enable the admin:
 urlpatterns = patterns('',
                        url(r'^$', TemplateView.as_view(template_name='base.html')),
+                       url(r'^maximo/', include('maximo.urls', namespace='maximo')),
                        url(r'^api/', include(router.urls)),
                        url(r'^admin/', include(admin.site.urls)),
                        url(r'^homework/', include('homework.urls')),
