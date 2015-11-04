@@ -202,6 +202,7 @@ LOCAL_APPS = (
     'homework',
     'employee',
     'project_admin',
+    'maximo',
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -257,6 +258,11 @@ LOGGING = {
             'propagate': True,
         },
         'project_admin': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'maximo': {
             'handlers': ['console'],
             'level': 'DEBUG',
             'propagate': True,
