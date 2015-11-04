@@ -2,3 +2,9 @@
 span.title {
     font-weight: bold;
 }
+
+span.leader{
+    background-image: url(/static/media/captain-america.png);
+    background-repeat: no-repeat;
+    background-position: left top; - See more at: http://www.csstutorial.net/css_misc_images.php#sthash.wVsSNe1u.dpuf
+}

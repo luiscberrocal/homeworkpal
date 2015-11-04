@@ -1,22 +1,23 @@
 {% extends "base.html" %}
 {% load staticfiles i18n %}
 {% block page_title %}
-{% trans "Name" %}: {{ employee }}
+{% trans "Name" %}: {{ employee }} IP: {{ employee.company_id }}
 {% endblock page_title %}
 {% block content %}
 <div class="table-responsive">
   <table class="table">
+
     {% for project_assign in employee.projects.all %}
-      <tr>
-          <td>{{ project_assign.project.short_name }}</td>
-          <td>{{ project_assign.project.description }}</td>
-          <td>{% if project_assign.project.type != 'SUPPORT' %}
+      <tr class="row">
+          <td class="col-md-3">{{ project_assign.project.short_name }}</td>
+          <td class="col-md-3">{{ project_assign.project.description }}</td>
+          <td class="col-md-3">{% if project_assign.project.type != 'PROJECT' %}
               Dar a apoyo a las actividades relacionadas al proyecto. Para que concluya exitosamente antes del {{ project_assign.project.planned_end_date }}
           {% else %}
               Haber alcanzado el 90% de avance antes del {{ project_assign.project.planned_end_date }}
               {% endif %}
           </td>
-          <td>
+          <td class="col-md-3">
               <ul>
               {% for deliverable in project_assign.project.deliverables.all %}
                 <li>{{ deliverable.name }}</li>
@@ -60,7 +61,7 @@ function post_project(){
         });
 }
 
-$.getJSON( "/api/projects/?limit=100&offset=0", function( data ) {
+$.getJSON( "/api/projects/?limit=100&offset=0&excluded-employee={{ employee.pk }}", function( data ) {
   var items = [];
   $.each( data['results'], function( proj ) {
     items.push( "<option value='" + this.pk + "'>" + this.short_name + "</option>" );
