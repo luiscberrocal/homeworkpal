@@ -1,5 +1,10 @@
 {% extends "base.html" %}
 {% load staticfiles %}
+{% block extra_css %}
+    <!-- *********** -->
+{{ form.media }}
+    <!-- *********** -->
+{% endblock extra_css %}
 {% block page_title %}
     {% if project == None %}
         Add New Project
@@ -7,13 +12,14 @@
         {{ project.short_name }}
     {% endif %}
 {% endblock page_title %}
+
 {% block content %}
     <form action="" method="post">{% csrf_token %}
 
 
         <div class="tab-content">
 
-            <div role="tabpanel" class="tab-pane active" id="project-info"> {{ form.as_p }}</div>
+            <div role="tabpanel" class="tab-pane active" id="project-info"> {{ form.as_table }}</div>
 
             <div role="tabpanel" class="tab-pane active" id="risks">
                 <fieldset>
