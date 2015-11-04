@@ -6,15 +6,25 @@
 {% block content %}
 <div class="table-responsive">
   <table class="table">
+    <tr class="row">
 
+        <th class="col-md-2">{% trans "Project" %}</th>
+        <th class="col-md-4">{% trans "Description" %}</th>
+        <th class="col-md-3">{% trans "Expectation (Totally Satisfactory)" %}</th>
+        <th class="col-md-3">{% trans "Deliverables" %}</th>
+
+    </tr>
     {% for project_assign in employee.projects.all %}
       <tr class="row">
-          <td class="col-md-3">{{ project_assign.project.short_name }}</td>
-          <td class="col-md-3">{{ project_assign.project.description }}</td>
+          <td class="col-md-2">{{ project_assign.project.short_name }}</td>
+          <td class="col-md-4">{{ project_assign.project.description }}. El proyecto debe iniciar el {{ project_assign.project.planned_start_date }}. </td>
           <td class="col-md-3">{% if project_assign.project.type != 'PROJECT' %}
-              Dar a apoyo a las actividades relacionadas al proyecto. Para que concluya exitosamente antes del {{ project_assign.project.planned_end_date }}
+              Dar a apoyo a las actividades relacionadas al proyecto. Para que concluya exitosamente antes del {{ project_assign.project.planned_end_date }}.
           {% else %}
-              Haber alcanzado el 90% de avance antes del {{ project_assign.project.planned_end_date }}
+              Haber alcanzado el 90% de avance antes del {{ project_assign.project.planned_end_date }}.
+              {% endif %}
+              {% if project_assign.role == 'LEADER' %}
+              Apoyar la gestión del supervisor dandole seguimiento a los recursos contratados y dar informes periodicos de avances, asi como comunicar oportunamente de impedimentos y problemas.
               {% endif %}
           </td>
           <td class="col-md-3">
