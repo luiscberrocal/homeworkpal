@@ -34,3 +34,10 @@ class MaximoTimeRegister(TimeStampedModel):
     date = models.DateField()
     regular_hours = models.DecimalField(max_digits=5, decimal_places=2)
     description = models.TextField(null=True, blank=True)
+
+
+class DataDocument(TimeStampedModel):
+    docfile = models.FileField(upload_to='maximo_documents/%Y/%m/%d')
+    processed = models.DateTimeField(null=True, blank=True)
+    extension = models.CharField(max_length=5)
+

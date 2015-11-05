@@ -1,9 +1,12 @@
+from braces.views import LoginRequiredMixin
 from django.shortcuts import render
 
 # Create your views here.
 from django.utils.safestring import mark_safe
-from django.views.generic import View, TemplateView
+from django.views.generic import View, TemplateView, CreateView
 from employee.models import Employee
+from maximo.forms import DataDocumentForm
+from maximo.models import DataDocument
 
 
 class MaximoView(TemplateView):
@@ -45,3 +48,12 @@ class MaximoView(TemplateView):
             count += 1
         return labor_code_condition
 
+
+class DataDocumentCreateView(LoginRequiredMixin, CreateView):
+    model = DataDocument
+    form_class = DataDocumentForm
+    success_url = '/'
+
+    def form_valid(self, form):
+        form.instance.extension ='xxx'
+        return super(DataDocumentCreateView, self).form_valid(form)
