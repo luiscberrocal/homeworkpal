@@ -1,14 +1,28 @@
+from django.utils import timezone
+import os
 from django.test import TestCase
-from maximo.excel import MaximoDataLoader
+from homeworkpal_project.settings.base import TEST_DATA_PATH
+from maximo.excel import MaximoExcelData
 from maximo.models import MaximoTicket
+from maximo.tests.factories import MaximoTicketFactory
+import logging
 
+logger = logging.getLogger(__name__)
 __author__ = 'lberrocal'
 
 
 class TestExcel(TestCase):
 
     def test_load_tickets(self):
-        filename = r'/Users/lberrocal/PycharmProjects/homeworkpal/test_data/maximo_data.xlsx'
-        loader = MaximoDataLoader()
-        results = loader.load(filename, MaximoDataLoader.LOAD_TICKETS)
-        self.assertEqual(6, MaximoTicket.objects.count())
+        filename = os.path.join(TEST_DATA_PATH, 'maximo_tickets_test_data.xlsx')
+        excel_data = MaximoExcelData()
+        results = excel_data.load(filename, MaximoExcelData.LOAD_TICKETS)
+        self.assertEqual(10, MaximoTicket.objects.count())
+
+    def test_write_tickets(self):
+        filename = os.path.join(TEST_DATA_PATH, '%s_%s.xlsx' % ('maximo_tickets', timezone.now().strftime('%Y%m%d_%H%M')))
+        excel_data = MaximoExcelData()
+        tickets = MaximoTicketFactory.create_batch(10)
+        excel_data.save_tickets(filename, tickets)
+        self.assertTrue(os.path.exists(filename))
+        logger.debug('Wrote: %s' % filename)
