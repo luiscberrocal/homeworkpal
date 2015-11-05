@@ -52,3 +52,4 @@ test_data/1680.xls
 test_data/~$*.xlsx
 test_data/locks_workbenches_*.xlsx
 homeworkpal_project/homeworkpal_project/homework_pal_*.sqlite3
+media/
