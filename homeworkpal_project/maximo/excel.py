@@ -1,6 +1,9 @@
 from openpyxl import load_workbook, Workbook
 from .models import MaximoTicket
 
+import logging
+
+logger = logging.getLogger(__name__)
 __author__ = 'lberrocal'
 
 def row_to_dictionary(excel_row, mappings):
@@ -36,7 +39,8 @@ class MaximoExcelData(object):
     def load(self, filename, action, allow_update=False,**kwargs):
         wb = load_workbook(filename=filename, data_only=True)
         if action == self.LOAD_TICKETS:
-            self.load_tickets(wb,allow_update=allow_update, **kwargs)
+            ticket_results = self.load_tickets(wb,allow_update=allow_update, **kwargs)
+        return {'ticket_results': ticket_results}
 
     def save_tickets(self, filename, tickets):
         wb = Workbook()
@@ -52,12 +56,11 @@ class MaximoExcelData(object):
 
         wb.save(filename)
 
-
     def load_tickets(self, wb, allow_update=False, **kwargs):
         sheet_name = kwargs.get('ticket_sheet', self.ticket_sheet)
         ticket_sheet = wb[sheet_name]
         row_num = 1
-        created = 0
+        created_count = 0
         updated = 0
         for row in ticket_sheet.rows:
             if row_num > 1:
@@ -67,13 +70,19 @@ class MaximoExcelData(object):
                                                                   defaults=data_dictionary)
                 if created:
                     self.write('%d Created Maximo ticket %s' % (row_num-1, obj))
-                    created += 1
+                    logger.debug('%d Created Maximo ticket %s' % (row_num-1, obj))
+                    created_count += 1
+                    #logger.debug('--- %d tickets created' % created)
                 elif allow_update:
                     self.write('%d Update Maximo ticket %s' % (row_num-1, obj))
+                    logger.debug('%d Update Maximo ticket %s' % (row_num-1, obj))
                     updated += 1
+                else:
+                    logger.debug('%d Existeds Maximo ticket %s' % (row_num-1, obj))
             row_num += 1
-        results = {'rows_parsed': row_num-1,
-                   'created': created,
+        #logger.debug('%d tickets created' % created)
+        results = {'rows_parsed': row_num-2,
+                   'created': created_count,
                    'updated': updated,
                    'sheet': sheet_name}
         return results

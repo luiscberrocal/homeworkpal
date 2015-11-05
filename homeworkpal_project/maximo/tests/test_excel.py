@@ -18,6 +18,10 @@ class TestExcel(TestCase):
         excel_data = MaximoExcelData()
         results = excel_data.load(filename, MaximoExcelData.LOAD_TICKETS)
         self.assertEqual(10, MaximoTicket.objects.count())
+        self.assertEqual(10, results['ticket_results']['created'])
+        self.assertEqual(0, results['ticket_results']['updated'])
+        self.assertEqual(10, results['ticket_results']['rows_parsed'])
+
 
     def test_write_tickets(self):
         filename = os.path.join(TEST_DATA_PATH, '%s_%s.xlsx' % ('maximo_tickets', timezone.now().strftime('%Y%m%d_%H%M')))
@@ -26,3 +30,5 @@ class TestExcel(TestCase):
         excel_data.save_tickets(filename, tickets)
         self.assertTrue(os.path.exists(filename))
         logger.debug('Wrote: %s' % filename)
+        os.remove(filename)
+        self.assertFalse(os.path.exists(filename))
