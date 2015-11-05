@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load staticfiles i18n %}
+{% block page_title %}
+{% trans "Uploaded Data" %}
+{% endblock page_title %}
+{% block content %}
+<table>
+{% for document in object_list %}
+<tr class="row">
+    <td class="col-md-3">{{ document.docfile.name }} </td>
+</tr>
+ {% endfor %}
+    </table>
+{% endblock content %}

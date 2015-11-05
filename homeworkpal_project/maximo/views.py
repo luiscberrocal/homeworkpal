@@ -1,9 +1,10 @@
 from braces.views import LoginRequiredMixin
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.shortcuts import render
 
 # Create your views here.
 from django.utils.safestring import mark_safe
-from django.views.generic import View, TemplateView, CreateView
+from django.views.generic import View, TemplateView, CreateView, ListView
 from employee.models import Employee
 from maximo.forms import DataDocumentForm
 from maximo.models import DataDocument
@@ -49,11 +50,16 @@ class MaximoView(TemplateView):
         return labor_code_condition
 
 
+class DataDocumentListView(LoginRequiredMixin, ListView):
+    model = DataDocument
+
+
 class DataDocumentCreateView(LoginRequiredMixin, CreateView):
     model = DataDocument
     form_class = DataDocumentForm
-    success_url = '/'
+    success_url = reverse_lazy('maximo:upload-list')
 
     def form_valid(self, form):
-        form.instance.extension ='xxx'
+        ext = form.instance.docfile.name.split('.')[1]
+        form.instance.extension = ext
         return super(DataDocumentCreateView, self).form_valid(form)
