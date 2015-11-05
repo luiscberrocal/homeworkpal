@@ -33,6 +33,7 @@ class MaximoTimeRegister(TimeStampedModel):
     project = models.ForeignKey(Project, related_name='maximo_time_registers', null=True, blank=True)
     date = models.DateField()
     regular_hours = models.DecimalField(max_digits=5, decimal_places=2)
+    pay_rate = models.DecimalField(max_digits=5, decimal_places=2)
     description = models.TextField(null=True, blank=True)
 
 
