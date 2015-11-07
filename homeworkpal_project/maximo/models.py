@@ -1,7 +1,9 @@
+import collections
 from django.core.validators import RegexValidator
 from django.db import models
 
 # Create your models here.
+from jsonfield import JSONField
 from model_utils.models import TimeStampedModel
 from django.utils.translation import ugettext_lazy as _
 from employee.models import Employee
@@ -39,6 +41,32 @@ class MaximoTimeRegister(TimeStampedModel):
 
 class DataDocument(TimeStampedModel):
     docfile = models.FileField(upload_to='maximo_documents/%Y/%m/%d')
-    processed = models.DateTimeField(null=True, blank=True)
+    #processed = models.DateTimeField(null=True, blank=True)
     extension = models.CharField(max_length=5)
+    results = JSONField(load_kwargs={'object_pairs_hook': collections.OrderedDict}, null=True)
+
+    PENDING, PROCESSED, FAILED = 'Pending', 'Processed', 'Failed'
+    STATUSES = (
+        (PENDING, _(PENDING)),
+        (PROCESSED, _(PROCESSED)),
+        (FAILED, _(FAILED)),
+    )
+    status = models.CharField(max_length=64, choices=STATUSES, default=PENDING)
+    date_start_processing = models.DateTimeField(null=True)
+    date_end_processing = models.DateTimeField(null=True)
+
+    def ticket_rows_parsed(self):
+        return self.results['ticket_results']['rows_parsed']
+
+    def time_rows_parsed(self):
+        return self.results['time_results']['rows_parsed']
+
+    def tickets_created(self):
+        return self.results['ticket_results']['created']
+
+    def times_created(self):
+        return self.results['time_results']['created']
+
+
+
 
