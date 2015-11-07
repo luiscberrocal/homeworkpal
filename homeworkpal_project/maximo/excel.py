@@ -21,6 +21,9 @@ def parse_hours(str_hours):
     parts = str_hours.split(':')
     return Decimal(parts[0]) + Decimal(parts[1]) /60
 
+def parse_datetime_hours(hours):
+    return hours.hour + hours.minute /60
+
     # data = dict()
     # value_list = list()
     # for cell in excel_row:
@@ -62,7 +65,7 @@ class MaximoExcelData(object):
         if self.stdout:
             self.stdout.write(msg)
 
-    def load(self, filename, action, allow_update=False, **kwargs):
+    def load(self, filename, action=None, allow_update=False, **kwargs):
         wb = load_workbook(filename=filename, data_only=True)
         ticket_results = dict()
         time_results = dict()
@@ -70,6 +73,12 @@ class MaximoExcelData(object):
             ticket_results = self.load_tickets(wb, allow_update=allow_update, **kwargs)
         elif action == self.LOAD_TIME:
             time_results = self.load_time_registers(wb, allow_update=allow_update, **kwargs)
+        elif action is None:
+            ticket_results = self.load_tickets(wb, allow_update=allow_update, **kwargs)
+            time_results = self.load_time_registers(wb, allow_update=allow_update, **kwargs)
+        else:
+            raise ValueError('"%s" is an invalida action for load' % action)
+
         return {'ticket_results': ticket_results,
                 'time_results': time_results}
 
@@ -90,6 +99,10 @@ class MaximoExcelData(object):
     def load_time_registers(self, wb, allow_update=False, **kwargs):
         sheet_name = kwargs.get('Time', self.time_sheet)
         time_sheet = wb[sheet_name]
+        results = {'rows_parsed': 0,
+                   'created': 0,
+                   'sheet': sheet_name,
+                   'errors': list()}
         row_num = 1
         created_count = 0
         updated = 0
@@ -101,17 +114,17 @@ class MaximoExcelData(object):
                 try:
                     attributes['employee'] = Employee.objects.get(company_id=company_id)
                     ticket_type = row[self.time_register_mappings['ticket_type']].value
-                    if ticket_type not in MaximoTicket.MAXIMO_TICKET_TYPES:
+                    if ticket_type not in [MaximoTicket.MAXIMO_SR]:
                         ticket_type = MaximoTicket.MAXIMO_WORKORDER
-                    str_register_date = row[self.time_register_mappings['date']].value
-                    attributes['date'] = datetime.strptime(str_register_date, '%m/%d/%Y')
+                    attributes['date'] = row[self.time_register_mappings['date']].value
+                    #attributes['date'] = datetime.strptime(str_register_date, '%m/%d/%Y')
                     attributes['pay_rate'] = Decimal(row[self.time_register_mappings['pay_rate']].value)
-                    if attributes['ticket_type'] == MaximoTicket.MAXIMO_WORKORDER:
+                    if ticket_type == MaximoTicket.MAXIMO_WORKORDER:
                         number = row[self.time_register_mappings['wo_number']].value
                     else:
                         number = row[self.time_register_mappings['ticket_number']].value
                     attributes['ticket'] = MaximoTicket.objects.get(ticket_type=ticket_type, number=number)
-                    attributes['regular_hours'] =  row[self.time_register_mappings['regular_hours']].value
+                    attributes['regular_hours'] =  parse_datetime_hours(row[self.time_register_mappings['regular_hours']].value)
                     MaximoTimeRegister.objects.create(**attributes)
                     created_count += 1
                 except Employee.DoesNotExist:
@@ -123,7 +136,20 @@ class MaximoExcelData(object):
                              'type': 'Employee does not exist',
                              'message':msg}
                     errors.append(error)
-
+                except MaximoTicket.DoesNotExist:
+                    msg = '%s with number %s on line %d does not exist' % (ticket_type, number, row_num)
+                    logger.warn(msg)
+                    error = {'row_num': row_num,
+                             'type': 'Ticket does not exist',
+                             'message':msg}
+                    errors.append(error)
+                except TypeError as te:
+                    msg = 'Unexeptected error %s on row %d' % (te, row_num)
+                    logger.error()
+                    error = {'row_num': row_num,
+                             'type': 'Unexeptected Type Error',
+                             'message': msg}
+                    errors.append(error)
             row_num +=1
         results = {'rows_parsed': row_num - 2,
                    'created': created_count,
@@ -134,6 +160,10 @@ class MaximoExcelData(object):
     def load_tickets(self, wb, allow_update=False, **kwargs):
         sheet_name = kwargs.get('ticket_sheet', self.ticket_sheet)
         ticket_sheet = wb[sheet_name]
+        results = {'rows_parsed': 0,
+                   'created': 0,
+                   'updated': 0,
+                   'sheet': sheet_name}
         row_num = 1
         created_count = 0
         updated = 0
