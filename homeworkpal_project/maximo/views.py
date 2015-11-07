@@ -44,8 +44,9 @@ class MaximoView(TemplateView):
         count = 1
         for employee in employees:
             labor_code_condition += 'laborcode=\'%s\'' % employee.user.username.upper()
-            if len(employees) > 1 and count != len(employees):
-                labor_code_condition += ' or '
+            if len(employees) > 1:
+                if count != len(employees):
+                    labor_code_condition += ' or '
             count += 1
         return labor_code_condition
 

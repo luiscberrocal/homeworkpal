@@ -4,10 +4,20 @@
 {% trans "Uploaded Data" %}
 {% endblock page_title %}
 {% block content %}
-<table>
+<table class="table">
+    <thead>
+    <tr class="row">
+        <th>{% trans "Filename" %}</th>
+        <th>{% trans "Status" %}</th>
+        <th>{% trans "Created on" %}</th>
+    </tr>
+    </thead>
+
 {% for document in object_list %}
 <tr class="row">
     <td class="col-md-3">{{ document.docfile.name }} </td>
+    <td class="col-md-3">{{ document.state }} </td>
+    <td class="col-md-3">{{ document.created }} </td>
 </tr>
  {% endfor %}
     </table>

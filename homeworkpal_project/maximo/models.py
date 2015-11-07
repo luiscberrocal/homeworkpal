@@ -42,3 +42,10 @@ class DataDocument(TimeStampedModel):
     processed = models.DateTimeField(null=True, blank=True)
     extension = models.CharField(max_length=5)
 
+    def _state(self):
+        if self.processed is None:
+            return _('Not Processed')
+        else:
+            return _('Processed')
+    state=property(_state)
+
