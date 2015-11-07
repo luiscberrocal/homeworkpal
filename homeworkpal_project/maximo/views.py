@@ -3,9 +3,11 @@ from django.core.urlresolvers import reverse, reverse_lazy
 from django.shortcuts import render
 
 # Create your views here.
+from django.utils import timezone
 from django.utils.safestring import mark_safe
 from django.views.generic import View, TemplateView, CreateView, ListView
 from employee.models import Employee
+from maximo.excel import MaximoExcelData
 from maximo.forms import DataDocumentForm
 from maximo.models import DataDocument
 
@@ -63,4 +65,8 @@ class DataDocumentCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         ext = form.instance.docfile.name.split('.')[1]
         form.instance.extension = ext
+        form.instance.date_start_processing = timezone.now()
+        data_loader = MaximoExcelData()
+        results = data_loader.load(form.instance.docfile.file)
+        form.instance.results = results
         return super(DataDocumentCreateView, self).form_valid(form)
