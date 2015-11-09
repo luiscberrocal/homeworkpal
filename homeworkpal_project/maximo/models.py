@@ -56,16 +56,29 @@ class DataDocument(TimeStampedModel):
     date_end_processing = models.DateTimeField(null=True)
 
     def ticket_rows_parsed(self):
-        return self.results['ticket_results']['rows_parsed']
+        if self.results:
+            return self.results['ticket_results']['rows_parsed']
+        else:
+            return 0
 
     def time_rows_parsed(self):
-        return self.results['time_results']['rows_parsed']
+        if self.results:
+            return self.results['time_results']['rows_parsed']
+        else:
+            return 0
+
 
     def tickets_created(self):
-        return self.results['ticket_results']['created']
+        if self.results:
+            return self.results['ticket_results']['created']
+        else:
+            return 0
 
     def times_created(self):
-        return self.results['time_results']['created']
+        if self.results:
+            return self.results['time_results']['created']
+        else:
+            return 0
 
 
 

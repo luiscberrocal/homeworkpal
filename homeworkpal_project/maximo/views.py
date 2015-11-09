@@ -10,6 +10,7 @@ from employee.models import Employee
 from maximo.excel import MaximoExcelData
 from maximo.forms import DataDocumentForm
 from maximo.models import DataDocument
+from maximo.tasks import ProcessExcelTask
 
 
 class MaximoView(TemplateView):
@@ -62,11 +63,16 @@ class DataDocumentCreateView(LoginRequiredMixin, CreateView):
     form_class = DataDocumentForm
     success_url = reverse_lazy('maximo:upload-list')
 
+
+
+
     def form_valid(self, form):
         ext = form.instance.docfile.name.split('.')[1]
         form.instance.extension = ext
-        form.instance.date_start_processing = timezone.now()
-        data_loader = MaximoExcelData()
-        results = data_loader.load(form.instance.docfile.file)
-        form.instance.results = results
+        form.save()
+        ProcessExcelTask.delay(form.instance.pk)
+        # form.instance.date_start_processing = timezone.now()
+        # data_loader = MaximoExcelData()
+        # results = data_loader.load(form.instance.docfile.file)
+        # form.instance.results = results
         return super(DataDocumentCreateView, self).form_valid(form)

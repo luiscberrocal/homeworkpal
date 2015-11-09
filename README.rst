@@ -22,9 +22,18 @@ should replace this name with the actual name of your project.*
 Working Environment
 ===================
 
-You have several options in setting up your working environment.  We recommend
-using virtualenv to separate the dependencies of your project from your system's
-python environment.  If on Linux or Mac OS X, you can also use virtualenvwrapper to help manage multiple virtualenvs across different projects.
+
+::
+  
+    $ PATH=$PATH:/usr/local/sbin
+
+    $ rabbitmq-server
+
+::
+
+    $ celery -A homeworkpal_project worker -l info
+
+
 
 Virtualenv Only
 ---------------
