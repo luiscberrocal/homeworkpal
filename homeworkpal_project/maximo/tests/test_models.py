@@ -1,4 +1,5 @@
 from django.test import TestCase
+from employee.models import Employee
 from maximo.models import MaximoTicket, MaximoTimeRegister
 from maximo.tests.factories import MaximoTicketFactory, MaximoTimeRegisterFactory
 import logging
@@ -18,14 +19,19 @@ class TestMaximoTicket(TestCase):
 
 class TestMaximoTimeRegister(TestCase):
 
+    fixtures = ['employee_fixtures.json']
+
+    def test_fixtures_loaded(self):
+        self.assertEqual(14, Employee.objects.count())
+
     def test_create(self):
         register = MaximoTimeRegisterFactory.create()
         self.assertEqual(1, MaximoTimeRegister.objects.count())
 
-    def test_get_emloyee_total_regular_hours(self):
+    def test_get_employee_total_regular_hours(self):
         register = MaximoTimeRegisterFactory.create()
         register2 = MaximoTimeRegisterFactory.create(employee=register.employee, date=register.date, pay_rate=register.pay_rate)
-        registers = MaximoTimeRegister.objects.get_emloyee_total_regular_hours(employee=register.employee, work_date=register.date)
+        registers = MaximoTimeRegister.objects.get_employee_total_regular_hours(employee=register.employee, date=register.date)
         self.assertEqual(2, len(registers))
         self.assertEqual(16, registers['total_regular_hours'])
         self.assertEqual(2, registers['register_count'])

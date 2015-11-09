@@ -113,10 +113,10 @@ class MaximoExcelData(object):
                 company_id = row[self.time_register_mappings['company_id']].value
                 try:
                     attributes['employee'] = Employee.objects.get(company_id=company_id)
+                    attributes['date'] = row[self.time_register_mappings['date']].value
                     ticket_type = row[self.time_register_mappings['ticket_type']].value
                     if ticket_type not in [MaximoTicket.MAXIMO_SR]:
                         ticket_type = MaximoTicket.MAXIMO_WORKORDER
-                    attributes['date'] = row[self.time_register_mappings['date']].value
                     #attributes['date'] = datetime.strptime(str_register_date, '%m/%d/%Y')
                     attributes['pay_rate'] = Decimal(row[self.time_register_mappings['pay_rate']].value)
                     if ticket_type == MaximoTicket.MAXIMO_WORKORDER:
