@@ -7,6 +7,7 @@ from jsonfield import JSONField
 from model_utils.models import TimeStampedModel
 from django.utils.translation import ugettext_lazy as _
 from employee.models import Employee
+from .managers import MaximoTimeRegisterManager
 from project_admin.models import Project
 
 
@@ -37,6 +38,8 @@ class MaximoTimeRegister(TimeStampedModel):
     regular_hours = models.DecimalField(max_digits=5, decimal_places=2)
     pay_rate = models.DecimalField(max_digits=5, decimal_places=2)
     description = models.TextField(null=True, blank=True)
+
+    objects = MaximoTimeRegisterManager()
 
 
 class DataDocument(TimeStampedModel):
