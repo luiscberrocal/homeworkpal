@@ -199,6 +199,7 @@ LOCAL_APPS = (
     'rest_framework',
     'datetimewidget',
     'bootstrap3',
+    'djcelery',
     'homework',
     'employee',
     'project_admin',
@@ -287,3 +288,6 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ),
 }
+
+BROKER_URL = 'amqp://guest:guest@localhost:5672//'
+CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'

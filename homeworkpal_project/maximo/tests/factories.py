@@ -25,5 +25,6 @@ class MaximoTimeRegisterFactory(DjangoModelFactory):
     employee = SubFactory(EmployeeFactory)
     ticket = SubFactory(MaximoTicketFactory)
     date = LazyAttribute(lambda x: faker.date_time_between(start_date="-1y", end_date="-1d"))
+    pay_rate = Iterator([14.45, 18.40, 25.12])
     regular_hours = 8.0
-    descritpion = LazyAttribute(lambda x: faker.sentence(nb_words=6, variable_nb_words=True))
+    description = LazyAttribute(lambda x: faker.sentence(nb_words=6, variable_nb_words=True))

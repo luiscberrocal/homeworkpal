@@ -7,6 +7,7 @@ from jsonfield import JSONField
 from model_utils.models import TimeStampedModel
 from django.utils.translation import ugettext_lazy as _
 from employee.models import Employee
+from .managers import MaximoTimeRegisterManager
 from project_admin.models import Project
 
 
@@ -38,6 +39,8 @@ class MaximoTimeRegister(TimeStampedModel):
     pay_rate = models.DecimalField(max_digits=5, decimal_places=2)
     description = models.TextField(null=True, blank=True)
 
+    objects = MaximoTimeRegisterManager()
+
 
 class DataDocument(TimeStampedModel):
     docfile = models.FileField(upload_to='maximo_documents/%Y/%m/%d')
@@ -56,16 +59,29 @@ class DataDocument(TimeStampedModel):
     date_end_processing = models.DateTimeField(null=True)
 
     def ticket_rows_parsed(self):
-        return self.results['ticket_results']['rows_parsed']
+        if self.results:
+            return self.results['ticket_results']['rows_parsed']
+        else:
+            return 0
 
     def time_rows_parsed(self):
-        return self.results['time_results']['rows_parsed']
+        if self.results:
+            return self.results['time_results']['rows_parsed']
+        else:
+            return 0
+
 
     def tickets_created(self):
-        return self.results['ticket_results']['created']
+        if self.results:
+            return self.results['ticket_results']['created']
+        else:
+            return 0
 
     def times_created(self):
-        return self.results['time_results']['created']
+        if self.results:
+            return self.results['time_results']['created']
+        else:
+            return 0
 
 
 
