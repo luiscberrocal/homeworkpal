@@ -16,10 +16,16 @@ class TestMaximoTicket(TestCase):
         self.assertEqual(6, len(ticket.number))
         self.assertEqual(1, MaximoTicket.objects.count())
 
+    def test_batch_create(self):
+        MaximoTicketFactory.create_batch(8, ticket_type='SR')
+        MaximoTicketFactory.create_batch(2, ticket_type='WO')
+        self.assertEqual(8, MaximoTicket.objects.filter(ticket_type='SR').count())
+        self.assertEqual(2, MaximoTicket.objects.filter(ticket_type='WO').count())
+
 
 class TestMaximoTimeRegister(TestCase):
 
-    fixtures = ['employee_fixtures.json']
+    fixtures = ['employee_fixtures.json',]
 
     def test_fixtures_loaded(self):
         self.assertEqual(14, Employee.objects.count())

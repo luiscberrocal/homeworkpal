@@ -22,10 +22,24 @@ def daterange(start_date, end_date):
         else:
             continue
 
+def get_ticket_position(limit=10):
+    count = 0
+    a = 0
+    while True:
+        yield a
+        a += 1
+        count += 1
+        if count == limit:
+            a = 0
+            count = 0
+
+
+
+
 
 class TestExcel(TestCase):
 
-    fixtures = ['employee_fixtures.json']
+    fixtures = ['employee_fixtures.json', 'maximo_ticket_fixtures.json']
 
     def test_daterange(self):
         start_date = date(2015, 9, 1)
@@ -37,15 +51,33 @@ class TestExcel(TestCase):
             #self.assertFalse(dt.weekday() not in set([5, 6]))
         self.assertEqual(21, work_days)
 
+    def test_write_registers(self):
+        tickets = MaximoTicket.objects.all()
+        self.assertEqual(10, len(tickets))
+        ticket_pos = get_ticket_position(limit=10)
+        filename = os.path.join(TEST_DATA_PATH, '%s_%s.xlsx' % ('maximo_time_data', timezone.now().strftime('%Y%m%d_%H%M')))
+        excel_data = MaximoExcelData()
+        start_date = date(2015, 9, 1)
+        end_date = date(2015, 9, 30)
+        employees = Employee.objects.all()
+        for dt in daterange(start_date, end_date):
+            for employee in employees:
+                ticket = tickets[next(ticket_pos)]
+                MaximoTimeRegisterFactory.create(employee=employee,date=dt, ticket=ticket)
+        registers = MaximoTimeRegister.objects.all()
+        excel_data.save_time_registers(filename, registers)
+        self.assertTrue(os.path.exists(filename))
+        logger.debug('Wrote: %s' % filename)
 
     def test_load_tickets(self):
         filename = os.path.join(TEST_DATA_PATH, 'maximo_tickets_test_data.xlsx')
         excel_data = MaximoExcelData()
         results = excel_data.load(filename, MaximoExcelData.LOAD_TICKETS)
-        self.assertEqual(10, MaximoTicket.objects.count())
+        self.assertEqual(20, MaximoTicket.objects.count())
         self.assertEqual(10, results['ticket_results']['created'])
         self.assertEqual(0, results['ticket_results']['updated'])
         self.assertEqual(10, results['ticket_results']['rows_parsed'])
+        #MaximoTicket.objects.all().delete()
 
 
     def test_write_tickets(self):
@@ -57,26 +89,6 @@ class TestExcel(TestCase):
         logger.debug('Wrote: %s' % filename)
         os.remove(filename)
         self.assertFalse(os.path.exists(filename))
-
-    def test_write_registers(self):
-        filename = os.path.join(TEST_DATA_PATH, '%s_%s.xlsx' % ('maximo_time_data', timezone.now().strftime('%Y%m%d_%H%M')))
-        excel_data = MaximoExcelData()
-        start_date = date(2015, 9, 1)
-        end_date = date(2015, 9, 30)
-        employees = Employee.objects.all()
-        for dt in daterange(start_date, end_date):
-            for employee in employees:
-                MaximoTimeRegisterFactory.create(employee=employee,date=dt)
-        registers = MaximoTimeRegister.objects.all()
-        excel_data.save_time_registers(filename, registers)
-        self.assertTrue(os.path.exists(filename))
-        logger.debug('Wrote: %s' % filename)
-
-
-
-
-
-
 
     def test_parse_hours(self):
         h = parse_hours('7:30')
