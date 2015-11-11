@@ -1,3 +1,4 @@
+from datetime import date
 from django.test import TestCase
 from employee.models import Employee
 from maximo.models import MaximoTicket, MaximoTimeRegister
@@ -41,12 +42,11 @@ class TestMaximoTimeRegister(TestCase):
         self.assertEqual(2, len(registers))
         self.assertEqual(16, registers['total_regular_hours'])
         self.assertEqual(2, registers['register_count'])
-        #self.assertEqual(18, registers[0].total_regular_hours)
 
-    # def test_number_too_long(self):
-    #     logger.debug('Method test_number_too_long')
-    #     t = MaximoTicketFactory.build(number='ASD')
-    #     t.save()
-    #     logger.debug('TIcket  %s' % t)
+    def test_get_employee_total_regular_hours_no_data(self):
+        employee = Employee.objects.all()[0]
+        registers = MaximoTimeRegister.objects.get_employee_total_regular_hours(employee=employee, date=date.today())
+        self.assertIsNone(registers['total_regular_hours'])
+        self.assertEquals(0, registers['register_count'])
 
 

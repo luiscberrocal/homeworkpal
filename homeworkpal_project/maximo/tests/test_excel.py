@@ -97,8 +97,22 @@ class TestExcel(TestCase):
         self.assertEqual(h, 8.0)
 
     def test_load_time_register(self):
-        filename = os.path.join(TEST_DATA_PATH, 'maximo_data.xlsx')
+        filename = os.path.join(TEST_DATA_PATH, 'maximo_test_time_data.xlsx')
         excel_data = MaximoExcelData()
         results = excel_data.load(filename, MaximoExcelData.LOAD_TIME)
-        self.assertEqual(0, MaximoTimeRegister.objects.count())
+        self.assertEqual(294, MaximoTimeRegister.objects.count())
+        self.assertEqual(294, results['time_results']['created'])
+        self.assertEqual(0, results['time_results']['duplicates'])
+        self.assertEqual(294, results['time_results']['rows_parsed'])
+        self.assertEqual(0, len(results['time_results']['errors']))
 
+    def test_load_time_register_duplicates(self):
+        filename = os.path.join(TEST_DATA_PATH, 'maximo_test_time_data.xlsx')
+        excel_data = MaximoExcelData()
+        excel_data.load(filename, MaximoExcelData.LOAD_TIME)
+        results = excel_data.load(filename, MaximoExcelData.LOAD_TIME)
+        self.assertEqual(294, MaximoTimeRegister.objects.count())
+        self.assertEqual(0, results['time_results']['created'])
+        self.assertEqual(294, results['time_results']['duplicates'])
+        self.assertEqual(294, results['time_results']['rows_parsed'])
+        self.assertEqual(0, len(results['time_results']['errors']))
