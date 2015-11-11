@@ -9,7 +9,7 @@
     <tr class="row">
         <th>{% trans "Filename" %}</th>
         <th>{% trans "Status" %}</th>
-        <th>{% trans "Created on" %}</th>
+        <th>{% trans "Processing" %}</th>
         <th>{% trans "Parsed" %}</th>
          <th>{% trans "Created" %}</th>
     </tr>
@@ -17,9 +17,12 @@
 
 {% for document in object_list %}
 <tr class="row">
-    <td class="col-md-3">{{ document.docfile.name }} </td>
+    <td class="col-md-3"><a href="{% url 'maximo:document-detail' document.pk %}"> {{ document.docfile.name }} </a></td>
     <td class="col-md-1">{{ document.status }} </td>
-    <td class="col-md-2">{{ document.created }} </td>
+    <td class="col-md-2">
+        <div>{% trans "Started" %}:{{ document.date_start_processing }}</div>
+         <div>{% trans "Finished" %}:{{ document.date_end_processing }}</div>
+    </td>
    <td class="col-md-3">
        <div>{% trans "Tickets" %}: {{ document.ticket_rows_parsed }}</div>
        <div>{% trans "Time registries" %}: {{ document.time_rows_parsed }}</div>
@@ -27,6 +30,8 @@
     <td class="col-md-3">
        <div>{% trans "Tickets" %}: {{ document.tickets_created }}</div>
        <div>{% trans "Time registries" %}: {{ document.times_created }}</div>
+        <div>{% trans "Time duplicates" %}: {{ document.times_duplicates }}</div>
+
    </td>
 </tr>
  {% endfor %}

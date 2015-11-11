@@ -83,6 +83,12 @@ class DataDocument(TimeStampedModel):
         else:
             return 0
 
+    def times_duplicates(self):
+        if self.results:
+            return self.results['time_results']['duplicates']
+        else:
+            return 0
+
 
 
 

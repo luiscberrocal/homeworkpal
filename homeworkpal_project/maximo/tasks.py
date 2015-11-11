@@ -16,9 +16,18 @@ class ProcessExcelTask(Task):
             return None
         data_loader = MaximoExcelData()
         document.date_start_processing = timezone.now()
-        results = data_loader.load(document.docfile.file)
-        document.results = results
         document.save()
-        logger.debug('File %s updated' % (document.docfile.name))
+        try:
+            results = data_loader.load(document.docfile.file)
+        except Exception as e:
+            logger.error('Error loading file %s %s' % (document.docfile.name, e))
+            document.status = DataDocument.FAILED
+
+        document.results = results
+        document.date_end_processing = timezone.now()
+        if document.status == DataDocument.PENDING:
+            document.status = DataDocument.PROCESSED
+        document.save()
+        logger.debug('File %s updated to status %s' % (document.docfile.name, document.status))
         return results
 

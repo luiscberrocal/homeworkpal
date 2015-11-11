@@ -68,6 +68,8 @@ class TestExcel(TestCase):
         excel_data.save_time_registers(filename, registers)
         self.assertTrue(os.path.exists(filename))
         logger.debug('Wrote: %s' % filename)
+        os.remove(filename)
+        self.assertFalse(os.path.exists(filename))
 
     def test_load_tickets(self):
         filename = os.path.join(TEST_DATA_PATH, 'maximo_tickets_test_data.xlsx')
