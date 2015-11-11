@@ -26,7 +26,7 @@ class TestMaximoTicket(TestCase):
 
 class TestMaximoTimeRegister(TestCase):
 
-    fixtures = ['employee_fixtures.json',]
+    fixtures = ['employee_fixtures.json', 'maximo_ticket_fixtures.json']
 
     def test_fixtures_loaded(self):
         self.assertEqual(14, Employee.objects.count())
@@ -44,9 +44,27 @@ class TestMaximoTimeRegister(TestCase):
         self.assertEqual(2, registers['register_count'])
 
     def test_get_employee_total_regular_hours_no_data(self):
-        employee = Employee.objects.all()[0]
+        employee = Employee.objects.all()[:1][0]
         registers = MaximoTimeRegister.objects.get_employee_total_regular_hours(employee=employee, date=date.today())
         self.assertIsNone(registers['total_regular_hours'])
         self.assertEquals(0, registers['register_count'])
+
+    def test_get_or_create(self):
+        data = dict()
+        data['employee'] = Employee.objects.all()[:1][0]
+        data['ticket'] = MaximoTicket.objects.all()[:1][0]
+        data['date'] = date(2015, 10, 1)
+        data['regular_hours'] = 4
+        data['pay_rate'] = 21.08
+
+        register, created = MaximoTimeRegister.objects.get_or_create(**data)
+        self.assertTrue(created)
+        self.assertTrue(data['employee'], register.employee)
+        register2, created = MaximoTimeRegister.objects.get_or_create(**data)
+        self.assertFalse(created)
+        self.assertEquals(register.pk, register2.pk)
+
+
+
 
 

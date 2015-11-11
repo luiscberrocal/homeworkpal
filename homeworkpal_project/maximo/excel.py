@@ -145,19 +145,15 @@ class MaximoExcelData(object):
                     if register_summary['total_regular_hours'] is not None:
                         total_regular_hours = register_summary['total_regular_hours']
                     if total_regular_hours + regular_hours <= 8.0:
-                        ticket_type = row[self.time_register_mappings['ticket_type']].value
-                        if ticket_type not in [MaximoTicket.MAXIMO_SR]:
-                            ticket_type = MaximoTicket.MAXIMO_WORKORDER
-                        #attributes['date'] = datetime.strptime(str_register_date, '%m/%d/%Y')
                         attributes['pay_rate'] = Decimal(row[self.time_register_mappings['pay_rate']].value)
-                        if ticket_type == MaximoTicket.MAXIMO_WORKORDER:
-                            number = row[self.time_register_mappings['wo_number']].value
-                        else:
-                            number = row[self.time_register_mappings['ticket_number']].value
+                        ticket_type, number = self._get_maximo_ticket_info(row)
                         attributes['ticket'] = MaximoTicket.objects.get(ticket_type=ticket_type, number=number)
-                        attributes['regular_hours'] =  regular_hours
-                        MaximoTimeRegister.objects.create(**attributes)
-                        created_count += 1
+                        attributes['regular_hours'] = regular_hours
+                        _, created = MaximoTimeRegister.objects.get_or_create(**attributes)
+                        if created:
+                            created_count += 1
+                        else:
+                            duplicate_count += 1
                     else:
                         duplicate_count += 1
                 except Employee.DoesNotExist:
@@ -197,6 +193,17 @@ class MaximoExcelData(object):
         time_results['sheet'] = sheet_name
         time_results['errors'] = errors
         return time_results
+
+    def _get_maximo_ticket_info(self, row):
+        ticket_type = row[self.time_register_mappings['ticket_type']].value
+        if ticket_type not in [MaximoTicket.MAXIMO_SR]:
+            ticket_type = MaximoTicket.MAXIMO_WORKORDER
+        if ticket_type == MaximoTicket.MAXIMO_WORKORDER:
+            number = row[self.time_register_mappings['wo_number']].value
+        else:
+            number = row[self.time_register_mappings['ticket_number']].value
+
+        return ticket_type, number
 
     def load_tickets(self, wb, allow_update=False, **kwargs):
         sheet_name = kwargs.get('ticket_sheet', self.ticket_sheet)
