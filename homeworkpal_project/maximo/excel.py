@@ -149,12 +149,29 @@ class MaximoExcelData(object):
                         ticket_type, number = self._get_maximo_ticket_info(row)
                         attributes['ticket'] = MaximoTicket.objects.get(ticket_type=ticket_type, number=number)
                         attributes['regular_hours'] = regular_hours
-                        _, created = MaximoTimeRegister.objects.get_or_create(**attributes)
+                        register, created = MaximoTimeRegister.objects.get_or_create(**attributes)
                         if created:
                             created_count += 1
                         else:
+                            msg = 'Data on row %d for employee %s  ' \
+                              'seems to be duplicated for record %d' % (row_num, attributes['employee'],
+                                                                       register.pk)
+                            logger.warn(msg)
+                            error = {'row_num': row_num,
+                                     'type': 'Possible duplicate',
+                                     'message':msg}
+                            errors.append(error)
                             duplicate_count += 1
                     else:
+                        msg = 'Data on row %d for employee %s exceeds ' \
+                              'the maximum regular hour. It would end up having %.1f hours' % (row_num,
+                                                                                         attributes['employee'],
+                                                                                         total_regular_hours + regular_hours)
+                        logger.warn(msg)
+                        error = {'row_num': row_num,
+                                 'type': 'Exceed maximum 8 regular hours',
+                                 'message':msg}
+                        errors.append(error)
                         duplicate_count += 1
                 except Employee.DoesNotExist:
                     username = row[self.time_register_mappings['username']].value

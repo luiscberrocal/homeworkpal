@@ -117,7 +117,7 @@ class TestExcel(TestCase):
         self.assertEqual(0, results['time_results']['created'])
         self.assertEqual(294, results['time_results']['duplicates'])
         self.assertEqual(294, results['time_results']['rows_parsed'])
-        self.assertEqual(0, len(results['time_results']['errors']))
+        self.assertEqual(294, len(results['time_results']['errors']))
 
     def test_load_time_register_duplicates2(self):
         filename = os.path.join(TEST_DATA_PATH, 'maximo_test_time_data2.xlsx')
@@ -128,4 +128,5 @@ class TestExcel(TestCase):
         self.assertEqual(0, results['time_results']['created'])
         self.assertEqual(2, results['time_results']['duplicates'])
         self.assertEqual(2, results['time_results']['rows_parsed'])
-        self.assertEqual(0, len(results['time_results']['errors']))
+        self.assertEqual(2, len(results['time_results']['errors']))
+        self.assertEqual('Possible duplicate',results['time_results']['errors'][0]['type'] )
