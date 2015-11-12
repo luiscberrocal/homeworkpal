@@ -2,7 +2,7 @@ from django.utils import timezone
 import os
 from django.test import TestCase
 from employee.models import Employee
-from homeworkpal_project.settings.base import TEST_DATA_PATH
+from homeworkpal_project.settings.base import TEST_DATA_PATH, TEST_OUTPUT_PATH
 from maximo.excel import MaximoExcelData, parse_hours
 from maximo.models import MaximoTicket, MaximoTimeRegister
 from maximo.tests.factories import MaximoTicketFactory, MaximoTimeRegisterFactory
@@ -55,7 +55,7 @@ class TestExcel(TestCase):
         tickets = MaximoTicket.objects.all()
         self.assertEqual(10, len(tickets))
         ticket_pos = get_ticket_position(limit=10)
-        filename = os.path.join(TEST_DATA_PATH, '%s_%s.xlsx' % ('maximo_time_data', timezone.now().strftime('%Y%m%d_%H%M')))
+        filename = os.path.join(TEST_OUTPUT_PATH, '%s_%s.xlsx' % ('maximo_time_data', timezone.now().strftime('%Y%m%d_%H%M')))
         excel_data = MaximoExcelData()
         start_date = date(2015, 9, 1)
         end_date = date(2015, 9, 30)
@@ -83,7 +83,7 @@ class TestExcel(TestCase):
 
 
     def test_write_tickets(self):
-        filename = os.path.join(TEST_DATA_PATH, '%s_%s.xlsx' % ('maximo_tickets', timezone.now().strftime('%Y%m%d_%H%M')))
+        filename = os.path.join(TEST_OUTPUT_PATH, '%s_%s.xlsx' % ('maximo_tickets', timezone.now().strftime('%Y%m%d_%H%M')))
         excel_data = MaximoExcelData()
         tickets = MaximoTicketFactory.create_batch(10)
         excel_data.save_tickets(filename, tickets)

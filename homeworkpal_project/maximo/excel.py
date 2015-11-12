@@ -35,20 +35,38 @@ def decimal_to_time(decimal_hours):
 
 
 class MaximoExcelData(object):
+    '''
+    The loading of Times is based on an export of a report name TINO-NS-FY16.
+    The columns are:
+    0  acp_empnum       company_id
+    1  acp_hours        regular_hours
+    2  acp_pagorelevo
+    3  acp_timingdate   date
+    4  enterby
+    5  laborcode        username
+    6  memo             description
+    7  payrate          pay_rate
+    8  refwo            wo_number
+    9  regularhrs
+    10 skilllevel
+    11 ticketclass      ticket_type
+    12 ticketid         ticket_number
+    '''
     LOAD_TICKETS = 'LOAD_TICKETS'
     LOAD_TIME = 'LOAD_TIME'
     LOAD_ALL = 'LOAD_ALL'
 
     def __init__(self, stdout=None):
-        self.ticket_mappings = {'ticket_type': 0 , 'number': 1, 'name': 2}
+        self.ticket_mappings = {'ticket_type': 0, 'number': 1, 'name': 2}
         self.time_register_mappings = {'company_id': 0,
                                        'regular_hours': 1,
-                                       'date': 2,
-                                       'username': 3,
-                                       'pay_rate': 5,
-                                       'wo_number': 6,
-                                       'ticket_type': 7,
-                                       'ticket_number':8}
+                                       'date': 3,
+                                       'username': 5,
+                                       'pay_rate': 7,
+                                       'wo_number': 8,
+                                       'ticket_type': 11,
+                                       'ticket_number': 12,
+                                       'description': 6}
         self.ticket_sheet = 'Maximo Tickets'
         self.time_sheet = 'Time'
         self.stdout = stdout
