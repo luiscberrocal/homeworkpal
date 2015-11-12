@@ -1,3 +1,4 @@
+import os
 import collections
 from django.core.validators import RegexValidator
 from django.db import models
@@ -57,6 +58,10 @@ class DataDocument(TimeStampedModel):
     status = models.CharField(max_length=64, choices=STATUSES, default=PENDING)
     date_start_processing = models.DateTimeField(null=True)
     date_end_processing = models.DateTimeField(null=True)
+
+    def _filename(self):
+        return os.path.split(self.docfile.name)[1]
+    filename = property(_filename)
 
     class Meta:
         ordering = ('-date_start_processing',)
