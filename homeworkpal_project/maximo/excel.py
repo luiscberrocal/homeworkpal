@@ -168,6 +168,7 @@ class MaximoExcelData(object):
                         ticket_type, number = self._get_maximo_ticket_info(row)
                         attributes['ticket'] = MaximoTicket.objects.get(ticket_type=ticket_type, number=number)
                         attributes['regular_hours'] = regular_hours
+                        attributes['defaults'] = {'description': row[self.time_register_mappings['description']].value}
                         register, created = MaximoTimeRegister.objects.get_or_create(**attributes)
                         if created:
                             created_count += 1
