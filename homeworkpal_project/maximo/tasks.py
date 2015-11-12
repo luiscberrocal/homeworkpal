@@ -20,9 +20,10 @@ class ProcessExcelTask(Task):
         try:
             results = data_loader.load(document.docfile.file)
         except Exception as e:
-            logger.error('Error loading file %s %s' % (document.docfile.name, e))
+            msg = 'Error loading file %s. %s: %s' % (document.docfile.name, type(e).__name__,  e)
+            logger.error(msg)
+            results = {'fatal_error': msg }
             document.status = DataDocument.FAILED
-
         document.results = results
         document.date_end_processing = timezone.now()
         if document.status == DataDocument.PENDING:

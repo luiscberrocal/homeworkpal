@@ -37,7 +37,10 @@ urlpatterns = patterns('',
                        url(r'^accounts/login/$', 'django.contrib.auth.views.login',
                            {'template_name': 'admin/login.html'}, name='login'),
                        url(r'^accounts/logout/$', 'django.contrib.auth.views.logout', name='logout'),
-                       url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+                       url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+                       url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {
+                           'document_root': settings.MEDIA_ROOT,
+                       }),
                        )
 
 # Uncomment the next line to serve media files in dev.
