@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, time
 from decimal import Decimal
 from openpyxl import load_workbook, Workbook
 from employee.models import Employee
@@ -21,25 +21,16 @@ def parse_hours(str_hours):
     parts = str_hours.split(':')
     return Decimal(parts[0]) + Decimal(parts[1]) /60
 
+
 def parse_datetime_hours(hours):
-    return hours.hour + hours.minute /60
+    return Decimal(hours.hour + hours.minute/60.0)
 
-    # data = dict()
-    # value_list = list()
-    # for cell in excel_row:
-    #     if cell.value:
-    #         value_list.append(cell.value)
-    #     else:
-    #         value_list.append(None)
-    # i = 0
-    # for val in value_list:
-    #     key_name = mappings[i]
-    #     data[key_name] = val
-    #     i += 1
-    # return data
 
-def row_to_register_dictionary(excel_row, mappings):
-    pass
+def decimal_to_time(decimal_hours):
+    hour = int(decimal_hours)
+    minute = int((decimal_hours - int(decimal_hours)) * Decimal(60.0))
+    return time(hour,minute,0)
+
 
 
 
@@ -77,7 +68,7 @@ class MaximoExcelData(object):
             ticket_results = self.load_tickets(wb, allow_update=allow_update, **kwargs)
             time_results = self.load_time_registers(wb, allow_update=allow_update, **kwargs)
         else:
-            raise ValueError('"%s" is an invalida action for load' % action)
+            raise ValueError('"%s" is an invalid action for load' % action)
 
         return {'ticket_results': ticket_results,
                 'time_results': time_results}
@@ -98,7 +89,7 @@ class MaximoExcelData(object):
 
     def save_time_registers(self, filename, registers):
         wb = Workbook()
-        sheet = wb.create_sheet(title=self.ticket_sheet)
+        sheet = wb.create_sheet(title=self.time_sheet)
         row = 1
         for v, column in self.time_register_mappings.items():
             sheet.cell(column=column + 1, row=row, value=v.upper())
@@ -107,7 +98,8 @@ class MaximoExcelData(object):
             col = self.time_register_mappings['company_id'] + 1
             sheet.cell(column=col, row=row, value=register.employee.company_id)
             col = self.time_register_mappings['regular_hours'] + 1
-            sheet.cell(column=col, row=row, value=register.regular_hours)
+            hours = decimal_to_time(register.regular_hours)
+            sheet.cell(column=col, row=row, value=hours)
             col = self.time_register_mappings['date'] + 1
             sheet.cell(column=col, row=row, value=register.date)
             col = self.time_register_mappings['username'] + 1
@@ -128,13 +120,15 @@ class MaximoExcelData(object):
     def load_time_registers(self, wb, allow_update=False, **kwargs):
         sheet_name = kwargs.get('Time', self.time_sheet)
         time_sheet = wb[sheet_name]
-        results = {'rows_parsed': 0,
+        time_results = {'rows_parsed': 0,
                    'created': 0,
+                   'duplicates': 0,
                    'sheet': sheet_name,
                    'errors': list()}
         row_num = 1
         created_count = 0
         updated = 0
+        duplicate_count = 0
         errors = list()
         for row in time_sheet.rows:
             if row_num > 1:
@@ -143,19 +137,42 @@ class MaximoExcelData(object):
                 try:
                     attributes['employee'] = Employee.objects.get(company_id=company_id)
                     attributes['date'] = row[self.time_register_mappings['date']].value
-                    ticket_type = row[self.time_register_mappings['ticket_type']].value
-                    if ticket_type not in [MaximoTicket.MAXIMO_SR]:
-                        ticket_type = MaximoTicket.MAXIMO_WORKORDER
-                    #attributes['date'] = datetime.strptime(str_register_date, '%m/%d/%Y')
-                    attributes['pay_rate'] = Decimal(row[self.time_register_mappings['pay_rate']].value)
-                    if ticket_type == MaximoTicket.MAXIMO_WORKORDER:
-                        number = row[self.time_register_mappings['wo_number']].value
+                    regular_hours = parse_datetime_hours(row[self.time_register_mappings['regular_hours']].value)
+                    if regular_hours > 8.0:
+                        raise ValueError('Regular hours cannot exceed 8 hours. Your are trying to add %.1f hours' % regular_hours)
+                    register_summary = MaximoTimeRegister.objects.get_employee_total_regular_hours(**attributes)
+                    total_regular_hours = 0
+                    if register_summary['total_regular_hours'] is not None:
+                        total_regular_hours = register_summary['total_regular_hours']
+                    if total_regular_hours + regular_hours <= 8.0:
+                        attributes['pay_rate'] = Decimal(row[self.time_register_mappings['pay_rate']].value)
+                        ticket_type, number = self._get_maximo_ticket_info(row)
+                        attributes['ticket'] = MaximoTicket.objects.get(ticket_type=ticket_type, number=number)
+                        attributes['regular_hours'] = regular_hours
+                        register, created = MaximoTimeRegister.objects.get_or_create(**attributes)
+                        if created:
+                            created_count += 1
+                        else:
+                            msg = 'Data on row %d for employee %s  ' \
+                              'seems to be duplicated for record %d' % (row_num, attributes['employee'],
+                                                                       register.pk)
+                            logger.warn(msg)
+                            error = {'row_num': row_num,
+                                     'type': 'Possible duplicate',
+                                     'message':msg}
+                            errors.append(error)
+                            duplicate_count += 1
                     else:
-                        number = row[self.time_register_mappings['ticket_number']].value
-                    attributes['ticket'] = MaximoTicket.objects.get(ticket_type=ticket_type, number=number)
-                    attributes['regular_hours'] =  parse_datetime_hours(row[self.time_register_mappings['regular_hours']].value)
-                    MaximoTimeRegister.objects.create(**attributes)
-                    created_count += 1
+                        msg = 'Data on row %d for employee %s exceeds ' \
+                              'the maximum regular hour. It would end up having %.1f hours' % (row_num,
+                                                                                         attributes['employee'],
+                                                                                         total_regular_hours + regular_hours)
+                        logger.warn(msg)
+                        error = {'row_num': row_num,
+                                 'type': 'Exceed maximum 8 regular hours',
+                                 'message':msg}
+                        errors.append(error)
+                        duplicate_count += 1
                 except Employee.DoesNotExist:
                     username = row[self.time_register_mappings['username']].value
                     msg = 'Employee with id %s and username %s ' \
@@ -173,18 +190,37 @@ class MaximoExcelData(object):
                              'message':msg}
                     errors.append(error)
                 except TypeError as te:
-                    msg = 'Unexeptected error %s on row %d' % (te, row_num)
-                    logger.error()
+                    msg = 'Unexpected error %s on row %d' % (te, row_num)
+                    logger.error(msg)
                     error = {'row_num': row_num,
                              'type': 'Unexeptected Type Error',
                              'message': msg}
                     errors.append(error)
+                except ValueError as ve:
+                    msg = '%s on row %d' % (ve, row_num)
+                    logger.error(msg)
+                    error = {'row_num': row_num,
+                             'type': 'Value Error',
+                             'message': msg}
+                    errors.append(error)
             row_num +=1
-        results = {'rows_parsed': row_num - 2,
-                   'created': created_count,
-                   'sheet': sheet_name,
-                   'errors': errors}
-        return results
+        time_results['rows_parsed'] = row_num - 2
+        time_results['created'] = created_count
+        time_results['duplicates'] = duplicate_count
+        time_results['sheet'] = sheet_name
+        time_results['errors'] = errors
+        return time_results
+
+    def _get_maximo_ticket_info(self, row):
+        ticket_type = row[self.time_register_mappings['ticket_type']].value
+        if ticket_type not in [MaximoTicket.MAXIMO_SR]:
+            ticket_type = MaximoTicket.MAXIMO_WORKORDER
+        if ticket_type == MaximoTicket.MAXIMO_WORKORDER:
+            number = row[self.time_register_mappings['wo_number']].value
+        else:
+            number = row[self.time_register_mappings['ticket_number']].value
+
+        return ticket_type, number
 
     def load_tickets(self, wb, allow_update=False, **kwargs):
         sheet_name = kwargs.get('ticket_sheet', self.ticket_sheet)

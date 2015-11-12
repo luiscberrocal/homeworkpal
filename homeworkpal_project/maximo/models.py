@@ -1,3 +1,4 @@
+import os
 import collections
 from django.core.validators import RegexValidator
 from django.db import models
@@ -58,30 +59,43 @@ class DataDocument(TimeStampedModel):
     date_start_processing = models.DateTimeField(null=True)
     date_end_processing = models.DateTimeField(null=True)
 
-    def ticket_rows_parsed(self):
-        if self.results:
-            return self.results['ticket_results']['rows_parsed']
-        else:
-            return 0
+    def _filename(self):
+        return os.path.split(self.docfile.name)[1]
+    filename = property(_filename)
 
-    def time_rows_parsed(self):
-        if self.results:
-            return self.results['time_results']['rows_parsed']
-        else:
-            return 0
+    class Meta:
+        ordering = ('-date_start_processing',)
 
-
-    def tickets_created(self):
-        if self.results:
-            return self.results['ticket_results']['created']
-        else:
-            return 0
-
-    def times_created(self):
-        if self.results:
-            return self.results['time_results']['created']
-        else:
-            return 0
+    # def ticket_rows_parsed(self):
+    #     if self.results:
+    #         return self.results['ticket_results']['rows_parsed']
+    #     else:
+    #         return 0
+    #
+    # def time_rows_parsed(self):
+    #     if self.results:
+    #         return self.results['time_results']['rows_parsed']
+    #     else:
+    #         return 0
+    #
+    #
+    # def tickets_created(self):
+    #     if self.results:
+    #         return self.results['ticket_results']['created']
+    #     else:
+    #         return 0
+    #
+    # def times_created(self):
+    #     if self.results:
+    #         return self.results['time_results']['created']
+    #     else:
+    #         return 0
+    #
+    # def times_duplicates(self):
+    #     if self.results:
+    #         return self.results['time_results']['duplicates']
+    #     else:
+    #         return 0
 
 
 

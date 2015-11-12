@@ -5,7 +5,7 @@ from django.shortcuts import render
 # Create your views here.
 from django.utils import timezone
 from django.utils.safestring import mark_safe
-from django.views.generic import View, TemplateView, CreateView, ListView
+from django.views.generic import View, TemplateView, CreateView, ListView, DetailView
 from employee.models import Employee
 from maximo.excel import MaximoExcelData
 from maximo.forms import DataDocumentForm
@@ -53,6 +53,9 @@ class MaximoView(TemplateView):
             count += 1
         return labor_code_condition
 
+class DataDocumentDetailView(LoginRequiredMixin, DetailView):
+    model = DataDocument
+    context_object_name = 'datadocument'
 
 class DataDocumentListView(LoginRequiredMixin, ListView):
     model = DataDocument

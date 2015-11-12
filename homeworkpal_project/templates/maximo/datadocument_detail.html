@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% block page_title %} {{ datadocument.filename}} {% endblock page_title %}
+{% block content %}
+<div><span class="title">{% trans "Status" %}:</span> {{ datadocument.status }}</div>
+<div><span class="title">{% trans "Started Processing" %}:</span> {{ datadocument.date_start_processing }}</div>
+<div><span class="title">{% trans "Ended Processing" %}:</span> {{ datadocument.date_end_processing }}</div>
+<a class="btn" href="{{ datadocument.docfile.url }}">{% trans "View Uploaded File" %}</a>
+<h2>{% trans "Time Register Load Results" %}</h2>
+<div><span class="title">{% trans "Time Registers created" %}:</span> {{ datadocument.results.time_results.created }}
+</div>
+<div><span class="title">{% trans "Rows parsed" %}:</span> {{ datadocument.results.time_results.rows_parsed }}</div>
+<div><span class="title">{% trans "Duplicates" %}:</span> {{ datadocument.results.time_results.duplicates }}</div>
+{% if datadocument.results.fatal_error %}
+<h2>{% trans "Fatal Error while Loading" %} </h2>
+<div class="error">{{ datadocument.results.fatal_error }}</div>
+{% endif %}
+<h2>{% trans "Time Loading Errors" %} ({{ datadocument.results.time_results.errors|length }})</h2>
+<table class="table">
+    <thead>
+    <tr class="row">
+        <th>{% trans "Row" %}</th>
+        <th>{% trans "Type" %}</th>
+        <th>{% trans "Message" %}</th>
+    </tr>
+    </thead>
+    {% for error in datadocument.results.time_results.errors %}
+    <tr class="row">
+        <td class="col-md-1"> {{ error.row_num }}</td>
+        <td class="col-md-2"> {{ error.type }}</td>
+        <td class="col-md-9"> {{ error.message }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock content %}
+
+{% block extra_js %}
+<scrzipt>
+
+
+</scrzipt>
+{% endblock extra_js %}

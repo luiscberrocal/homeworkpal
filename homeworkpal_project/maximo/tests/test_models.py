@@ -1,3 +1,4 @@
+from datetime import date
 from django.test import TestCase
 from employee.models import Employee
 from maximo.models import MaximoTicket, MaximoTimeRegister
@@ -25,7 +26,7 @@ class TestMaximoTicket(TestCase):
 
 class TestMaximoTimeRegister(TestCase):
 
-    fixtures = ['employee_fixtures.json',]
+    fixtures = ['employee_fixtures.json', 'maximo_ticket_fixtures.json']
 
     def test_fixtures_loaded(self):
         self.assertEqual(14, Employee.objects.count())
@@ -41,12 +42,29 @@ class TestMaximoTimeRegister(TestCase):
         self.assertEqual(2, len(registers))
         self.assertEqual(16, registers['total_regular_hours'])
         self.assertEqual(2, registers['register_count'])
-        #self.assertEqual(18, registers[0].total_regular_hours)
 
-    # def test_number_too_long(self):
-    #     logger.debug('Method test_number_too_long')
-    #     t = MaximoTicketFactory.build(number='ASD')
-    #     t.save()
-    #     logger.debug('TIcket  %s' % t)
+    def test_get_employee_total_regular_hours_no_data(self):
+        employee = Employee.objects.all()[:1][0]
+        registers = MaximoTimeRegister.objects.get_employee_total_regular_hours(employee=employee, date=date.today())
+        self.assertIsNone(registers['total_regular_hours'])
+        self.assertEquals(0, registers['register_count'])
+
+    def test_get_or_create(self):
+        data = dict()
+        data['employee'] = Employee.objects.all()[:1][0]
+        data['ticket'] = MaximoTicket.objects.all()[:1][0]
+        data['date'] = date(2015, 10, 1)
+        data['regular_hours'] = 4
+        data['pay_rate'] = 21.08
+
+        register, created = MaximoTimeRegister.objects.get_or_create(**data)
+        self.assertTrue(created)
+        self.assertTrue(data['employee'], register.employee)
+        register2, created = MaximoTimeRegister.objects.get_or_create(**data)
+        self.assertFalse(created)
+        self.assertEquals(register.pk, register2.pk)
+
+
+
 
 
