@@ -19,19 +19,17 @@ def row_to_dictionary(excel_row, mappings):
 
 def parse_hours(str_hours):
     parts = str_hours.split(':')
-    return Decimal(parts[0]) + Decimal(parts[1]) /60
+    return Decimal(parts[0]) + Decimal(parts[1]) / 60
 
 
 def parse_datetime_hours(hours):
-    return Decimal(hours.hour + hours.minute/60.0)
+    return Decimal(hours.hour + hours.minute / 60.0)
 
 
 def decimal_to_time(decimal_hours):
     hour = int(decimal_hours)
     minute = int((decimal_hours - int(decimal_hours)) * Decimal(60.0))
-    return time(hour,minute,0)
-
-
+    return time(hour, minute, 0)
 
 
 class MaximoExcelData(object):
@@ -100,13 +98,56 @@ class MaximoExcelData(object):
             sheet.cell(column=column + 1, row=row, value=v.upper())
         row += 1
         for ticket in tickets:
-            for v,column, in self.ticket_mappings.items():
+            for v, column, in self.ticket_mappings.items():
                 sheet.cell(column=column + 1, row=row, value=getattr(ticket, v))
             row += 1
 
         wb.save(filename)
 
+    def export_time_registers(self, filename, registers):
+        wb = Workbook()
+        sheet = wb.create_sheet(title=self.time_sheet)
+        row = 1
+        headers = ['Company Id', 'Username', 'Date', 'Hours', 'Pay Rate',
+                   'Ticket Type', 'Ticket Number', 'Ticket Name', 'Memo', 'Project', 'Project Source']
+        column = 1
+        for header in headers:
+            sheet.cell(column=column, row=row, value=header)
+            column += 1
+        for register in registers:
+            row += 1
+            column = 1
+            sheet.cell(column=column, row=row, value=register.employee.company_id)
+            column += 1
+            sheet.cell(column=column, row=row, value=register.employee.user.username)
+            column += 1
+            sheet.cell(column=column, row=row, value=register.date)
+            column += 1
+            sheet.cell(column=column, row=row, value=register.regular_hours)
+            column += 1
+            sheet.cell(column=column, row=row, value=register.pay_rate)
+            column += 1
+            sheet.cell(column=column, row=row, value=register.ticket.ticket_type)
+            column += 1
+            sheet.cell(column=column, row=row, value=register.ticket.number)
+            column += 1
+            sheet.cell(column=column, row=row, value=register.ticket.name)
+            column += 1
+            sheet.cell(column=column, row=row, value=register.description)
+            column += 1
+            sheet.cell(column=column, row=row, value=register.ticket.project)
+            column += 1
+            sheet.cell(column=column, row=row, value='NA')
+        wb.save(filename)
+
     def save_time_registers(self, filename, registers):
+        """
+        Saves a queryset of MaximoTimeRegister objects to an excel format that matches the load file format. The load
+        file forma is explained at the class level documentacions
+        :param filename: Excel filename to save the MaximoTimeRegister
+        :param registers: QuerySet of MaximoTimeRegister
+        :return: None
+        """
         wb = Workbook()
         sheet = wb.create_sheet(title=self.time_sheet)
         row = 1
@@ -125,6 +166,8 @@ class MaximoExcelData(object):
             sheet.cell(column=col, row=row, value=register.employee.user.username)
             col = self.time_register_mappings['pay_rate'] + 1
             sheet.cell(column=col, row=row, value=register.pay_rate)
+            col = self.time_register_mappings['description'] + 1
+            sheet.cell(column=col, row=row, value=register.description)
             if register.ticket.ticket_type == MaximoTicket.MAXIMO_WORKORDER:
                 col = self.time_register_mappings['wo_number'] + 1
                 sheet.cell(column=col, row=row, value=register.ticket.number)
@@ -140,10 +183,10 @@ class MaximoExcelData(object):
         sheet_name = kwargs.get('Time', self.time_sheet)
         time_sheet = wb[sheet_name]
         time_results = {'rows_parsed': 0,
-                   'created': 0,
-                   'duplicates': 0,
-                   'sheet': sheet_name,
-                   'errors': list()}
+                        'created': 0,
+                        'duplicates': 0,
+                        'sheet': sheet_name,
+                        'errors': list()}
         row_num = 1
         created_count = 0
         updated = 0
@@ -158,7 +201,8 @@ class MaximoExcelData(object):
                     attributes['date'] = row[self.time_register_mappings['date']].value
                     regular_hours = parse_datetime_hours(row[self.time_register_mappings['regular_hours']].value)
                     if regular_hours > 8.0:
-                        raise ValueError('Regular hours cannot exceed 8 hours. Your are trying to add %.1f hours' % regular_hours)
+                        raise ValueError(
+                            'Regular hours cannot exceed 8 hours. Your are trying to add %.1f hours' % regular_hours)
                     register_summary = MaximoTimeRegister.objects.get_employee_total_regular_hours(**attributes)
                     total_regular_hours = 0
                     if register_summary['total_regular_hours'] is not None:
@@ -174,23 +218,23 @@ class MaximoExcelData(object):
                             created_count += 1
                         else:
                             msg = 'Data on row %d for employee %s  ' \
-                              'seems to be duplicated for record %d' % (row_num, attributes['employee'],
-                                                                       register.pk)
+                                  'seems to be duplicated for record %d' % (row_num, attributes['employee'],
+                                                                            register.pk)
                             logger.warn(msg)
                             error = {'row_num': row_num,
                                      'type': 'Possible duplicate',
-                                     'message':msg}
+                                     'message': msg}
                             errors.append(error)
                             duplicate_count += 1
                     else:
                         msg = 'Data on row %d for employee %s exceeds ' \
                               'the maximum regular hour. It would end up having %.1f hours' % (row_num,
-                                                                                         attributes['employee'],
-                                                                                         total_regular_hours + regular_hours)
+                                                                                               attributes['employee'],
+                                                                                               total_regular_hours + regular_hours)
                         logger.warn(msg)
                         error = {'row_num': row_num,
                                  'type': 'Exceed maximum 8 regular hours',
-                                 'message':msg}
+                                 'message': msg}
                         errors.append(error)
                         duplicate_count += 1
                 except Employee.DoesNotExist:
@@ -200,14 +244,14 @@ class MaximoExcelData(object):
                     logger.warn(msg)
                     error = {'row_num': row_num,
                              'type': 'Employee does not exist',
-                             'message':msg}
+                             'message': msg}
                     errors.append(error)
                 except MaximoTicket.DoesNotExist:
                     msg = '%s with number %s on line %d does not exist' % (ticket_type, number, row_num)
                     logger.warn(msg)
                     error = {'row_num': row_num,
                              'type': 'Ticket does not exist',
-                             'message':msg}
+                             'message': msg}
                     errors.append(error)
                 except TypeError as te:
                     msg = 'Unexpected error %s on row %d' % (te, row_num)
@@ -223,7 +267,7 @@ class MaximoExcelData(object):
                              'type': 'Value Error',
                              'message': msg}
                     errors.append(error)
-            row_num +=1
+            row_num += 1
         time_results['rows_parsed'] = row_num - 2
         time_results['created'] = created_count
         time_results['duplicates'] = duplicate_count
