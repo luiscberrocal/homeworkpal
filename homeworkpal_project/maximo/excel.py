@@ -37,6 +37,7 @@ def decimal_to_time(decimal_hours):
 class MaximoExcelData(object):
     LOAD_TICKETS = 'LOAD_TICKETS'
     LOAD_TIME = 'LOAD_TIME'
+    LOAD_ALL = 'LOAD_ALL'
 
     def __init__(self, stdout=None):
         self.ticket_mappings = {'ticket_type': 0 , 'number': 1, 'name': 2}
@@ -56,7 +57,7 @@ class MaximoExcelData(object):
         if self.stdout:
             self.stdout.write(msg)
 
-    def load(self, filename, action=None, allow_update=False, **kwargs):
+    def load(self, filename, action=LOAD_ALL, allow_update=False, **kwargs):
         wb = load_workbook(filename=filename, data_only=True)
         ticket_results = dict()
         time_results = dict()
@@ -64,7 +65,7 @@ class MaximoExcelData(object):
             ticket_results = self.load_tickets(wb, allow_update=allow_update, **kwargs)
         elif action == self.LOAD_TIME:
             time_results = self.load_time_registers(wb, allow_update=allow_update, **kwargs)
-        elif action is None:
+        elif action is self.LOAD_ALL:
             ticket_results = self.load_tickets(wb, allow_update=allow_update, **kwargs)
             time_results = self.load_time_registers(wb, allow_update=allow_update, **kwargs)
         else:

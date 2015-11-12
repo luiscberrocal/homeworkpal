@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 class ProcessExcelTask(Task):
 
-    def run(self, document_id, **kwargs):
+    def run(self, document_id, load_type, **kwargs):
         try:
             document = DataDocument.objects.get(pk=document_id)
         except:
@@ -18,7 +18,7 @@ class ProcessExcelTask(Task):
         document.date_start_processing = timezone.now()
         document.save()
         try:
-            results = data_loader.load(document.docfile.file)
+            results = data_loader.load(document.docfile.file, load_type)
         except Exception as e:
             msg = 'Error loading file %s. %s: %s' % (document.docfile.name, type(e).__name__,  e)
             logger.error(msg)

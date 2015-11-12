@@ -41,7 +41,6 @@ class MaximoView(TemplateView):
         ctx['sql'] = base_where_clause % (labor_code_condition, ctx['start_date'], ctx['end_date'])
         return ctx
 
-
     def _build_labor_condition(self, employees):
         labor_code_condition = ''
         count = 1
@@ -53,9 +52,11 @@ class MaximoView(TemplateView):
             count += 1
         return labor_code_condition
 
+
 class DataDocumentDetailView(LoginRequiredMixin, DetailView):
     model = DataDocument
     context_object_name = 'datadocument'
+
 
 class DataDocumentListView(LoginRequiredMixin, ListView):
     model = DataDocument
@@ -66,14 +67,11 @@ class DataDocumentCreateView(LoginRequiredMixin, CreateView):
     form_class = DataDocumentForm
     success_url = reverse_lazy('maximo:upload-list')
 
-
-
-
     def form_valid(self, form):
         ext = form.instance.docfile.name.split('.')[1]
         form.instance.extension = ext
         form.save()
-        ProcessExcelTask.delay(form.instance.pk)
+        ProcessExcelTask.delay(form.instance.pk, form.cleaned_data['load_type'])
         # form.instance.date_start_processing = timezone.now()
         # data_loader = MaximoExcelData()
         # results = data_loader.load(form.instance.docfile.file)

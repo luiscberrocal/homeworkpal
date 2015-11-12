@@ -53,3 +53,4 @@ test_data/~$*.xlsx
 test_data/locks_workbenches_*.xlsx
 homeworkpal_project/homeworkpal_project/homework_pal_*.sqlite3
 media/
+test_data/maximo_data.xlsx
