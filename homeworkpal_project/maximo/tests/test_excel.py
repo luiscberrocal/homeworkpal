@@ -2,7 +2,7 @@ from django.utils import timezone
 import os
 from django.test import TestCase
 from employee.models import Employee
-from homeworkpal_project.settings.base import TEST_DATA_PATH
+from homeworkpal_project.settings.base import TEST_DATA_PATH, TEST_OUTPUT_PATH
 from maximo.excel import MaximoExcelData, parse_hours
 from maximo.models import MaximoTicket, MaximoTimeRegister
 from maximo.tests.factories import MaximoTicketFactory, MaximoTimeRegisterFactory
@@ -55,7 +55,7 @@ class TestExcel(TestCase):
         tickets = MaximoTicket.objects.all()
         self.assertEqual(10, len(tickets))
         ticket_pos = get_ticket_position(limit=10)
-        filename = os.path.join(TEST_DATA_PATH, '%s_%s.xlsx' % ('maximo_time_data', timezone.now().strftime('%Y%m%d_%H%M')))
+        filename = os.path.join(TEST_OUTPUT_PATH, '%s_%s.xlsx' % ('maximo_time_data', timezone.now().strftime('%Y%m%d_%H%M')))
         excel_data = MaximoExcelData()
         start_date = date(2015, 9, 1)
         end_date = date(2015, 9, 30)
@@ -66,6 +66,26 @@ class TestExcel(TestCase):
                 MaximoTimeRegisterFactory.create(employee=employee,date=dt, ticket=ticket)
         registers = MaximoTimeRegister.objects.all()
         excel_data.save_time_registers(filename, registers)
+        self.assertTrue(os.path.exists(filename))
+        logger.debug('Wrote: %s' % filename)
+        os.remove(filename)
+        self.assertFalse(os.path.exists(filename))
+
+    def test_export_time_registers(self):
+        tickets = MaximoTicket.objects.all()
+        self.assertEqual(10, len(tickets))
+        ticket_pos = get_ticket_position(limit=10)
+        filename = os.path.join(TEST_OUTPUT_PATH, '%s_%s.xlsx' % ('maximo_time_data_export', timezone.now().strftime('%Y%m%d_%H%M')))
+        excel_data = MaximoExcelData()
+        start_date = date(2015, 9, 1)
+        end_date = date(2015, 9, 30)
+        employees = Employee.objects.all()
+        for dt in daterange(start_date, end_date):
+            for employee in employees:
+                ticket = tickets[next(ticket_pos)]
+                MaximoTimeRegisterFactory.create(employee=employee,date=dt, ticket=ticket)
+        registers = MaximoTimeRegister.objects.all()
+        excel_data.export_time_registers(filename, registers)
         self.assertTrue(os.path.exists(filename))
         logger.debug('Wrote: %s' % filename)
         os.remove(filename)
@@ -83,7 +103,7 @@ class TestExcel(TestCase):
 
 
     def test_write_tickets(self):
-        filename = os.path.join(TEST_DATA_PATH, '%s_%s.xlsx' % ('maximo_tickets', timezone.now().strftime('%Y%m%d_%H%M')))
+        filename = os.path.join(TEST_OUTPUT_PATH, '%s_%s.xlsx' % ('maximo_tickets', timezone.now().strftime('%Y%m%d_%H%M')))
         excel_data = MaximoExcelData()
         tickets = MaximoTicketFactory.create_batch(10)
         excel_data.save_tickets(filename, tickets)

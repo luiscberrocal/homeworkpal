@@ -11,7 +11,8 @@ class DataDocumentForm(forms.ModelForm):
                     (MaximoExcelData.LOAD_TICKETS, _('Load Tickets')),
                     (MaximoExcelData.LOAD_TIME, _('Load Time'))
                     )
-    load_type = forms.ChoiceField(choices=LOAD_CHOICES, label=_('Load Type'))
+    load_type = forms.ChoiceField(choices=LOAD_CHOICES, label=_('Load Type'), initial=3)
+
     class Meta:
         model = DataDocument
         fields = ('docfile',)

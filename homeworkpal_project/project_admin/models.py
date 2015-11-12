@@ -58,6 +58,7 @@ class Project(models.Model):
     def __str__(self):
         return self.short_name
 
+
 class ProjectMember(models.Model):
     ROLE_TEAM_MEMBER = 'MEMBER'
     ROLE_TEAM_LEADER = 'LEADER'
@@ -70,7 +71,7 @@ class ProjectMember(models.Model):
     role = models.CharField(max_length=15, choices=ROLES, default=ROLE_TEAM_MEMBER)
     employee = models.ForeignKey(Employee, related_name='projects')
     project = models.ForeignKey(Project, related_name='members')
-    start_date = models.DateField(default=timezone.now())
+    start_date = models.DateField(default=timezone.now)
     end_date = models.DateField(null=True, blank=True)
 
     objects = ProjectMemberManager()
