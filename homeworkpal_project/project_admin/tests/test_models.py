@@ -1,7 +1,7 @@
 from django.test import TestCase
 from employee.tests.factories import EmployeeFactory
-from project_admin.models import ProjectMember
-from project_admin.tests.factories import ProjectMemberFactory
+from ..models import ProjectMember, ProjectGoal
+from .factories import ProjectMemberFactory, ProjectGoalFactory
 
 import logging
 
@@ -25,6 +25,14 @@ class TestProjectMember(TestCase):
             ProjectMemberFactory.create(project=member.project, employee=employee)
         assigned = ProjectMember.objects.assigned_to_project(member.project)
         self.assertEqual(6, len(assigned))
+
+
+class TestProjectGoal(TestCase):
+
+    def test_create(self):
+        goal = ProjectGoalFactory.create()
+        self.assertEqual(1, ProjectGoal.objects.count())
+        self.assertIsNone(goal.project)
 
     # def test_unassigned_to_project(self):
     #     employees = EmployeeFactory.create_batch(10)

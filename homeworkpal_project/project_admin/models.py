@@ -115,8 +115,12 @@ class Deliverable(models.Model):
     def __str__(self):
         return '%s - %s' %(self.project, self.name)
 
+
 class ProjectGoal(models.Model):
-    project = models.ForeignKey(Project)
+    name = models.CharField(max_length=120, null=True)
+    description = models.TextField(null=True)
+    expectations = models.TextField(null=True)
+    project = models.ForeignKey(Project, null=True)
     employee = models.ForeignKey(Employee)
     weight = models.FloatField(validators=[MaxValueValidator(1.0), MinValueValidator(0.0)])
     expected_advancement = models.FloatField(validators=[MaxValueValidator(1.0), MinValueValidator(0.0)], default=0.9)

@@ -2,7 +2,7 @@ from datetime import timedelta
 from factory import LazyAttribute, lazy_attribute, SubFactory
 from factory.django import DjangoModelFactory
 from employee.tests.factories import CompanyGroupFactory, EmployeeFactory
-from ..models import Project, ProjectMember
+from ..models import Project, ProjectMember, ProjectGoal
 
 __author__ = 'lberrocal'
 from faker import Factory as FakerFactory
@@ -31,6 +31,7 @@ class ProjectFactory(DjangoModelFactory):
     def planned_end_date(self):
         return self.planned_start_date + +timedelta(days=180)
 
+
 class ProjectMemberFactory(DjangoModelFactory):
 
     class Meta:
@@ -39,4 +40,17 @@ class ProjectMemberFactory(DjangoModelFactory):
     role = 'MEMBER'
     employee = SubFactory(EmployeeFactory)
     project = SubFactory(ProjectFactory)
+
+
+class ProjectGoalFactory(DjangoModelFactory):
+
+    class Meta:
+        model = ProjectGoal
+
+    name = LazyAttribute(lambda x: faker.sentence(nb_words=6, variable_nb_words=True))
+    description = LazyAttribute(lambda x: faker.paragraphs(nb=2))
+    expectations = LazyAttribute(lambda x: faker.paragraphs(nb=1))
+    project = None
+    employee = SubFactory(EmployeeFactory)
+    weight = 0.1
 
