@@ -125,6 +125,28 @@ class ProjectGoal(models.Model):
     weight = models.FloatField(validators=[MaxValueValidator(1.0), MinValueValidator(0.0)])
     expected_advancement = models.FloatField(validators=[MaxValueValidator(1.0), MinValueValidator(0.0)], default=0.9)
 
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        if self.project is not None:
+            try:
+                member = ProjectMember.objects.get(project=self.project, employee=self.employee)
+                self.name = self.project.short_name
+                self.description = self.project.description
+                self.expectations = 'Haber alcanzado el 90%% de avance antes del %s.' % self.project.planned_end_date.strftime('%d-%b-%Y')
+
+                if member.role == 'LEADER':
+                    self.expectations += 'Como líder del proyecto debe apoyar la gestión del supervisor dandole seguimiento ' \
+                                         'a los recursos contratados y dar informes periódicos de ' \
+                                         'avances, asi como comunicar oportunamente de impedimentos ' \
+                                         'y problemas.'
+            except ProjectMember.DoesNotExist:
+                raise ValueError('Cannot assign %s to goal '
+                                 'related to project %s because he is not a member' % (self.employee, self.project))
+
+
+        return super(ProjectGoal, self).save(force_insert=force_insert, force_update=force_update, using=using,
+             update_fields=update_fields)
+
 
 class Stakeholder(models.Model):
     employee = models.ForeignKey(Employee, related_name='projects_as_stakeholder')
