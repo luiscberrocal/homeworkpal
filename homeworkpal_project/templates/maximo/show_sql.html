@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 {% load staticfiles %}
 {% load i18n %}
+{% block extra_css %}
+<script src="{% static 'js/clipboard.min.js' %}"></script>
+{% endblock extra_css %}
 {% block page_title %} Maximo Where Clause {% endblock page_title %}
 {% block content %}
 <div id="where-clause">
@@ -15,8 +18,11 @@
         <label for="end-date">End Date: </label>
         <input  id="end-date" type="text" class="form-control" placeholder="End Date" value="{{ end_date }}">
     </div>
-    <div id="test">
-    bla
+    <div>
+    <button class="btn btn-primary" data-clipboard-target="#where-clause">
+    Copy to clipboard
+</button>
+
     </div>
 
 </div>
@@ -25,6 +31,22 @@
 {% block extra_js %}
 
 <script>
+
+var clipboard = new Clipboard('.btn');
+
+clipboard.on('success', function(e) {
+    console.info('Action:', e.action);
+    console.info('Text:', e.text);
+    console.info('Trigger:', e.trigger);
+
+    e.clearSelection();
+});
+
+clipboard.on('error', function(e) {
+    console.error('Action:', e.action);
+    console.error('Trigger:', e.trigger);
+});
+
 var i = 0;
 var where = [];
 {% for wp in where_parts %}
