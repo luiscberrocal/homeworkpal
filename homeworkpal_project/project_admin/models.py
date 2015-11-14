@@ -32,7 +32,10 @@ class Project(models.Model):
     type = models.CharField(max_length=8, choices=PROJECT_TYPES, default=MAIN_PROJECT)
     group = models.ForeignKey(CompanyGroup, null=True)
     priority = models.IntegerField(default=10, help_text=_('The lower the number the higher the priority'))
-    fiscal_year = models.CharField(max_length=4, validators=[RegexValidator(regex=r'^AF\d2$')])
+    fiscal_year = models.CharField(max_length=4,
+                                   validators=[RegexValidator(regex=r'^AF\d{2}$',
+                                                              message=_('Fiscal year must us format AFYY. '
+                                                                        'For example AF16 for fiscal year 2016'))])
 
     def _leader(self):
         try:
@@ -96,8 +99,13 @@ class Risk(models.Model):
 
 class CorporateGoal(models.Model):
     number = models.CharField(max_length=4, unique=True)
+    name = models.CharField(max_length=120)
     description = models.TextField()
-    fiscal_year = models.IntegerField(default=2016)
+    fiscal_year = models.CharField(max_length=4,
+                                   validators=[RegexValidator(regex=r'^AF\d{2}$',
+                                                              message=_('Fiscal year must us format AFYY. '
+                                                                        'For example AF16 for fiscal year 2016'))])
+
 
     def __str__(self):
         return '%s - %s' % (self.number, self.description)
@@ -122,11 +130,15 @@ class ProjectGoal(models.Model):
     description = models.TextField(null=True)
     expectations = models.TextField(null=True)
     project = models.ForeignKey(Project, null=True)
-    employee = models.ForeignKey(Employee)
+    employee = models.ForeignKey(Employee, related_name='goals')
     weight = models.FloatField(validators=[MaxValueValidator(1.0), MinValueValidator(0.0)])
     expected_advancement = models.FloatField(validators=[MaxValueValidator(1.0), MinValueValidator(0.0)], default=0.9)
     update_goal_info = models.BooleanField(default=True, help_text=_('Will update name, description and expectations based on the project information'))
-    fiscal_year = models.CharField(max_length=4, validators=[RegexValidator(regex=r'^AF\d2$')])
+    fiscal_year = models.CharField(max_length=4,
+                                   validators=[RegexValidator(regex=r'^AF\d{2}$',
+                                                              message=_('Fiscal year must use format AFYY. '
+                                                                        'For example AF16 for fiscal year 2016'))])
+
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):

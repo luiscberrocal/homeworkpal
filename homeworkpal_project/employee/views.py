@@ -56,3 +56,9 @@ class EmployeeProjectsView(LoginRequiredMixin, DetailView):
     model = Employee
     context_object_name = 'employee'
     template_name = 'employee/employee_projects.html'
+
+
+class EmployeeGoalsView(LoginRequiredMixin, DetailView):
+    model = Employee
+    context_object_name = 'employee'
+    template_name = 'employee/employee_goals.html'

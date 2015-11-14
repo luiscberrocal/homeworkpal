@@ -48,6 +48,7 @@ class TestProjectGoal(TestCase):
         self.assertEqual(project.short_name, goal.name)
         self.assertEqual(project.description, goal.description)
         self.assertTrue(goal.expectations.startswith('Haber alcanzado el '))
+        self.assertTrue(goal.fiscal_year.startswith('AF'))
 
 
 
