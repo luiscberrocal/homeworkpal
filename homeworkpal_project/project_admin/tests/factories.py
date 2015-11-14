@@ -1,6 +1,7 @@
-from datetime import timedelta
+from datetime import timedelta, date
 from factory import LazyAttribute, lazy_attribute, SubFactory
 from factory.django import DjangoModelFactory
+from common.utils import get_fiscal_year
 from employee.tests.factories import CompanyGroupFactory, EmployeeFactory
 from ..models import Project, ProjectMember, ProjectGoal
 
@@ -31,6 +32,10 @@ class ProjectFactory(DjangoModelFactory):
     def planned_end_date(self):
         return self.planned_start_date + +timedelta(days=180)
 
+    @lazy_attribute
+    def fiscal_year(self):
+        return get_fiscal_year(self.planned_start_date)
+
 
 class ProjectMemberFactory(DjangoModelFactory):
 
@@ -53,4 +58,11 @@ class ProjectGoalFactory(DjangoModelFactory):
     project = None
     employee = SubFactory(EmployeeFactory)
     weight = 0.1
+
+    @lazy_attribute
+    def fiscal_year(self):
+        if self.project:
+            return get_fiscal_year(self.project.planned_start_date)
+        else:
+            return get_fiscal_year(date.today())
 
