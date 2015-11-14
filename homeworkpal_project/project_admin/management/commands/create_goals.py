@@ -1,7 +1,7 @@
 from datetime import date
 from django.core.management import BaseCommand
 from common.utils import get_fiscal_year
-from project_admin.models import ProjectMember, ProjectGoal
+from project_admin.models import ProjectMember, ProjectGoal, IndividualGoal
 import logging
 logger = logging.getLogger(__name__)
 __author__ = 'lberrocal'
@@ -26,7 +26,7 @@ class Command(BaseCommand):
         count = 0
         for member in members:
             default_data = {'weight' : 0.1}
-            goal, created = ProjectGoal.objects.get_or_create(project=member.project,
+            goal, created = IndividualGoal.objects.get_or_create(project=member.project,
                                                               employee=member.employee,
                                                               fiscal_year=fiscal_year,
                                                               defaults=default_data)

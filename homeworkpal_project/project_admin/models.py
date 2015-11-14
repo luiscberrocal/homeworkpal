@@ -7,6 +7,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 # Create your models here.
 from django.utils import timezone
+from model_utils.models import TimeStampedModel
 from employee.models import Employee, CompanyGroup
 from project_admin.managers import ProjectMemberManager
 from project_admin.utils import Holiday
@@ -125,12 +126,55 @@ class Deliverable(models.Model):
         return '%s - %s' %(self.project, self.name)
 
 
+class IndividualGoal(TimeStampedModel):
+    name = models.CharField(max_length=120, null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
+    expectations = models.TextField(null=True, blank=True)
+    project = models.ForeignKey(Project, null=True, blank=True)
+    employee = models.ForeignKey(Employee, related_name='goals')
+    weight = models.FloatField(validators=[MaxValueValidator(1.0), MinValueValidator(0.0)])
+    expected_advancement = models.FloatField(validators=[MaxValueValidator(1.0), MinValueValidator(0.0)], default=0.9)
+    update_goal_info = models.BooleanField(default=True, help_text=_('Will update name, description and expectations based on the project information'))
+    fiscal_year = models.CharField(max_length=4,
+                                   validators=[RegexValidator(regex=r'^AF\d{2}$',
+                                                              message=_('Fiscal year must use format AFYY. '
+                                                                        'For example AF16 for fiscal year 2016'))])
+
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        if self.project is not None and self.update_goal_info:
+            try:
+                member = ProjectMember.objects.get(project=self.project, employee=self.employee)
+                self.update_goal_info = False
+                self.name = self.project.short_name
+                self.description = self.project.description
+                self.expectations = 'Haber alcanzado el 90%% de avance antes del %s.' \
+                                    % self.project.planned_end_date.strftime('%d-%b-%Y')
+                if self.project.corporate_goals.count() > 0:
+                    for goal_assignment in self.project.corporate_goals.all():
+                        self.description += 'Este proyecto apoya la meta corporativa %s - %s.'\
+                                            % (goal_assignment.corporate_goal.number,
+                                               goal_assignment.corporate_goal.name)
+                if member.role == 'LEADER':
+                    self.expectations += 'Como líder del proyecto debe apoyar la gestión del supervisor dandole seguimiento ' \
+                                         'a los recursos contratados y dar informes periódicos de ' \
+                                         'avances, asi como comunicar oportunamente de impedimentos ' \
+                                         'y problemas.'
+            except ProjectMember.DoesNotExist:
+                raise ValueError('Cannot assign %s to goal '
+                                 'related to project %s because he is not a member' % (self.employee, self.project))
+
+
+        return super(IndividualGoal, self).save(force_insert=force_insert, force_update=force_update, using=using,
+             update_fields=update_fields)
+
 class ProjectGoal(models.Model):
     name = models.CharField(max_length=120, null=True)
     description = models.TextField(null=True)
     expectations = models.TextField(null=True)
     project = models.ForeignKey(Project, null=True)
-    employee = models.ForeignKey(Employee, related_name='goals')
+    employee = models.ForeignKey(Employee, related_name='project_goals_old')
     weight = models.FloatField(validators=[MaxValueValidator(1.0), MinValueValidator(0.0)])
     expected_advancement = models.FloatField(validators=[MaxValueValidator(1.0), MinValueValidator(0.0)], default=0.9)
     update_goal_info = models.BooleanField(default=True, help_text=_('Will update name, description and expectations based on the project information'))
