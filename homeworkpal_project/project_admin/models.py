@@ -140,6 +140,8 @@ class IndividualGoal(TimeStampedModel):
                                    validators=[RegexValidator(regex=r'^AF\d{2}$',
                                                               message=_('Fiscal year must use format AFYY. '
                                                                         'For example AF16 for fiscal year 2016'))])
+    def __str__(self):
+        return self.name
 
     def copy(self, employee):
         if self.project is not None:
