@@ -1,6 +1,9 @@
+from datetime import date
 from django.core.management import BaseCommand
+from common.utils import get_fiscal_year
 from project_admin.models import ProjectMember, ProjectGoal
-
+import logging
+logger = logging.getLogger(__name__)
 __author__ = 'lberrocal'
 
 class Command(BaseCommand):
@@ -10,15 +13,23 @@ class Command(BaseCommand):
 
 
     def handle(self, *args, **options):
-        fiscal_year = options.get('fiscal_year', 'AF16')
+        default_fiscal_year = get_fiscal_year(date.today())
+        #logger.debug('Default FY %s' % default_fiscal_year)
+        if options['fiscal_year'] is None:
+            fiscal_year = default_fiscal_year
+        else:
+            fiscal_year = options['fiscal_year']
+        self.stdout.write('Creating goals for fiscal year %s' % fiscal_year)
         members = ProjectMember.objects.filter(project__fiscal_year=fiscal_year).select_related('project', 'employee')
         created_count = 0
         updated_count = 0
         count = 0
         for member in members:
+            default_data = {'weight' : 0.1}
             goal, created = ProjectGoal.objects.get_or_create(project=member.project,
                                                               employee=member.employee,
-                                                              fiscal_year=fiscal_year)
+                                                              fiscal_year=fiscal_year,
+                                                              defaults=default_data)
             count += 1
             if created:
                 action='Created'
@@ -26,8 +37,8 @@ class Command(BaseCommand):
             else:
                 action='Updated'
                 updated_count += 1
-            self.stdout.write('%d %s Goal %s for %s' % (count, goal.name, goal.employee))
-        self.stdout.write('Created %d Updated %d Total %d' (created_count, updated_count, count))
+            self.stdout.write('%d %s Goal %s for %s' % (count, action, goal.name, goal.employee))
+        self.stdout.write('Created %d Updated %d Total %d' % (created_count, updated_count, count))
 
 
 
