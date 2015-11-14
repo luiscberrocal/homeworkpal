@@ -10,6 +10,7 @@ class ProjectMemberManager(Manager):
     def assigned_to_project(self, project):
         return self.get_queryset().filter(project=project).select_related('employee', 'employee__user')
 
+
     # def unassigned_to_project(self, project, company_group=None):
     #     if company_group:
     #         group_assignments = CompanyGroupEmployeeAssignment.objects.group_members(company_group)

@@ -2,9 +2,9 @@
 from autoslug import AutoSlugField
 from datetime import timedelta
 from django.core.urlresolvers import reverse
-from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.validators import MaxValueValidator, MinValueValidator, RegexValidator
 from django.db import models
-
+from django.utils.translation import ugettext_lazy as _
 # Create your models here.
 from django.utils import timezone
 from employee.models import Employee, CompanyGroup
@@ -31,7 +31,8 @@ class Project(models.Model):
     planned_man_hours = models.DecimalField(max_digits=7, decimal_places=2)
     type = models.CharField(max_length=8, choices=PROJECT_TYPES, default=MAIN_PROJECT)
     group = models.ForeignKey(CompanyGroup, null=True)
-    priority = models.IntegerField(default=10, help_text='The lower the number the higher the priority')
+    priority = models.IntegerField(default=10, help_text=_('The lower the number the higher the priority'))
+    fiscal_year = models.CharField(max_length=4, validators=[RegexValidator(regex=r'^AF\d2$')])
 
     def _leader(self):
         try:
@@ -115,11 +116,40 @@ class Deliverable(models.Model):
     def __str__(self):
         return '%s - %s' %(self.project, self.name)
 
+
 class ProjectGoal(models.Model):
-    project = models.ForeignKey(Project)
+    name = models.CharField(max_length=120, null=True)
+    description = models.TextField(null=True)
+    expectations = models.TextField(null=True)
+    project = models.ForeignKey(Project, null=True)
     employee = models.ForeignKey(Employee)
     weight = models.FloatField(validators=[MaxValueValidator(1.0), MinValueValidator(0.0)])
     expected_advancement = models.FloatField(validators=[MaxValueValidator(1.0), MinValueValidator(0.0)], default=0.9)
+    update_goal_info = models.BooleanField(default=True, help_text=_('Will update name, description and expectations based on the project information'))
+    fiscal_year = models.CharField(max_length=4, validators=[RegexValidator(regex=r'^AF\d2$')])
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        if self.project is not None and self.update_goal_info:
+            try:
+                member = ProjectMember.objects.get(project=self.project, employee=self.employee)
+                self.update_goal_info = False
+                self.name = self.project.short_name
+                self.description = self.project.description
+                self.expectations = 'Haber alcanzado el 90%% de avance antes del %s.' % self.project.planned_end_date.strftime('%d-%b-%Y')
+
+                if member.role == 'LEADER':
+                    self.expectations += 'Como líder del proyecto debe apoyar la gestión del supervisor dandole seguimiento ' \
+                                         'a los recursos contratados y dar informes periódicos de ' \
+                                         'avances, asi como comunicar oportunamente de impedimentos ' \
+                                         'y problemas.'
+            except ProjectMember.DoesNotExist:
+                raise ValueError('Cannot assign %s to goal '
+                                 'related to project %s because he is not a member' % (self.employee, self.project))
+
+
+        return super(ProjectGoal, self).save(force_insert=force_insert, force_update=force_update, using=using,
+             update_fields=update_fields)
 
 
 class Stakeholder(models.Model):
