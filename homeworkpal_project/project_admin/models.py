@@ -4,6 +4,7 @@ from datetime import timedelta
 from django.core.urlresolvers import reverse
 from django.core.validators import MaxValueValidator, MinValueValidator, RegexValidator
 from django.db import models
+from django.forms import model_to_dict
 from django.utils.translation import ugettext_lazy as _
 # Create your models here.
 from django.utils import timezone
@@ -139,6 +140,19 @@ class IndividualGoal(TimeStampedModel):
                                    validators=[RegexValidator(regex=r'^AF\d{2}$',
                                                               message=_('Fiscal year must use format AFYY. '
                                                                         'For example AF16 for fiscal year 2016'))])
+
+    def copy(self, employee):
+        if self.project is not None:
+            raise ValueError('Cannot copy an individual goal that has a project'
+                             ' assigned. Goal %s is assigned to project %s' % (self.name, self.project))
+        model_dict=model_to_dict(self, fields=['name', 'description',
+                                               'expectations', 'employee',
+                                               'weight', 'expected_advancement',
+                                               'fiscal_year'])
+        model_dict['employee'] = employee
+        goal, created = IndividualGoal.objects.get_or_create(**model_dict)
+        return goal.pk, created
+
 
 
     def save(self, force_insert=False, force_update=False, using=None,

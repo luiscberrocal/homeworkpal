@@ -50,5 +50,24 @@ class TestIndividualGoal(TestCase):
         self.assertTrue(goal.expectations.startswith('Haber alcanzado el '))
         self.assertTrue(goal.fiscal_year.startswith('AF'))
 
+    def test_copy_goal_false(self):
+        goal = IndividualGoalFactory.create()
+        goal_pk, created = goal.copy(goal.employee)
+        self.assertFalse(created)
+        self.assertTrue(goal_pk > 0)
+
+
+    def test_copy_goal_true(self):
+        employee = EmployeeFactory.create()
+        goal = IndividualGoalFactory.create()
+        goal_pk, created = goal.copy(employee)
+        self.assertTrue(created)
+        goal_db = IndividualGoal.objects.get(pk=goal_pk)
+        self.assertIsNotNone(goal_db)
+
+
+
+
+
 
 
