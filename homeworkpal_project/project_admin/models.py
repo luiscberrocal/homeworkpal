@@ -108,7 +108,7 @@ class CorporateGoal(models.Model):
 
 
     def __str__(self):
-        return '%s - %s' % (self.number, self.description)
+        return '%s - %s' % (self.number, self.name)
 
 
 class CorporateGoalAssignment(models.Model):
@@ -148,8 +148,13 @@ class ProjectGoal(models.Model):
                 self.update_goal_info = False
                 self.name = self.project.short_name
                 self.description = self.project.description
-                self.expectations = 'Haber alcanzado el 90%% de avance antes del %s.' % self.project.planned_end_date.strftime('%d-%b-%Y')
-
+                self.expectations = 'Haber alcanzado el 90%% de avance antes del %s.' \
+                                    % self.project.planned_end_date.strftime('%d-%b-%Y')
+                if self.project.corporate_goals.count() > 0:
+                    for goal_assignment in self.project.corporate_goals.all():
+                        self.description += 'Este proyecto apoya la meta corporativa %s - %s.'\
+                                            % (goal_assignment.corporate_goal.number,
+                                               goal_assignment.corporate_goal.name)
                 if member.role == 'LEADER':
                     self.expectations += 'Como líder del proyecto debe apoyar la gestión del supervisor dandole seguimiento ' \
                                          'a los recursos contratados y dar informes periódicos de ' \

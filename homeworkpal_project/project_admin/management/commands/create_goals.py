@@ -32,10 +32,12 @@ class Command(BaseCommand):
                                                               defaults=default_data)
             count += 1
             if created:
-                action='Created'
+                action = 'Created'
                 created_count += 1
             else:
-                action='Updated'
+                goal.update_goal_info = True
+                goal.save()
+                action = 'Updated'
                 updated_count += 1
             self.stdout.write('%d %s Goal %s for %s' % (count, action, goal.name, goal.employee))
         self.stdout.write('Created %d Updated %d Total %d' % (created_count, updated_count, count))

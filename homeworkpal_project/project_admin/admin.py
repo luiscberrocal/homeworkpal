@@ -29,7 +29,7 @@ class RiskInLine(admin.TabularInline):
 
 class CorporateGoalAdmin(admin.ModelAdmin):
     model = CorporateGoal
-    list_display = [ 'fiscal_year', 'number', 'description']
+    list_display = [ 'name', 'fiscal_year', 'number', 'description']
 
 class ProjectMemberAdmin(admin.ModelAdmin):
     list_display = ['project','employee', 'role', 'start_date', 'end_date']
@@ -55,8 +55,13 @@ class StakeholderAdmin(admin.ModelAdmin):
 class DeliverableAdmin(admin.ModelAdmin):
     list_display = ['project', 'name']
 
+
 class RiskAdmin(admin.ModelAdmin):
     list_display = ['risk_type', 'project', 'priority', 'description']
+
+
+class CorporateGoalAssignmentAdmin(admin.ModelAdmin):
+    list_display = ['corporate_goal', 'project']
 
 admin.site.register(Project, ProjectAdmin)
 admin.site.register(ProjectGoal, ProjectGoalAdmin)
@@ -65,3 +70,4 @@ admin.site.register(Deliverable, DeliverableAdmin)
 admin.site.register(CorporateGoal, CorporateGoalAdmin)
 admin.site.register(Risk, RiskAdmin)
 admin.site.register(ProjectMember, ProjectMemberAdmin)
+admin.site.register(CorporateGoalAssignment, CorporateGoalAssignmentAdmin)
