@@ -18,7 +18,7 @@ class MaximoTicket(TimeStampedModel):
     MAXIMO_TICKET_TYPES = ((MAXIMO_SR, _('Service Request')),
                            (MAXIMO_WORKORDER, _('Work Order')))
     ticket_type = models.CharField(max_length=2, choices=MAXIMO_TICKET_TYPES, default=MAXIMO_SR)
-    number = models.CharField(max_length=7, validators=[RegexValidator(regex=r'\d{6}')])
+    number = models.CharField(max_length=7, validators=[RegexValidator(regex=r'\d{5,6}')])
     name = models.CharField(max_length=120)
     is_open = models.BooleanField(default=True)
     project = models.ForeignKey(Project, related_name='maximo_tickets', null=True, blank=True)
