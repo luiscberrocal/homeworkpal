@@ -1,31 +1,37 @@
 from django.db import models
-from django.db.models import Sum, Count
+from django.db.models import Sum, Count, QuerySet
 
 __author__ = 'lberrocal'
 
-# class MaximoTimeRegisterMixin(object):
-#     def by_author(self, user):
-#         return self.filter(user=user)
-#
-#     def published(self):
-#         return self.filter(published__lte=datetime.now())
-#
-# class PostQuerySet(QuerySet, PostMixin):
-#     pass
+class MaximoTimeRegisterMixin(object):
 
-class MaximoTimeRegisterManager(models.Manager):
     def get_employee_total_regular_hours(self, employee, date):
-        qs = self.get_queryset()
-        return qs.filter(employee=employee, date=date).aggregate(total_regular_hours=Sum('regular_hours'),
+        #qs = self.get_queryset()
+        return self.filter(employee=employee, date=date).aggregate(total_regular_hours=Sum('regular_hours'),
                                                                  register_count=Count('regular_hours'))
 
     def assign_projects_from_ticket(self):
-        qs = self.get_queryset()
+        #qs = self.get_queryset()
         updated_count = 0
-        for time_register in qs:
+        for time_register in self.filter():
             if time_register.project is None:
                 time_register.project = time_register.ticket.project
                 time_register.save()
                 updated_count += 1
         return updated_count
+
+
+class MaximoTimeRegisterQuerySet(QuerySet, MaximoTimeRegisterMixin):
+    pass
+
+class MaximoTimeRegisterManager(models.Manager):
+
+    def get_queryset(self):
+        return MaximoTimeRegisterQuerySet(self.model, using=self._db)
+
+    def assign_projects_from_ticket(self):
+        return self.get_queryset().assign_projects_from_ticket()
+
+    def get_employee_total_regular_hours(self, employee, date):
+        return self.get_queryset().get_employee_total_regular_hours(employee, date)
 
