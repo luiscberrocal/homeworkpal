@@ -1,4 +1,5 @@
 from django.utils import timezone
+from openpyxl import load_workbook
 import os
 from django.test import TestCase
 from employee.models import Employee
@@ -22,6 +23,7 @@ def daterange(start_date, end_date):
         else:
             continue
 
+
 def get_ticket_position(limit=10):
     count = 0
     a = 0
@@ -32,9 +34,6 @@ def get_ticket_position(limit=10):
         if count == limit:
             a = 0
             count = 0
-
-
-
 
 
 class TestExcel(TestCase):
@@ -52,18 +51,9 @@ class TestExcel(TestCase):
         self.assertEqual(21, work_days)
 
     def test_write_registers(self):
-        tickets = MaximoTicket.objects.all()
-        self.assertEqual(10, len(tickets))
-        ticket_pos = get_ticket_position(limit=10)
         filename = os.path.join(TEST_OUTPUT_PATH, '%s_%s.xlsx' % ('maximo_time_data', timezone.now().strftime('%Y%m%d_%H%M')))
         excel_data = MaximoExcelData()
-        start_date = date(2015, 9, 1)
-        end_date = date(2015, 9, 30)
-        employees = Employee.objects.all()
-        for dt in daterange(start_date, end_date):
-            for employee in employees:
-                ticket = tickets[next(ticket_pos)]
-                MaximoTimeRegisterFactory.create(employee=employee,date=dt, ticket=ticket)
+        self.create_time_registers(date(2015, 9, 1), date(2015, 9, 30))
         registers = MaximoTimeRegister.objects.all()
         excel_data.save_time_registers(filename, registers)
         self.assertTrue(os.path.exists(filename))
@@ -71,19 +61,37 @@ class TestExcel(TestCase):
         os.remove(filename)
         self.assertFalse(os.path.exists(filename))
 
-    def test_export_time_registers(self):
+    @staticmethod
+    def get_list_from_workbook(filename, sheet_name, row_limit=5):
+        wb = load_workbook(filename=filename, data_only=True)
+        time_sheet = wb[sheet_name]
+        row_num = 1
+        row_list = list()
+        for row in time_sheet.rows:
+            if row_num > 1:
+                if row_limit < row_num - 1:
+                    cell_list = list()
+                    for cell in row:
+                        cell_list.append(cell.value)
+                    row_list.append(cell_list)
+            row_num += 1
+        return row_list, row_num - 2
+
+    @staticmethod
+    def create_time_registers(start_date, end_date):
         tickets = MaximoTicket.objects.all()
-        self.assertEqual(10, len(tickets))
+        #self.assertEqual(10, len(tickets))
         ticket_pos = get_ticket_position(limit=10)
-        filename = os.path.join(TEST_OUTPUT_PATH, '%s_%s.xlsx' % ('maximo_time_data_export', timezone.now().strftime('%Y%m%d_%H%M')))
-        excel_data = MaximoExcelData()
-        start_date = date(2015, 9, 1)
-        end_date = date(2015, 9, 30)
         employees = Employee.objects.all()
         for dt in daterange(start_date, end_date):
             for employee in employees:
                 ticket = tickets[next(ticket_pos)]
-                MaximoTimeRegisterFactory.create(employee=employee,date=dt, ticket=ticket)
+                MaximoTimeRegisterFactory.create(employee=employee, date=dt, ticket=ticket)
+
+    def test_export_time_registers(self):
+        filename = os.path.join(TEST_OUTPUT_PATH, '%s_%s.xlsx' % ('maximo_time_data_export', timezone.now().strftime('%Y%m%d_%H%M')))
+        excel_data = MaximoExcelData()
+        self.create_time_registers(date(2015, 9, 1), date(2015, 9, 30))
         registers = MaximoTimeRegister.objects.all()
         excel_data.export_time_registers(filename, registers)
         self.assertTrue(os.path.exists(filename))
