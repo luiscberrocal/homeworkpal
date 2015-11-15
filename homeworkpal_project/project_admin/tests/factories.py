@@ -3,7 +3,7 @@ from factory import LazyAttribute, lazy_attribute, SubFactory
 from factory.django import DjangoModelFactory
 from common.utils import get_fiscal_year
 from employee.tests.factories import CompanyGroupFactory, EmployeeFactory
-from ..models import Project, ProjectMember, ProjectGoal
+from ..models import Project, ProjectMember, ProjectGoal, IndividualGoal
 
 __author__ = 'lberrocal'
 from faker import Factory as FakerFactory
@@ -47,10 +47,10 @@ class ProjectMemberFactory(DjangoModelFactory):
     project = SubFactory(ProjectFactory)
 
 
-class ProjectGoalFactory(DjangoModelFactory):
+class IndividualGoalFactory(DjangoModelFactory):
 
     class Meta:
-        model = ProjectGoal
+        model = IndividualGoal
 
     name = LazyAttribute(lambda x: faker.sentence(nb_words=6, variable_nb_words=True))
     description = LazyAttribute(lambda x: faker.paragraphs(nb=2))

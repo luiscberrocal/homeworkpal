@@ -21,7 +21,7 @@
         </div>
         <div class="col-md-3">
             <a class="btn btn-primary btn-sm" role="button" href="{% url 'employee:employee-projects' employee.pk %}">{% trans "View Projects" %}</a>
-            <a class="btn btn-primary btn-sm" role="button" href="#">{% trans "Edit" %}</a>
+            <a class="btn btn-primary btn-sm" role="button" href="{% url 'employee:employee-goals' employee.pk %}">{% trans "View Goals" %}</a>
         </div>
     </div>
     {% endfor %}

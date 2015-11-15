@@ -56,6 +56,14 @@ class TestEmployees(TestCase):
         group_employees = Employee.objects.from_group(group_assignment.group)
         self.assertEqual(6, len(group_employees))
 
+    def test_from_group_invalid_group_name(self):
+        group_assignment = CompanyGroupEmployeeAssignmentFactory.create()
+        employees = EmployeeFactory.create_batch(10)
+        for employee in employees[:5]:
+            group_assignment.group.assign(employee, date.today())
+        group_employees = Employee.objects.from_group('?95545)')
+        self.assertEqual(0, len(group_employees))
+
 
 
 

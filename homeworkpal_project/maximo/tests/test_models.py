@@ -4,6 +4,8 @@ from employee.models import Employee
 from maximo.models import MaximoTicket, MaximoTimeRegister
 from maximo.tests.factories import MaximoTicketFactory, MaximoTimeRegisterFactory
 import logging
+from maximo.tests.test_excel import TestExcel
+from project_admin.tests.factories import ProjectFactory
 
 __author__ = 'lberrocal'
 
@@ -64,7 +66,29 @@ class TestMaximoTimeRegister(TestCase):
         self.assertFalse(created)
         self.assertEquals(register.pk, register2.pk)
 
+    def test_assign_projects_from_ticket(self):
+        project = ProjectFactory.create()
+        tickets = MaximoTicket.objects.all()[:5]
+        for ticket in tickets:
+            ticket.project = project
+            ticket.save()
+        TestExcel.create_time_registers(date(2015, 9, 1), date(2015, 9, 30))
+        updated = MaximoTimeRegister.objects.assign_projects_from_ticket()
+        self.assertEqual(294, updated)
+        registers = MaximoTimeRegister.objects.filter(project__isnull=False)
+        self.assertEqual(149, len(registers))
 
+    def test_assign_projects_from_ticket_filter(self):
+        project = ProjectFactory.create()
+        tickets = MaximoTicket.objects.all()[:5]
+        for ticket in tickets:
+            ticket.project = project
+            ticket.save()
+        TestExcel.create_time_registers(date(2015, 9, 1), date(2015, 9, 30))
+        updated = MaximoTimeRegister.objects.filter(date__range=(date(2015, 9, 1), date(2015, 9, 15))).assign_projects_from_ticket()
+        self.assertEqual(154, updated)
+        registers = MaximoTimeRegister.objects.filter(project__isnull=False)
+        self.assertEqual(79, len(registers))
 
 
 

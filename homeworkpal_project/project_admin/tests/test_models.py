@@ -1,7 +1,7 @@
 from django.test import TestCase
 from employee.tests.factories import EmployeeFactory
-from ..models import ProjectMember, ProjectGoal
-from .factories import ProjectMemberFactory, ProjectGoalFactory, ProjectFactory
+from ..models import ProjectMember, IndividualGoal
+from .factories import ProjectMemberFactory, ProjectFactory, IndividualGoalFactory
 
 import logging
 
@@ -33,21 +33,41 @@ class TestProjectMember(TestCase):
         self.assertEqual(member.pk, db_member.pk)
 
 
-class TestProjectGoal(TestCase):
+class TestIndividualGoal(TestCase):
 
     def test_create(self):
-        goal = ProjectGoalFactory.create()
-        self.assertEqual(1, ProjectGoal.objects.count())
+        goal = IndividualGoalFactory.create()
+        self.assertEqual(1, IndividualGoal.objects.count())
         self.assertIsNone(goal.project)
 
     def test_create_with_project(self):
         member = ProjectMemberFactory.create()
         project = member.project
-        goal = ProjectGoalFactory.create(project=project, employee=member.employee)
+        goal = IndividualGoalFactory.create(project=project, employee=member.employee)
         self.assertTrue(goal.pk > 0)
         self.assertEqual(project.short_name, goal.name)
         self.assertEqual(project.description, goal.description)
         self.assertTrue(goal.expectations.startswith('Haber alcanzado el '))
+        self.assertTrue(goal.fiscal_year.startswith('AF'))
+
+    def test_copy_goal_false(self):
+        goal = IndividualGoalFactory.create()
+        goal_pk, created = goal.copy(goal.employee)
+        self.assertFalse(created)
+        self.assertTrue(goal_pk > 0)
+
+
+    def test_copy_goal_true(self):
+        employee = EmployeeFactory.create()
+        goal = IndividualGoalFactory.create()
+        goal_pk, created = goal.copy(employee)
+        self.assertTrue(created)
+        goal_db = IndividualGoal.objects.get(pk=goal_pk)
+        self.assertIsNotNone(goal_db)
+
+
+
+
 
 
 
