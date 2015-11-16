@@ -3,9 +3,11 @@ import os
 from django.core.management import BaseCommand
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Font, PatternFill, Border, Side
+
+from common.utils import filename_with_datetime
 from employee.models import CompanyGroup
-from homeworkpal_project.settings.base import TEST_DATA_PATH
-from project_admin.models import ProjectGoal
+from homeworkpal_project.settings.base import TEST_OUTPUT_PATH
+from project_admin.models import IndividualGoal
 from django.utils import timezone
 __author__ = 'luiscberrocal'
 
@@ -38,12 +40,14 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         group = CompanyGroup.objects.get(name=options['group'])
-        filename = os.path.join(TEST_DATA_PATH, '%s_%s.xlsx' % (options['group'], timezone.now().strftime('%Y%m%d_%H%M')))
+        employees = group.members()
+        filename = filename_with_datetime(TEST_OUTPUT_PATH, '%s.xlsx' % (options['group']))
+        #os.path.join(TEST_OUTPUT_PATH, '%s_%s.xlsx' % (options['group'], timezone.now().strftime('%Y%m%d_%H%M')))
         wb = Workbook()
-        goals = ProjectGoal.objects.filter(project__group__name__exact=options['group']).order_by('employee')
+        goals = IndividualGoal.objects.filter(employee__in=employees).order_by('employee')
         pos = 1
         current_username = None
-        headers = ['No', 'Proyecto', 'Descripción', 'Totalmente Satifactorio', 'Peso', 'Entregables']
+        headers = ['No', 'Meta', 'Descripción', 'Totalmente Satifactorio', 'Peso', 'Entregables']
         for goal in goals:
             if goal.employee.user.username != current_username:
                 current_username = goal.employee.user.username
@@ -66,19 +70,17 @@ class Command(BaseCommand):
             cell.alignment = Alignment(horizontal='center', vertical='center')
             ## Proyecto B
             col += 1
-            cell = sheet.cell(column=col, row=row, value=str(goal.project))
+            cell = sheet.cell(column=col, row=row, value=str(goal.name))
             cell.border = self.border
             self._wrap_cell(cell)
             ## Description C
             col += 1
-            cell = sheet.cell(column=col, row=row, value=str(goal.project.description))
+            cell = sheet.cell(column=col, row=row, value=str(goal.description))
             self._wrap_cell(cell)
             cell.border = self.border
             ## Satifactory D
             col += 1
-            statisfactory = '%.0f %% debe estar entregado para el %s' % (goal.expected_advancement*100,
-                                                            goal.project.planned_end_date.strftime('%d-%m-%Y'))
-            cell = sheet.cell(column=col, row=row, value=statisfactory)
+            cell = sheet.cell(column=col, row=row, value=goal.expectations)
             self._wrap_cell(cell)
             cell.border = self.border
             ## Weight E

@@ -98,6 +98,13 @@ class CompanyGroup(models.Model):
                                                     start_date=start_date)
         assignment.save()
 
+    def members(self):
+        employees = list()
+        assignees = CompanyGroupEmployeeAssignment.objects.group_members(self)
+        for assignee in assignees:
+            employees.append(assignee.employee)
+        return  employees
+
     def __str__(self):
         return self.name
 
