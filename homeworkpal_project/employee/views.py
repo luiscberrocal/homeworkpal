@@ -5,6 +5,7 @@ from django.shortcuts import render
 # Create your views here.
 from django.views.generic import ListView, DetailView, CreateView
 from rest_framework import viewsets
+from employee.forms import CoachingSessionForm
 from .serializers import EmployeeSerializer, UserSerializer, GroupSerializer, CompanyGroupSerializer
 from .models import Employee, CompanyGroup, CoachingSession
 
@@ -67,6 +68,19 @@ class EmployeeGoalsView(LoginRequiredMixin, DetailView):
 class CoachingSessionCreateView(LoginRequiredMixin, CreateView):
     model = CoachingSession
     context_object_name = 'coaching_session'
+    form_class = CoachingSessionForm
+
+    def get_context_data(self, **kwargs):
+        context = super(CoachingSessionCreateView, self).get_context_data(**kwargs)
+        context['form'].fields['employee'].queryset = Employee.objects.from_group(self.kwargs['group_slug'])
+        return context
+
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        employee = Employee.objects.get(user=self.request.user)
+        obj.coach = employee
+        obj.save()
+        return super(CoachingSessionCreateView, self).form_valid(form)
 
 
 class CoachingSessionDetailView(LoginRequiredMixin, DetailView):
