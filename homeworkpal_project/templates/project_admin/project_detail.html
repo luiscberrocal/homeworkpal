@@ -40,6 +40,16 @@
     </div>
     {% endfor %}
 </div>
+<div class="row">
+    <h2>{% trans "Corporate Goals" %}</h2>
+    {% for goal_assignment in project.corporate_goals.all %}
+    <div class="row">
+        <div class="col-sm-1">{{ goal_assignment.corporate_goal.number }}</div>
+         <div class="col-sm-3">{{ goal_assignment.corporate_goal.name }}</div>
+         <div class="col-sm-6">{{ goal_assignment.corporate_goal.description }}</div>
+    </div>
+    {% endfor %}
+</div>
     <div class="row">
     <h2>{% trans "Deliverables" %}</h2>
     {% for deliverable in project.deliverables.all %}

@@ -91,8 +91,14 @@ class Command(BaseCommand):
             cell.border = self.border
             ## Deliverbales F
             col += 1
-            dummy = 'Money\nCars\nCanal'
-            cell = sheet.cell(column=col, row=row, value=dummy)
+            deliverables = ''
+            if goal.project:
+                for deliverable in goal.project.deliverables.all():
+                    deliverables += deliverable.name
+                    deliverables += '\n'
+            else:
+                deliverables = 'No Aplica'
+            cell = sheet.cell(column=col, row=row, value=deliverables)
             self._wrap_cell(cell)
             cell.border = self.border
 
@@ -100,7 +106,7 @@ class Command(BaseCommand):
 
             self._set_column_widths(sheet)
 
-            print('%d %-50s %s' % (pos, goal.project, goal.employee))
+            print('%d %-50s %s' % (pos, goal.name, goal.employee))
             pos += 1
 
         wb.save(filename)
