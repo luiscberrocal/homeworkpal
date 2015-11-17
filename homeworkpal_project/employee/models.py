@@ -3,7 +3,9 @@ from autoslug import AutoSlugField
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils import timezone
 import logging
+from model_utils.models import TimeStampedModel
 from .managers import CompanyGroupEmployeeAssignmentManager, EmployeeManager
 
 logger = logging.getLogger(__name__)
@@ -153,3 +155,9 @@ class PositionAssignment(models.Model):
         super(PositionAssignment, self).save(force_insert=force_insert, force_update=force_update, using=using,
                                                                      update_fields=update_fields)
 
+class CoachingSession(TimeStampedModel):
+    employee = models.ForeignKey(Employee, related_name='coaching_sessions')
+    coach = models.ForeignKey(Employee, related_name='coached_sessions')
+    start_date_time = models.DateTimeField(default=timezone.now)
+    end_date_time = models.DateTimeField(null=True, blank=True)
+    comments = models.TextField()

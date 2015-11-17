@@ -3,10 +3,10 @@ from django.contrib.auth.models import User, Group
 from django.shortcuts import render
 
 # Create your views here.
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, CreateView
 from rest_framework import viewsets
 from .serializers import EmployeeSerializer, UserSerializer, GroupSerializer, CompanyGroupSerializer
-from .models import Employee, CompanyGroup
+from .models import Employee, CompanyGroup, CoachingSession
 
 
 class EmployeeViewSet(viewsets.ModelViewSet):
@@ -62,3 +62,13 @@ class EmployeeGoalsView(LoginRequiredMixin, DetailView):
     model = Employee
     context_object_name = 'employee'
     template_name = 'employee/employee_goals.html'
+
+
+class CoachingSessionCreateView(LoginRequiredMixin, CreateView):
+    model = CoachingSession
+    context_object_name = 'coaching_session'
+
+
+class CoachingSessionDetailView(LoginRequiredMixin, DetailView):
+    model = CoachingSession
+    context_object_name = 'coaching_session'
