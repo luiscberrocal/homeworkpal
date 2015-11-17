@@ -42,7 +42,7 @@ class ProjectAdmin(admin.ModelAdmin):
 
 
 class IndividualGoalAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'name', 'employee', 'weight', 'expected_advancement']
+    list_display = ['pk', 'name', 'employee', 'weight', 'expected_advancement', 'created']
     list_editable = ['weight']
     ordering = ['employee', 'project']
     list_filter = ('employee',)

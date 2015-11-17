@@ -140,6 +140,8 @@ class IndividualGoal(TimeStampedModel):
                                    validators=[RegexValidator(regex=r'^AF\d{2}$',
                                                               message=_('Fiscal year must use format AFYY. '
                                                                         'For example AF16 for fiscal year 2016'))])
+    priority = models.IntegerField(default=1000, help_text=_('The lower the number the higher the priority'))
+
     def __str__(self):
         return self.name
 
@@ -150,12 +152,10 @@ class IndividualGoal(TimeStampedModel):
         model_dict=model_to_dict(self, fields=['name', 'description',
                                                'expectations', 'employee',
                                                'weight', 'expected_advancement',
-                                               'fiscal_year'])
+                                               'fiscal_year', 'priority'])
         model_dict['employee'] = employee
         goal, created = IndividualGoal.objects.get_or_create(**model_dict)
         return goal.pk, created
-
-
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
@@ -164,6 +164,7 @@ class IndividualGoal(TimeStampedModel):
                 member = ProjectMember.objects.get(project=self.project, employee=self.employee)
                 self.update_goal_info = False
                 self.name = self.project.short_name
+                self.priority = self.project.priority
                 self.description = self.project.description
                 self.expectations = 'Haber alcanzado el 90%% de avance antes del %s.' \
                                     % self.project.planned_end_date.strftime('%d-%b-%Y')

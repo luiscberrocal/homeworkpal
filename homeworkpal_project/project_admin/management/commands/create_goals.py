@@ -8,6 +8,15 @@ logger = logging.getLogger(__name__)
 __author__ = 'lberrocal'
 
 class Command(BaseCommand):
+    '''
+    To creta individual goals based on project membership:
+    python manage.py create_goals AF16 --create-goals
+
+    To assign a goal no associated with a project to a group:
+    
+    python manage.py create_goals --assign-goal --goal-pk=43 --group=tino-ns
+    python manage.py create_goals --assign-goal --goal-pk=43 --employee=eapaulk --employee=reymoreno
+    '''
 
     def add_arguments(self, parser):
         parser.add_argument('fiscal_year', nargs='?')
@@ -114,8 +123,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         '''
-        python manage.py create_goals --assign-goal --goal-pk=43 --group=tino-ns
-        python manage.py create_goals --assign-goal --goal-pk=43 --employee=eapaulk --employee=reymoreno
+
         :param args:
         :param options:
         :return:

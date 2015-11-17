@@ -13,6 +13,10 @@ __author__ = 'luiscberrocal'
 
 
 class Command(BaseCommand):
+    '''
+    To export to excel the individual goals of a group
+    python manage.py export_goals TINO-NS
+    '''
 
     border = Border(left=Side(border_style='thin', color='FF000000'),
                     right=Side(border_style='thin', color='FF000000'),
@@ -44,7 +48,7 @@ class Command(BaseCommand):
         filename = filename_with_datetime(TEST_OUTPUT_PATH, '%s.xlsx' % (options['group']))
         #os.path.join(TEST_OUTPUT_PATH, '%s_%s.xlsx' % (options['group'], timezone.now().strftime('%Y%m%d_%H%M')))
         wb = Workbook()
-        goals = IndividualGoal.objects.filter(employee__in=employees).order_by('employee')
+        goals = IndividualGoal.objects.filter(employee__in=employees).order_by('employee', 'priority')
         pos = 1
         current_username = None
         headers = ['No', 'Meta', 'Descripción', 'Totalmente Satifactorio', 'Peso', 'Entregables']
@@ -105,7 +109,7 @@ class Command(BaseCommand):
             row += 1
 
             self._set_column_widths(sheet)
-
+            self._page_setup(sheet)
             print('%d %-50s %s' % (pos, goal.name, goal.employee))
             pos += 1
 
@@ -115,13 +119,23 @@ class Command(BaseCommand):
     def _wrap_cell(self, cell):
         cell.alignment = self.alignment
 
+    def _page_setup(self, sheet):
+        sheet.page_setup.orientation = sheet.ORIENTATION_LANDSCAPE
+        sheet.page_setup.fitToWidth = 1
+        sheet.header_footer.center_header.text = 'Metas Individuales de Desempeño\nAño Fiscal 2015'
+        sheet.header_footer.center_header.font_size = 20
+        sheet.header_footer.center_header.font_name = "Tahoma,Bold"
+        sheet.header_footer.right_header.text = '&[Date]'
+        sheet.header_footer.right_footer.text = '&[Page] de &[Pages]'
+        sheet.header_footer.left_footer.text= '______________________________\nFirma'
+
     def _set_column_widths(self, sheet):
         sheet.column_dimensions["A"].width = 5.0
         sheet.column_dimensions["B"].width = 30.0
         sheet.column_dimensions["C"].width = 50.0
-        sheet.column_dimensions["D"].width = 20.0
-        sheet.column_dimensions["E"].width = 5.0
-        sheet.column_dimensions["F"].width = 15.0
+        sheet.column_dimensions["D"].width = 37.0
+        sheet.column_dimensions["E"].width = 6.0
+        sheet.column_dimensions["F"].width = 37.0
 
     def _title_font(self, cell):
         font = font = Font(name='Calibri', size=18, bold=True, italic=False,
