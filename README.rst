@@ -22,13 +22,28 @@ should replace this name with the actual name of your project.*
 Working Environment
 ===================
 
+Windows
+---------
+
+::
+
+	$ set DJANGO_SETTINGS_MODULE=homeworkpal_project.settings.local_acp
+
+::
+
+    $ celery -A homeworkpal_project worker -l info
+
+
+Mac
+------
+
+
 
 ::
   
     $ PATH=$PATH:/usr/local/sbin
 
     $ rabbitmq-server
-
 ::
 
     $ celery -A homeworkpal_project worker -l info
@@ -41,5 +56,8 @@ Dumping data to json
 ::
 
   $ python manage.py dumpdata  --indent=4 --exclude auth.permission --exclude contenttypes > maximo/employees_fixtures.json
+
+
+
 
 

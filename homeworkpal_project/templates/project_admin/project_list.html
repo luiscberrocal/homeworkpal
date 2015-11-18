@@ -33,15 +33,19 @@ Projects
         <td class="col-md-7">
             <div><strong>Project: </strong> <a href="{% url 'project:project_detail' project.pk %}">{{project.short_name}}</a>
             </div>
+             <div><strong>Priority: </strong>{{project.priority}}
+            </div>
             <div><strong>Planned End Date: </strong> {{ project.planned_end_date }} ({{project.remaining_days}}
                 working days)
             </div>
             <div><strong>Leader: </strong> {{ project.leader }}</div>
         </td>
         <td class="col-md-2">
-            <div><strong>Member Count: </strong> {{project.members.count}}</a>
+            <div><strong>Members: </strong> {{project.members.count}}</a>
             </div>
-            <div><strong>Deliverable Count: </strong> {{ project.deliverables.count }}
+            <div><strong>Deliverables: </strong> {{ project.deliverables.count }}
+            </div>
+             <div><strong>Corporate Goals: </strong> {{ project.corporate_goals.count }}
             </div>
         </td>
         <td class="col-md-2">
