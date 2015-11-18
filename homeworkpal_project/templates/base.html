@@ -69,6 +69,7 @@
                        aria-expanded="false">{% trans 'Employees' %} <span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a href="{% url 'employee:list-group-employees' 'tino-ns' %}">TINO-NS</a></li>
+                        <li><a href="{% url 'employee:create-coaching' 'tino-ns' %}">{% trans "Add Coaching Session" %}</a></li>
                     </ul>
                 </li>
                 <li class="dropdown">

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load staticfiles bootstrap3 i18n %}
+{% block extra_css %}
+    <!-- *********** -->
+{{ form.media }}
+    <!-- *********** -->
+{% endblock extra_css %}
+{% block page_title %}
+
+{% endblock page_title %}
+
+{% block content %}
+    <form action="" method="post">{% csrf_token %}
+
+
+            <div role="tabpanel" class="tab-pane active" id="project-info">
+            {% bootstrap_form form %}
+            </div>
+        <input class="btn btn-primary" role="button" type="submit" value="Update"/>
+        {% if coaching_session == None %}
+            <a class="btn btn-primary" role="button" href="#">Cancel</a>
+        {% else %}
+            <a class="btn btn-primary" role="button" href="{% url 'employee:coaching-detail' coaching_session.pk %} ">Cancel</a>
+        {% endif %}
+
+    </form>
+{% endblock content %}
+
+{% block extra_js %}
+
+{% endblock extra_js %}
