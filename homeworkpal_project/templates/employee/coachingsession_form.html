@@ -20,7 +20,7 @@
         {% if coaching_session == None %}
             <a class="btn btn-primary" role="button" href="#">Cancel</a>
         {% else %}
-            <a class="btn btn-primary" role="button" href="{% url 'employee:coaching_detail' coaching_session.pk %} ">Cancel</a>
+            <a class="btn btn-primary" role="button" href="{% url 'employee:coaching-detail' coaching_session.pk %} ">Cancel</a>
         {% endif %}
 
     </form>

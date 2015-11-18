@@ -3,7 +3,7 @@ from django.contrib.auth.models import User, Group
 from django.shortcuts import render
 
 # Create your views here.
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from rest_framework import viewsets
 from employee.forms import CoachingSessionForm
 from .serializers import EmployeeSerializer, UserSerializer, GroupSerializer, CompanyGroupSerializer
@@ -63,6 +63,11 @@ class EmployeeGoalsView(LoginRequiredMixin, DetailView):
     model = Employee
     context_object_name = 'employee'
     template_name = 'employee/employee_goals.html'
+
+class CoachingSessionUpdateView(LoginRequiredMixin, UpdateView):
+    model = CoachingSession
+    context_object_name = 'coaching_session'
+    form_class = CoachingSessionForm
 
 
 class CoachingSessionCreateView(LoginRequiredMixin, CreateView):
