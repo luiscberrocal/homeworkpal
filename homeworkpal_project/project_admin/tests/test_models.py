@@ -1,8 +1,7 @@
 from django.test import TestCase
 from employee.tests.factories import EmployeeFactory
-from ..models import ProjectMember, IndividualGoal
-from .factories import ProjectMemberFactory, ProjectFactory, IndividualGoalFactory
-
+from ..models import ProjectMember, IndividualGoal, ProjectSupport
+from .factories import ProjectMemberFactory, ProjectFactory, IndividualGoalFactory, ProjectSupportFactory
 import logging
 
 logger = logging.getLogger(__name__)
@@ -66,7 +65,12 @@ class TestIndividualGoal(TestCase):
         self.assertIsNotNone(goal_db)
 
 
+class TestProjectSupport(TestCase):
 
+    def test_create(self):
+        support = ProjectSupportFactory.create()
+        self.assertEqual(1, ProjectSupport.objects.count())
+        
 
 
 

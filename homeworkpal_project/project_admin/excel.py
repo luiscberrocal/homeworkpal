@@ -23,5 +23,5 @@ class ProjectAdminExcel(object):
             column += 1
             sheet.cell(column=column, row=row, value=support.required_date)
             column += 1
-            sheet.cell(column=column, row=row, value=support.description)
+            sheet.cell(column=column, row=row, value=str(support.description))
         wb.save(filename)
