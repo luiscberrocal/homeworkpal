@@ -239,3 +239,18 @@ class Stakeholder(models.Model):
         ordering = ['project', 'rank']
 
 
+class ProjectSupport(TimeStampedModel):
+    from maximo.models import MaximoTicket
+    project = models.ForeignKey(Project, related_name='supports')
+    tickets = models.ManyToManyField(MaximoTicket, null=True, blank=True)
+    company_group = models.ForeignKey(CompanyGroup, related_name='supports')
+    required_date = models.DateField(null=True, blank=True)
+    description = models.TextField()
+
+    class Meta:
+        ordering = ['project', 'required_date']
+
+
+
+
+

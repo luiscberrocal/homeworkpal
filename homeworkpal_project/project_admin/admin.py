@@ -2,7 +2,7 @@ from django.contrib import admin
 
 # Register your models here.
 from .models import Project, ProjectGoal, Stakeholder, Deliverable, CorporateGoalAssignment, CorporateGoal, \
-    Risk, ProjectMember, IndividualGoal
+    Risk, ProjectMember, IndividualGoal, ProjectSupport
 
 
 class ProjectMemberInLine(admin.TabularInline):
@@ -63,6 +63,12 @@ class RiskAdmin(admin.ModelAdmin):
 class CorporateGoalAssignmentAdmin(admin.ModelAdmin):
     list_display = ['corporate_goal', 'project']
 
+
+class ProjectSupportAdmin(admin.ModelAdmin):
+    list_display = ['pk', 'project', 'company_group', 'required_date', 'description']
+    list_editable = ['project', 'company_group', 'required_date']
+    list_filter = ['project', 'company_group']
+
 admin.site.register(Project, ProjectAdmin)
 admin.site.register(IndividualGoal, IndividualGoalAdmin)
 admin.site.register(Stakeholder, StakeholderAdmin)
@@ -71,3 +77,4 @@ admin.site.register(CorporateGoal, CorporateGoalAdmin)
 admin.site.register(Risk, RiskAdmin)
 admin.site.register(ProjectMember, ProjectMemberAdmin)
 admin.site.register(CorporateGoalAssignment, CorporateGoalAssignmentAdmin)
+admin.site.register(ProjectSupport, ProjectSupportAdmin)
