@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load staticfiles i18n %}
+{% block page_title %}
+    PAGE TITLE
+{% endblock page_title %}
+{% block content %}
+    <table class="table">
+    {% for coaching_session in coaching_sessions %}
+        <tr class="row">
+            <td class="col-md-1">
+                {{ forloop.counter }}
+            </td>
+            <td class="col-md-1">
+                {{ coaching_session.employee }}
+            </td>
+            <td class="col-md-1">
+                {{ coaching_session.start_date_time }}
+            </td>
+             <td class="col-md-1">
+                {{ coaching_session.end_date_time }}
+            </td>
+             <td class="col-md-1">
+                {{ coaching_session.time_spent }}
+            </td>
+            <td class="col-md-7">
+                {{ coaching_session.comments }}
+            </td>
+        </tr>
+    {% endfor %}
+    </table>
+{% endblock content %}
+{% block extra_js %}
+{% endblock extra_js %}

@@ -164,5 +164,8 @@ class CoachingSession(TimeStampedModel):
     end_date_time = models.DateTimeField(null=True, blank=True)
     comments = models.TextField()
 
+    def time_spent(self):
+        return self.end_date_time - self.start_date_time
+
     def get_absolute_url(self):
         return reverse('employee:coaching-detail', kwargs={'pk': self.pk})

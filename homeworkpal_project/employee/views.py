@@ -91,3 +91,13 @@ class CoachingSessionCreateView(LoginRequiredMixin, CreateView):
 class CoachingSessionDetailView(LoginRequiredMixin, DetailView):
     model = CoachingSession
     context_object_name = 'coaching_session'
+
+
+class CoachingSessionListView(LoginRequiredMixin, ListView):
+    model = CoachingSession
+    context_object_name = 'coaching_sessions'
+    template_name = 'employee/coachingsession_list.html'
+
+    def get_queryset(self):
+        qs = CoachingSession.objects.filter(employee__companygroupemployeeassignment__group__slug=self.kwargs['group_slug'])
+        return qs
