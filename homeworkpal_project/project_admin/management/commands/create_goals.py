@@ -9,7 +9,7 @@ __author__ = 'lberrocal'
 
 class Command(BaseCommand):
     '''
-    To creta individual goals based on project membership:
+    To create individual goals based on project membership:
     python manage.py create_goals AF16 --create-goals
 
     To assign a goal no associated with a project to a group:
