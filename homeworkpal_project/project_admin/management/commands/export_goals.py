@@ -45,7 +45,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         group = CompanyGroup.objects.get(name=options['group'])
         employees = group.members()
-        filename = filename_with_datetime(TEST_OUTPUT_PATH, '%s.xlsx' % (options['group']))
+        filename = filename_with_datetime(TEST_OUTPUT_PATH, 'Individual_Goals_%s.xlsx' % (options['group']))
         #os.path.join(TEST_OUTPUT_PATH, '%s_%s.xlsx' % (options['group'], timezone.now().strftime('%Y%m%d_%H%M')))
         wb = Workbook()
         goals = IndividualGoal.objects.filter(employee__in=employees).order_by('employee', 'priority')
@@ -122,7 +122,7 @@ class Command(BaseCommand):
     def _page_setup(self, sheet):
         sheet.page_setup.orientation = sheet.ORIENTATION_LANDSCAPE
         sheet.page_setup.fitToWidth = 1
-        sheet.header_footer.center_header.text = 'Metas Individuales de Desempeño\nAño Fiscal 2015'
+        sheet.header_footer.center_header.text = 'Metas Individuales de Desempeño\nAño Fiscal 2016'
         sheet.header_footer.center_header.font_size = 20
         sheet.header_footer.center_header.font_name = "Tahoma,Bold"
         sheet.header_footer.right_header.text = '&[Date]'
@@ -134,7 +134,7 @@ class Command(BaseCommand):
         sheet.column_dimensions["B"].width = 30.0
         sheet.column_dimensions["C"].width = 50.0
         sheet.column_dimensions["D"].width = 37.0
-        sheet.column_dimensions["E"].width = 6.0
+        sheet.column_dimensions["E"].width = 8.0
         sheet.column_dimensions["F"].width = 37.0
 
     def _title_font(self, cell):
