@@ -99,5 +99,10 @@ class CoachingSessionListView(LoginRequiredMixin, ListView):
     template_name = 'employee/coachingsession_list.html'
 
     def get_queryset(self):
-        qs = CoachingSession.objects.filter(employee__companygroupemployeeassignment__group__slug=self.kwargs['group_slug'])
+        if self.kwargs.get('employee_pk', None):
+            qs = CoachingSession.objects.filter(employee__companygroupemployeeassignment__group__slug=self.kwargs['group_slug'],
+                                                employee__pk=self.kwargs['employee_pk'])
+        else:
+            qs = CoachingSession.objects.filter(employee__companygroupemployeeassignment__group__slug=self.kwargs['group_slug'])
+
         return qs

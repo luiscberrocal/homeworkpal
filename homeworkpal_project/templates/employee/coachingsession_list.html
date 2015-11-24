@@ -8,10 +8,14 @@
     {% for coaching_session in coaching_sessions %}
         <tr class="row">
             <td class="col-md-1">
+                <a href="{% url 'employee:coaching-detail' coaching_session.pk %}">
                 {{ forloop.counter }}
+                    </a>
             </td>
             <td class="col-md-1">
+                 <a href="{% url 'employee:coaching-employee-list' coaching_session.employee.group.slug coaching_session.employee.pk %}">
                 {{ coaching_session.employee }}
+                     </a>
             </td>
             <td class="col-md-1">
                 {{ coaching_session.start_date_time }}
