@@ -11,8 +11,9 @@ class CoachingSessionForm(ModelForm):
         super(CoachingSessionForm, self).__init__(*args, **kwargs)
         instance = getattr(self, 'instance', None)
         if instance and instance.pk:
-            self.fields['employee'].widget.attrs['readonly'] = True
+            #self.fields['employee'].widget.attrs['readonly'] = True
             self.fields['employee'].widget.attrs['disabled'] = 'disabled'
+            self.fields['employee'].required = False
 
     class Meta:
         model = CoachingSession

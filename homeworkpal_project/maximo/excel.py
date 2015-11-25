@@ -135,7 +135,11 @@ class MaximoExcelData(object):
             column += 1
             sheet.cell(column=column, row=row, value=register.description)
             column += 1
-            sheet.cell(column=column, row=row, value=register.ticket.project)
+            if register.ticket.project:
+                project_name = register.ticket.project.short_name
+            else:
+                project_name=''
+            sheet.cell(column=column, row=row, value=project_name)
             column += 1
             sheet.cell(column=column, row=row, value='NA')
         wb.save(filename)
