@@ -7,12 +7,16 @@ __author__ = 'lberrocal'
 
 
 class Command(BaseCommand):
+    '''
+    python manage.py /path/to/excel.xlsx --load-data
+    '''
+
     def add_arguments(self, parser):
         parser.add_argument('filename')
 
-        parser.add_argument('--load-data',
+        parser.add_argument('--load-time',
                             action='store_true',
-                            dest='load_data',
+                            dest='load_time',
                             default=None,
                             help='Load time registers')
 
@@ -36,11 +40,11 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         excel_data = MaximoExcelData(stdout=self.stdout)
-        if options['load_data']:
-            results = excel_data.load(options['filename'])
+        if options['load_time']:
+            results = excel_data.load(options['filename'], action=MaximoExcelData.LOAD_TIME)
             self.stdout.write('Parsed: %s' % options['filename'])
-            self.stdout.write(
-                'Created Tickets: %d of %d' % (results['ticket_results']['created'], results['ticket_results']['rows_parsed']))
+            # self.stdout.write(
+            #     'Created Tickets: %d of %d' % (results['ticket_results']['created'], results['ticket_results']['rows_parsed']))
             self.stdout.write(
                 'Created Registers: %d of %d' % (results['time_results']['created'], results['time_results']['rows_parsed']))
         elif options['export_time']:

@@ -164,6 +164,8 @@ class CoachingSession(TimeStampedModel):
     end_date_time = models.DateTimeField(null=True, blank=True)
     comments = models.TextField()
 
+
+
     def time_spent(self):
         if self.end_date_time is None:
             return 0
