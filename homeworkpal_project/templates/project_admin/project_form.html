@@ -14,16 +14,29 @@
 {% endblock page_title %}
 
 {% block content %}
-    <form action="" method="post">{% csrf_token %}
 
+    <form action="" method="post">{% csrf_token %}
+<div>
+
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#project-info" aria-controls="home" role="tab" data-toggle="tab">Details</a></li>
+    <li role="presentation"><a href="#risks" aria-controls="profile" role="tab" data-toggle="tab">Risks</a></li>
+    <li role="presentation"><a href="#members" aria-controls="messages" role="tab" data-toggle="tab">Members</a></li>
+    <li role="presentation"><a href="#deliverables" aria-controls="settings" role="tab" data-toggle="tab">Deliverables</a></li>
+  </ul>
 
         <div class="tab-content">
-
+<!-- <div class"row" > -->
             <div role="tabpanel" class="tab-pane active" id="project-info">
+            <div class="row">
             {% bootstrap_form form %}
             </div>
+            
+            </div>
+ <!--    </div> -->
+            <div role="tabpanel" class="tab-pane" id="risks">
 
-            <div role="tabpanel" class="tab-pane active" id="risks">
                 <fieldset>
                     <legend>Risks</legend>
                     {{ line_formset.management_form }}
@@ -36,7 +49,7 @@
                     {% endfor %}
                 </fieldset>
             </div>
-            <div role="tabpanel" class="tab-pane active" id="members">
+            <div role="tabpanel" class="tab-pane" id="members">
                 <fieldset>
                     <legend>Members</legend>
                     {{ members_formset.management_form }}
@@ -49,7 +62,7 @@
                     {% endfor %}
                 </fieldset>
             </div>
-            <div role="tabpanel" class="tab-pane active" id="deliverables">
+            <div role="tabpanel" class="tab-pane" id="deliverables">
                 <fieldset>
                     <legend>Deliverables</legend>
                     {{ deliverables_formset.management_form }}
@@ -69,8 +82,9 @@
         {% else %}
             <a class="btn btn-primary" role="button" href="{% url 'project:project_detail' project.pk %} ">Cancel</a>
         {% endif %}
-
+  </div>
     </form>
+
 {% endblock content %}
 
 {% block extra_js %}
