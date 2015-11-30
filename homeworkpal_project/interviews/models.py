@@ -70,6 +70,7 @@ class ContactInfo(TimeStampedModel):
 
 
 class ContactAttempt(TimeStampedModel):
+    candidate_certificate = models.ForeignKey(CandidateInCertificate, related_name='attempts_to_contact')
     contact_method = models.ForeignKey(ContactInfo)
     succesful_contact = models.BooleanField()
     contact_datetime = models.DateTimeField()

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load staticfiles i18n %}
+{% block page_title %}
+{% trans 'Certificate' %}: {{certificate.number}} {{certificate.grade}}
+{% endblock page_title %}
+{% block content %}
+<table class="table">
+{% for candidate_certificate in certificate.candidates.all %}
+<tr class="row">
+    <td class="col-md-1">
+        {{ forloop.counter }}
+    </td>
+    <td class="col-md-1">
+        {{ candidate_certificate.candidate }}
+    </td>
+     <td class="col-md-1">
+        {{ candidate_certificate.candidate.national_id }}
+    </td>
+</tr>
+{% endfor %}
+    </table>
+{% endblock content %}
+{% block extra_js %}
+{% endblock extra_js %}
