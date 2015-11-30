@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-# Create your models here.
+from django.utils import timezone
 from model_utils.models import TimeStampedModel
 from employee.models import Employee
 
@@ -77,3 +77,10 @@ class ContactAttempt(TimeStampedModel):
     comments = models.TextField()
     contacted_by = models.ForeignKey(Employee)
 
+
+class Interview(TimeStampedModel):
+    candidate_certificate = models.ForeignKey(CandidateInCertificate, related_name='interviews')
+    interviewers = models.ManyToManyField(Employee)
+    start_datetime = models.DateTimeField(default=timezone.now())
+    end_datetime = models.DateTimeField(null=True, blank=True)
+    comments = models.TextField()

@@ -16,6 +16,19 @@
      <td class="col-md-1">
         {{ candidate_certificate.candidate.national_id }}
     </td>
+     <td class="col-md-1">
+        {{ candidate_certificate.certificate_result }}
+    </td>
+    <td class="col-md-8">
+        {% for attempt in candidate_certificate.attempts_to_contact.all %}
+            <div>
+                <span class="title">Contacted by</span> {{ attempt.contacted_by }} {{ attempt.contact_datetime}}
+            </div>
+            <div>
+                {{ attempt.comments }}
+            </div>
+        {% endfor %}
+    </td>
 </tr>
 {% endfor %}
     </table>

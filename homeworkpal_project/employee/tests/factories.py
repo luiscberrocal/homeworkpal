@@ -29,6 +29,16 @@ class UserFactory(DjangoModelFactory):
     def email(self):
         return '%s@example.com' % (self.username())
 
+    @classmethod
+    def _prepare(cls, create, **kwargs):
+        password = kwargs.pop('password', None)
+        user = super(UserFactory, cls)._prepare(create, **kwargs)
+        if password:
+            user.set_password(password)
+            if create:
+                user.save()
+        return user
+
 class EmployeeFactory(DjangoModelFactory):
 
     class Meta:
