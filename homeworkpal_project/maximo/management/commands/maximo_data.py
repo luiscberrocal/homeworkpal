@@ -1,5 +1,7 @@
 from django.core.management import BaseCommand
 from openpyxl import load_workbook
+from common.utils import filename_with_datetime
+from homeworkpal_project.settings.base import TEST_OUTPUT_PATH
 from maximo.excel import MaximoExcelData
 from maximo.models import MaximoTicket, MaximoTimeRegister
 
@@ -12,7 +14,7 @@ class Command(BaseCommand):
     '''
 
     def add_arguments(self, parser):
-        parser.add_argument('filename')
+        parser.add_argument('filename', nargs='?')
 
         parser.add_argument('--load-time',
                             action='store_true',
@@ -49,5 +51,9 @@ class Command(BaseCommand):
                 'Created Registers: %d of %d' % (results['time_results']['created'], results['time_results']['rows_parsed']))
         elif options['export_time']:
             registers = MaximoTimeRegister.objects.all()
-            excel_data.export_time_registers(options['filename'], registers)
-            self.stdout.write('Wrote: %s' % options['filename'])
+            if options['filename']:
+                filename = options['filename']
+            else:
+                filename = filename_with_datetime(TEST_OUTPUT_PATH, 'Export_Times_%s.xlsx' % ('TINO'))
+                excel_data.export_time_registers(filename, registers)
+                self.stdout.write('Wrote: %s' % filename)
