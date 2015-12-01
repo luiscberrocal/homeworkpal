@@ -55,5 +55,5 @@ class Command(BaseCommand):
                 filename = options['filename']
             else:
                 filename = filename_with_datetime(TEST_OUTPUT_PATH, 'Export_Times_%s.xlsx' % ('TINO'))
-                excel_data.export_time_registers(filename, registers)
-                self.stdout.write('Wrote: %s' % filename)
+            excel_data.export_time_registers(filename, registers)
+            self.stdout.write('Wrote: %s' % filename)

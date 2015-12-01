@@ -23,7 +23,7 @@ class TestMaximoCommand(TestCase):
         TestExcel.create_time_registers(date(2015, 9, 1), date(2015, 9, 30))
         out = StringIO()
         filename = os.path.join(TEST_OUTPUT_PATH, '%s_%s.xlsx' % ('test_export_time', timezone.now().strftime('%Y%m%d_%H%M')))
-        call_command('maximo_data',filename, export_time=True)
+        call_command('maximo_data', filename, export_time=True)
         self.assertTrue(os.path.exists(filename))
         row_data, row_count = TestExcel.get_list_from_workbook(filename, 'Time')
         self.assertEqual(row_count, MaximoTimeRegister.objects.count())
