@@ -8,7 +8,7 @@ __author__ = 'lberrocal'
 
 class Command(BaseCommand):
     '''
-    python manage.py /path/to/excel.xlsx --load-data
+    python manage.py /path/to/excel.xlsx --load-time
     '''
 
     def add_arguments(self, parser):

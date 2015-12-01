@@ -14,7 +14,8 @@ class CandidateAdmin(admin.ModelAdmin):
 
 
 class CandidateInCertificateAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'certificate', 'certificate_result', 'candidate', 'score')
+    list_display = ('pk', 'certificate', 'certificate_result', 'candidate', 'score', 'explanation')
+    list_editable = ( 'certificate_result', 'candidate', 'score', 'explanation')
 
 
 class ContactInfoAdmin(admin.ModelAdmin):
@@ -27,6 +28,7 @@ class ContactAttemptAdmin(admin.ModelAdmin):
 
 class InterviewAdmin(admin.ModelAdmin):
     list_display = ('candidate_certificate', 'start_datetime', 'end_datetime', 'comments')
+
 
 admin.site.register(ElegibilityCertificate, ElegibilityCertificateAdmin)
 admin.site.register(Candidate, CandidateAdmin)

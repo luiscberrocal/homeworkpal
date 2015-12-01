@@ -6,7 +6,7 @@ from employee.models import Employee
 
 
 class ElegibilityCertificate(TimeStampedModel):
-    number = models.CharField(max_length=100)
+    number = models.CharField(max_length=100,unique=True)
     grade = models.CharField(max_length=5)
     ends_at = models.DateField()
     vacant_positions = models.PositiveIntegerField(default=1)
@@ -45,6 +45,7 @@ class CandidateInCertificate(TimeStampedModel):
     certificate = models.ForeignKey(ElegibilityCertificate, related_name='candidates')
     candidate = models.ForeignKey(Candidate, related_name='certificates')
     certificate_result = models.ForeignKey(CertificateResult, null=True)
+    explanation = models.TextField(blank=True)
 
     def __str__(self):
         return '%s %s' % (self.candidate, self.certificate)
