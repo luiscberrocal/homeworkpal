@@ -29,6 +29,7 @@ router.register(r'company-groups', CompanyGroupViewSet)
 urlpatterns = patterns('',
                        url(r'^$', TemplateView.as_view(template_name='base.html')),
                        url(r'^maximo/', include('maximo.urls', namespace='maximo')),
+                       url(r'^interviews/', include('interviews.urls', namespace='interviews')),
                        url(r'^api/', include(router.urls)),
                        url(r'^admin/', include(admin.site.urls)),
                        url(r'^homework/', include('homework.urls')),

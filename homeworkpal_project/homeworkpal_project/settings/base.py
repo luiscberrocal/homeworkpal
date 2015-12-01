@@ -205,6 +205,7 @@ LOCAL_APPS = (
     'project_admin',
     'maximo',
     'common',
+    'interviews',
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
