@@ -9,9 +9,10 @@ from django.utils.translation import ugettext_lazy as _
 # Create your models here.
 from django.utils import timezone
 from model_utils.models import TimeStampedModel
+from common.utils import Holiday
 from employee.models import Employee, CompanyGroup
 from project_admin.managers import ProjectMemberManager
-from project_admin.utils import Holiday
+
 
 
 class Project(models.Model):
@@ -74,7 +75,7 @@ class ProjectMember(models.Model):
         (ROLE_TEAM_LEADER, 'Team Leader'),
         (ROLE_TEAM_PRODUCT_OWNER, 'Product Owner'),
     )
-    role = models.CharField(max_length=15, choices=ROLES, default=ROLE_TEAM_MEMBER)
+    role = models.CharField(max_length=15, choices=ROLES)
     employee = models.ForeignKey(Employee, related_name='projects')
     project = models.ForeignKey(Project, related_name='members')
     start_date = models.DateField(default=timezone.now)
