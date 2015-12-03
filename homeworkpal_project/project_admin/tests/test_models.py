@@ -31,6 +31,14 @@ class TestProjectMember(TestCase):
         db_member = ProjectMember.objects.get(project=member.project, employee=member.employee)
         self.assertEqual(member.pk, db_member.pk)
 
+    def test_create_batch(self):
+        member = ProjectMemberFactory.create()
+        ProjectMemberFactory.create_batch(5, project=member.project)
+        ProjectMemberFactory.create_batch(5)
+        members = ProjectMember.objects.filter(project=member.project)
+        self.assertEqual(6, len(members))
+        self.assertEqual(11, ProjectMember.objects.count())
+
 
 class TestIndividualGoal(TestCase):
 

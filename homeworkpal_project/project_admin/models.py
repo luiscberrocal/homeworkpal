@@ -78,7 +78,7 @@ class ProjectMember(models.Model):
     role = models.CharField(max_length=15, choices=ROLES)
     employee = models.ForeignKey(Employee, related_name='projects')
     project = models.ForeignKey(Project, related_name='members')
-    start_date = models.DateField(default=timezone.now)
+    start_date = models.DateField()
     end_date = models.DateField(null=True, blank=True)
 
     objects = ProjectMemberManager()

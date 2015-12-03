@@ -8,6 +8,9 @@ from .models import Project, ProjectGoal, Stakeholder, Deliverable, CorporateGoa
 class ProjectMemberInLine(admin.TabularInline):
     model = ProjectMember
     extra = 1
+    can_delete = True
+    fields = ('role', 'employee', 'start_date', 'end_date')
+
 
 class DeliverableInLine(admin.TabularInline):
     model = Deliverable
