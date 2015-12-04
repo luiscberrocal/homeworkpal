@@ -1,8 +1,22 @@
-from django.db.models import Manager
+from django.db.models import Manager, Sum, QuerySet
 from employee.models import CompanyGroupEmployeeAssignment
 
 __author__ = 'lberrocal'
 
+
+class ProjectManagerQuerySet(QuerySet):
+
+    def sum_regular_hours(self):
+        return self.filter().annotate(total_regular_hours=Sum('maximo_time_registers__regular_hours'))
+
+
+class ProjectManager(Manager):
+
+    def get_queryset(self):
+        return ProjectManagerQuerySet(self.model, using=self._db)
+
+    def sum_regular_hours(self):
+        return self.get_queryset().sum_regular_hours()
 
 
 class ProjectMemberManager(Manager):

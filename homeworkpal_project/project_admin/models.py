@@ -11,8 +11,7 @@ from django.utils import timezone
 from model_utils.models import TimeStampedModel
 from common.utils import Holiday
 from employee.models import Employee, CompanyGroup
-from project_admin.managers import ProjectMemberManager
-
+from project_admin.managers import ProjectMemberManager, ProjectManager
 
 
 class Project(models.Model):
@@ -39,6 +38,7 @@ class Project(models.Model):
                                    validators=[RegexValidator(regex=r'^AF\d{2}$',
                                                               message=_('Fiscal year must us format AFYY. '
                                                                         'For example AF16 for fiscal year 2016'))])
+    objects = ProjectManager()
 
     def _leader(self):
         try:
@@ -108,7 +108,6 @@ class CorporateGoal(models.Model):
                                    validators=[RegexValidator(regex=r'^AF\d{2}$',
                                                               message=_('Fiscal year must us format AFYY. '
                                                                         'For example AF16 for fiscal year 2016'))])
-
 
     def __str__(self):
         return '%s - %s' % (self.number, self.name)

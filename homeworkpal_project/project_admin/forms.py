@@ -31,7 +31,10 @@ class ProjectForm(ModelForm):
                   'planned_man_hours', 'type', 'group', 'priority']
         widgets = {
             # Use localization and bootstrap 3
-            'planned_end_date': DateWidget(attrs={'id': "planned-end-date"}, usel10n=True, bootstrap_version=3)
+            'planned_start_date': DateWidget(attrs={'id': "planned-start-date"}, usel10n=True, bootstrap_version=3),
+            'planned_end_date': DateWidget(attrs={'id': "planned-end-date"}, usel10n=True, bootstrap_version=3),
+            'actual_start_date': DateWidget(attrs={'id': "actual-start-date"}, usel10n=True, bootstrap_version=3),
+            'actual_end_date': DateWidget(attrs={'id': "actual-end-date"}, usel10n=True, bootstrap_version=3)
         }
 
 

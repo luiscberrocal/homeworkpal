@@ -1,10 +1,13 @@
 from datetime import date
+from decimal import Decimal
+
 from django.test import TestCase
 from employee.models import Employee
 from maximo.models import MaximoTicket, MaximoTimeRegister
 from maximo.tests.factories import MaximoTicketFactory, MaximoTimeRegisterFactory
 import logging
 from maximo.tests.test_excel import TestExcel
+from project_admin.models import Project
 from project_admin.tests.factories import ProjectFactory
 
 __author__ = 'lberrocal'
@@ -90,5 +93,18 @@ class TestMaximoTimeRegister(TestCase):
         registers = MaximoTimeRegister.objects.filter(project__isnull=False)
         self.assertEqual(79, len(registers))
 
+    def test_sum_hours(self):
+        project = ProjectFactory.create()
+        tickets = MaximoTicket.objects.all()[:5]
+        for ticket in tickets:
+            ticket.project = project
+            ticket.save()
+        TestExcel.create_time_registers(date(2015, 9, 1), date(2015, 9, 3))
+        updated = MaximoTimeRegister.objects.assign_projects_from_ticket()
+        #self.assertEqual(294, updated)
+        total_hours = Decimal(0.0)
+        for tr in MaximoTimeRegister.objects.filter(project=project):
+            total_hours += tr.regular_hours
 
-
+        project_with_hours = Project.objects.filter(pk=project.pk).sum_regular_hours()[0]
+        self.assertEqual(total_hours, project_with_hours.total_regular_hours)
