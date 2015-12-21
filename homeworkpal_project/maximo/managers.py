@@ -41,3 +41,8 @@ class MaximoTimeRegisterManager(models.Manager):
     def sum_regular_hours(self, project):
         self.get_queryset().filter(project=project).sum_regular_hours()
 
+
+
+
+
+    

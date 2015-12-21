@@ -105,6 +105,7 @@ class TestMaximoTimeRegister(TestCase):
         total_hours = Decimal(0.0)
         for tr in MaximoTimeRegister.objects.filter(project=project):
             total_hours += tr.regular_hours
-
+        project_with_hours2 = Project.objects.filter(pk=project.pk).sum_regular_hours()[0]
         project_with_hours = Project.objects.filter(pk=project.pk).sum_regular_hours()[0]
         self.assertEqual(total_hours, project_with_hours.total_regular_hours)
+        self.assertEqual(120.0, project_with_hours.total_regular_hours)
