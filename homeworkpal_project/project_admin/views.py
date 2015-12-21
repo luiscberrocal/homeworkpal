@@ -43,8 +43,8 @@ class ProjectListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         query_set = super(ProjectListView, self).get_queryset()
         if self.kwargs['status'] == 'running':
-            query_set = query_set.filter(actual_start_date__isnull=False)
-        return query_set
+            query_set = query_set.filter(actual_start_date__isnull=False).sum_regular_hours()
+        return query_set.sum_regular_hours()
         #return query_set.filter(actual_start_date__isnull=False)
 
     def status(self):

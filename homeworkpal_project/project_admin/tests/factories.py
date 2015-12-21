@@ -4,6 +4,7 @@ from factory.django import DjangoModelFactory
 from common.utils import get_fiscal_year
 from employee.tests.factories import CompanyGroupFactory, EmployeeFactory
 from ..models import Project, ProjectMember, ProjectGoal, IndividualGoal, ProjectSupport
+from django.utils import timezone
 
 __author__ = 'lberrocal'
 from faker import Factory as FakerFactory
@@ -45,6 +46,7 @@ class ProjectMemberFactory(DjangoModelFactory):
     role = 'MEMBER'
     employee = SubFactory(EmployeeFactory)
     project = SubFactory(ProjectFactory)
+    start_date = timezone.now().date()
 
 
 class IndividualGoalFactory(DjangoModelFactory):

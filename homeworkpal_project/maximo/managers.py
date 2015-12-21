@@ -20,6 +20,9 @@ class MaximoTimeRegisterMixin(object):
                 updated_count += 1
         return updated_count
 
+    def sum_regular_hours(self):
+        return self.filter().annotate(total_regular_hours=Sum('regular_hours'))
+
 
 class MaximoTimeRegisterQuerySet(QuerySet, MaximoTimeRegisterMixin):
     pass
@@ -35,3 +38,11 @@ class MaximoTimeRegisterManager(models.Manager):
     def get_employee_total_regular_hours(self, employee, date):
         return self.get_queryset().get_employee_total_regular_hours(employee, date)
 
+    def sum_regular_hours(self, project):
+        self.get_queryset().filter(project=project).sum_regular_hours()
+
+
+
+
+
+    

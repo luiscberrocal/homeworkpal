@@ -8,6 +8,7 @@ from faker import Factory as FakerFactory
 __author__ = 'lberrocal'
 faker = FakerFactory.create()
 
+
 class MaximoTicketFactory(DjangoModelFactory):
 
     class Meta:
@@ -16,6 +17,7 @@ class MaximoTicketFactory(DjangoModelFactory):
     ticket_type = Iterator(MaximoTicket.MAXIMO_TICKET_TYPES, getter=lambda c: c[0])
     number = FuzzyText(length=6, chars=string.digits)
     name = LazyAttribute(lambda x: faker.sentence(nb_words=6, variable_nb_words=True))
+
 
 class MaximoTimeRegisterFactory(DjangoModelFactory):
 
