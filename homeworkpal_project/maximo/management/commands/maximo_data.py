@@ -1,8 +1,10 @@
+import os
+
 from django.core.management import BaseCommand
 from openpyxl import load_workbook
 from common.utils import filename_with_datetime
 from homeworkpal_project.settings.base import TEST_OUTPUT_PATH
-from maximo.excel import MaximoExcelData
+from maximo.excel import MaximoExcelData, MaximoCSVData
 from maximo.models import MaximoTicket, MaximoTimeRegister
 
 __author__ = 'lberrocal'
@@ -54,15 +56,21 @@ class Command(BaseCommand):
             self.stdout.write('Updated %d tickets for %s with project %s' % (orphan_time_registers, ticket.name, ticket.project.short_name))
 
     def handle(self, *args, **options):
-        excel_data = MaximoExcelData(stdout=self.stdout)
+
         if options['load_time']:
-            results = excel_data.load(options['filename'], action=MaximoExcelData.LOAD_TIME)
-            self.stdout.write('Parsed: %s' % options['filename'])
-            # self.stdout.write(
-            #     'Created Tickets: %d of %d' % (results['ticket_results']['created'], results['ticket_results']['rows_parsed']))
-            self.stdout.write(
-                'Created Registers: %d of %d' % (results['time_results']['created'], results['time_results']['rows_parsed']))
+            extension = os.path.splitext(options['filename'])[1]
+            if extension == '.xlsx' or extension == '.xls':
+                excel_data = MaximoExcelData(stdout=self.stdout)
+                results = excel_data.load(options['filename'], action=MaximoExcelData.LOAD_TIME)
+                self.stdout.write('Parsed: %s' % options['filename'])
+                self.stdout.write('Created Registers: %d of %d' % (results['time_results']['created'], results['time_results']['rows_parsed']))
+            elif extension == '.csv':
+                excel_data = MaximoCSVData(stdout=self.stdout)
+                results = excel_data.load_time_registers(options['filename'])
+                self.stdout.write('Parsed: %s' % options['filename'])
+                self.stdout.write('Created Registers: %d of %d' % (results['created'], results['rows_parsed']))
         elif options['export_time']:
+            excel_data = MaximoExcelData(stdout=self.stdout)
             registers = MaximoTimeRegister.objects.all()
             if options['filename']:
                 filename = options['filename']

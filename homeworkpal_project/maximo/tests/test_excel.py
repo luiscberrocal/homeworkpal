@@ -5,7 +5,7 @@ from django.test import TestCase
 from common.utils import filename_with_datetime
 from employee.models import Employee
 from homeworkpal_project.settings.base import TEST_DATA_PATH, TEST_OUTPUT_PATH
-from maximo.excel import MaximoExcelData, parse_hours
+from maximo.excel import MaximoExcelData, parse_hours, MaximoCSVData
 from maximo.models import MaximoTicket, MaximoTimeRegister
 from maximo.tests.factories import MaximoTicketFactory, MaximoTimeRegisterFactory
 import logging
@@ -164,3 +164,16 @@ class TestExcel(TestCase):
         self.assertEqual(2, results['time_results']['rows_parsed'])
         self.assertEqual(2, len(results['time_results']['errors']))
         self.assertEqual('Possible duplicate',results['time_results']['errors'][0]['type'] )
+
+
+class TestMaximoCSVData(TestCase):
+
+    fixtures = ['employee_fixtures.json', 'maximo_ticket_fixtures.json']
+
+    def test_load_time_registers(self):
+        filename = os.path.join(TEST_DATA_PATH, 'time_register.csv')
+        csv_data = MaximoCSVData()
+        results = csv_data.load_time_registers(filename)
+        self.assertEqual(59, results['created'])
+        self.assertEqual(3, len(results['errors']))
+
