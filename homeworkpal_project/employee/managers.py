@@ -1,3 +1,5 @@
+import re
+
 from django.db.models import Manager
 
 
@@ -10,10 +12,21 @@ class EmployeeManager(Manager):
         queryset = super(EmployeeManager, self).get_queryset().filter(user__is_active=True).select_related('user')
         return queryset
 
+    def _is_slug(self, company_group):
+        regexp = r'^[a-z0-9-]*$'
+        pattern = re.compile(regexp)
+        if pattern.match(company_group):
+            return True
+        else:
+            return False
+
     def from_group(self, company_group):
         from .models import CompanyGroupEmployeeAssignment
         if isinstance(company_group, str):
-            group_assignemnts = CompanyGroupEmployeeAssignment.objects.filter(group__slug=company_group).select_related('employee', 'employee__user')
+            if self._is_slug(company_group):
+                group_assignemnts = CompanyGroupEmployeeAssignment.objects.filter(group__slug=company_group).select_related('employee', 'employee__user')
+            else:
+                group_assignemnts = CompanyGroupEmployeeAssignment.objects.filter(group__name=company_group).select_related('employee', 'employee__user')
         else:
             group_assignemnts = CompanyGroupEmployeeAssignment.objects.filter(group=company_group).select_related('employee', 'employee__user')
         employees_pk = list()
