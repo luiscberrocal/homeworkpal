@@ -8,10 +8,22 @@ from .validators import date_not_past
 
 class School(models.Model):
     name = models.CharField(max_length=100)
-    slug = AutoSlugField(populate_from='name', max_length=50)
+    slug = AutoSlugField(populate_from='name', max_length=50, unique=True)
 
     def __str__(self):
         return self.name
+
+class SchoolLevel(models.Model):
+    name = models.CharField(max_length=10)
+    slug = AutoSlugField(populate_from='name', max_length=10, unique=True)
+    school = models.ForeignKey(School)
+
+    class Meta:
+        unique_together = ('name', 'school')
+
+    def __str__(self):
+        return self.name
+
 
 class SchoolMember(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
@@ -30,21 +42,10 @@ class SchoolMember(models.Model):
 class Teacher(SchoolMember):
     pass
 
+
 class Student(SchoolMember):
-    pass
-
-
-class SchoolLevel(models.Model):
-    name = models.CharField(max_length=10)
-    slug = AutoSlugField(populate_from='name', max_length=5)
     school = models.ForeignKey(School)
-
-    class Meta:
-        unique_together = ('name', 'school')
-
-    def __str__(self):
-        return self.name
-
+    school_level = models.ForeignKey(SchoolLevel)
 
 
 class Subject(models.Model):
@@ -53,9 +54,11 @@ class Subject(models.Model):
     school_level = models.ForeignKey(SchoolLevel)
     teacher = models.ForeignKey(Teacher)
 
+    class Meta:
+        unique_together = ('slug', 'school_level')
+
     def __str__(self):
         return '%s (%s)' % (self.name, self.school_level.name)
-
 
 class Homework(models.Model):
     SUMMATIVE_TYPE = 'SUM'

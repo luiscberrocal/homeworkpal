@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% block page_title %} {% trans 'Coaching' %}:  {{ coaching_session.employee}} of {{ coaching_session.created|date:"d-b-Y"}} {% endblock page_title %}
+{% block content %}
+<div class="row">
+    <div class="col-md-3">
+        <span class="title">Start: </span> {{ coaching_session.start_date_time }}
+    </div>
+    <div class="col-md-3">
+        <span class="title">End: </span> {{ coaching_session.end_date_time }}
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-5">
+        <span class="title">Comment:</span> {{ coaching_session.comments }}
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-5">
+        <a class="btn btn-primary" href="{% url 'employee:coaching-update' coaching_session.pk %}">Edit</a>
+    </div>
+</div>
+{% endblock content %}

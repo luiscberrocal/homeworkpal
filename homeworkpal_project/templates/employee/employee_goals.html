@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load staticfiles i18n %}
+{% block page_title %}
+{% trans "Name" %}: {{ employee }} IP: {{ employee.company_id }}
+{% endblock page_title %}
+{% block content %}
+<div class="table-responsive">
+  <table class="table">
+    <tr class="row">
+
+        <th class="col-md-2">{% trans "Goal" %}</th>
+        <th class="col-md-4">{% trans "Description" %}</th>
+        <th class="col-md-3">{% trans "Expectation (Totally Satisfactory)" %}</th>
+        <th class="col-md-3">{% trans "Weigth" %}</th>
+
+    </tr>
+    {% for goal in employee.goals.all %}
+      <tr class="row">
+          <td class="col-md-2">{{ goal.name }}</td>
+          <td class="col-md-4">{{ goal.description }} </td>
+          <td class="col-md-3">{{ goal.expectations }}
+          </td>
+          <td class="col-md-3">
+            {{ goal.weight }}
+          </td>
+      </tr>
+      {% endfor %}
+  </table>
+    <form action="" method="post">{% csrf_token %}
+    <div id="add-project"></div>
+        <a href="#" class="btn btn-primary" id="add-project-member" onclick="post_project(this)">Add as Member</a>
+    </form>
+</div>
+{% endblock content %}
+{% block extra_js %}
+
+<script>
+function post_project(){
+    console.log('SENT');
+    var csrftoken = Cookies.get('csrftoken');
+    console.log(csrftoken);
+    var project =  $("#project-list").find(":selected").val();
+    data ={"role": "MEMBER",
+            "employee": {{ employee.pk }},
+            "project" : project,
+            "start_date": "2015-11-04"
+            };
+    console.log(data);
+         $.ajax({
+        type:"POST",
+        url: "/api/project-members/",
+        data: data,
+        sucess: function() { console.log("Success!"); },
+        dataType: "json",
+        traditional:false, /* Should this be true? */
+        crossDomain:false,
+        beforeSend: function(xhr, settings) {
+          xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+        });
+}
+
+$.getJSON( "/api/projects/?limit=100&offset=0&excluded-employee={{ employee.pk }}", function( data ) {
+  var items = [];
+  $.each( data['results'], function( proj ) {
+    items.push( "<option value='" + this.pk + "'>" + this.short_name + "</option>" );
+  });
+
+  $( "<select/>", {
+    "class": "project-list",
+    "id": "project-list",
+     html: items.join( "" )
+  }).appendTo( "#add-project" );
+});
+
+</script>
+{% endblock extra_js %}

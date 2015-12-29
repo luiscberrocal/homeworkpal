@@ -1,0 +1,832 @@
+[
+{
+    "model": "auth.user",
+    "fields": {
+        "is_staff": false,
+        "username": "wesley.will",
+        "first_name": "Wesley",
+        "password": "user1",
+        "last_login": null,
+        "email": "<function UserFactory.email at 0x1043eaea0>",
+        "is_active": true,
+        "date_joined": "2015-11-09T15:46:14.793Z",
+        "groups": [],
+        "user_permissions": [],
+        "is_superuser": false,
+        "last_name": "Will"
+    },
+    "pk": 1
+},
+{
+    "model": "auth.user",
+    "fields": {
+        "is_staff": false,
+        "username": "conner.dietrich",
+        "first_name": "Conner",
+        "password": "user1",
+        "last_login": null,
+        "email": "<function UserFactory.email at 0x1043eaea0>",
+        "is_active": true,
+        "date_joined": "2015-11-09T15:46:14.812Z",
+        "groups": [],
+        "user_permissions": [],
+        "is_superuser": false,
+        "last_name": "Dietrich"
+    },
+    "pk": 2
+},
+{
+    "model": "auth.user",
+    "fields": {
+        "is_staff": false,
+        "username": "cristian.volkman",
+        "first_name": "Cristian",
+        "password": "user1",
+        "last_login": null,
+        "email": "<function UserFactory.email at 0x1043eaea0>",
+        "is_active": true,
+        "date_joined": "2015-11-09T15:46:14.828Z",
+        "groups": [],
+        "user_permissions": [],
+        "is_superuser": false,
+        "last_name": "Volkman"
+    },
+    "pk": 3
+},
+{
+    "model": "auth.user",
+    "fields": {
+        "is_staff": false,
+        "username": "reed.upton",
+        "first_name": "Reed",
+        "password": "user1",
+        "last_login": null,
+        "email": "<function UserFactory.email at 0x1043eaea0>",
+        "is_active": true,
+        "date_joined": "2015-11-09T15:46:14.846Z",
+        "groups": [],
+        "user_permissions": [],
+        "is_superuser": false,
+        "last_name": "Upton"
+    },
+    "pk": 4
+},
+{
+    "model": "auth.user",
+    "fields": {
+        "is_staff": false,
+        "username": "claudia.murray",
+        "first_name": "Claudia",
+        "password": "user1",
+        "last_login": null,
+        "email": "<function UserFactory.email at 0x1043eaea0>",
+        "is_active": true,
+        "date_joined": "2015-11-09T15:46:14.861Z",
+        "groups": [],
+        "user_permissions": [],
+        "is_superuser": false,
+        "last_name": "Murray"
+    },
+    "pk": 5
+},
+{
+    "model": "auth.user",
+    "fields": {
+        "is_staff": false,
+        "username": "rubi.wisozk",
+        "first_name": "Rubi",
+        "password": "user1",
+        "last_login": null,
+        "email": "<function UserFactory.email at 0x1043eaea0>",
+        "is_active": true,
+        "date_joined": "2015-11-09T15:46:14.877Z",
+        "groups": [],
+        "user_permissions": [],
+        "is_superuser": false,
+        "last_name": "Wisozk"
+    },
+    "pk": 6
+},
+{
+    "model": "auth.user",
+    "fields": {
+        "is_staff": false,
+        "username": "lassie.schmeler",
+        "first_name": "Lassie",
+        "password": "user1",
+        "last_login": null,
+        "email": "<function UserFactory.email at 0x1043eaea0>",
+        "is_active": true,
+        "date_joined": "2015-11-09T15:46:14.890Z",
+        "groups": [],
+        "user_permissions": [],
+        "is_superuser": false,
+        "last_name": "Schmeler"
+    },
+    "pk": 7
+},
+{
+    "model": "auth.user",
+    "fields": {
+        "is_staff": false,
+        "username": "lavina.hodkiewicz",
+        "first_name": "Lavina",
+        "password": "user1",
+        "last_login": null,
+        "email": "<function UserFactory.email at 0x1043eaea0>",
+        "is_active": true,
+        "date_joined": "2015-11-09T15:46:14.905Z",
+        "groups": [],
+        "user_permissions": [],
+        "is_superuser": false,
+        "last_name": "Hodkiewicz"
+    },
+    "pk": 8
+},
+{
+    "model": "auth.user",
+    "fields": {
+        "is_staff": false,
+        "username": "sherwood.bernhard",
+        "first_name": "Sherwood",
+        "password": "user1",
+        "last_login": null,
+        "email": "<function UserFactory.email at 0x1043eaea0>",
+        "is_active": true,
+        "date_joined": "2015-11-09T15:46:14.919Z",
+        "groups": [],
+        "user_permissions": [],
+        "is_superuser": false,
+        "last_name": "Bernhard"
+    },
+    "pk": 9
+},
+{
+    "model": "auth.user",
+    "fields": {
+        "is_staff": false,
+        "username": "lorena.morar",
+        "first_name": "Lorena",
+        "password": "user1",
+        "last_login": null,
+        "email": "<function UserFactory.email at 0x1043eaea0>",
+        "is_active": true,
+        "date_joined": "2015-11-09T15:46:14.933Z",
+        "groups": [],
+        "user_permissions": [],
+        "is_superuser": false,
+        "last_name": "Morar"
+    },
+    "pk": 10
+},
+{
+    "model": "auth.user",
+    "fields": {
+        "is_staff": false,
+        "username": "katherine.o'reilly",
+        "first_name": "Katherine",
+        "password": "user1",
+        "last_login": null,
+        "email": "<function UserFactory.email at 0x1043eaea0>",
+        "is_active": true,
+        "date_joined": "2015-11-09T15:46:14.948Z",
+        "groups": [],
+        "user_permissions": [],
+        "is_superuser": false,
+        "last_name": "O'Reilly"
+    },
+    "pk": 11
+},
+{
+    "model": "auth.user",
+    "fields": {
+        "is_staff": false,
+        "username": "corrine.brown",
+        "first_name": "Corrine",
+        "password": "user1",
+        "last_login": null,
+        "email": "<function UserFactory.email at 0x1043eaea0>",
+        "is_active": true,
+        "date_joined": "2015-11-09T15:46:14.964Z",
+        "groups": [],
+        "user_permissions": [],
+        "is_superuser": false,
+        "last_name": "Brown"
+    },
+    "pk": 12
+},
+{
+    "model": "auth.user",
+    "fields": {
+        "is_staff": false,
+        "username": "normand.conroy",
+        "first_name": "Normand",
+        "password": "user1",
+        "last_login": null,
+        "email": "<function UserFactory.email at 0x1043eaea0>",
+        "is_active": true,
+        "date_joined": "2015-11-09T15:46:14.978Z",
+        "groups": [],
+        "user_permissions": [],
+        "is_superuser": false,
+        "last_name": "Conroy"
+    },
+    "pk": 13
+},
+{
+    "model": "auth.user",
+    "fields": {
+        "is_staff": false,
+        "username": "garnett.treutel",
+        "first_name": "Garnett",
+        "password": "user1",
+        "last_login": null,
+        "email": "<function UserFactory.email at 0x1043eaea0>",
+        "is_active": true,
+        "date_joined": "2015-11-09T15:46:14.992Z",
+        "groups": [],
+        "user_permissions": [],
+        "is_superuser": false,
+        "last_name": "Treutel"
+    },
+    "pk": 14
+},
+{
+    "model": "sites.site",
+    "fields": {
+        "name": "example.com",
+        "domain": "example.com"
+    },
+    "pk": 1
+},
+{
+    "model": "employee.employee",
+    "fields": {
+        "tenure": "PERM",
+        "user": 1,
+        "middle_name": "Henderson",
+        "company_id": "9366069"
+    },
+    "pk": 1
+},
+{
+    "model": "employee.employee",
+    "fields": {
+        "tenure": "TEMP",
+        "user": 2,
+        "middle_name": "Griselda",
+        "company_id": "3819942"
+    },
+    "pk": 2
+},
+{
+    "model": "employee.employee",
+    "fields": {
+        "tenure": "PERM",
+        "user": 3,
+        "middle_name": "Hilario",
+        "company_id": "6308361"
+    },
+    "pk": 3
+},
+{
+    "model": "employee.employee",
+    "fields": {
+        "tenure": "TEMP",
+        "user": 4,
+        "middle_name": "Brielle",
+        "company_id": "3817611"
+    },
+    "pk": 4
+},
+{
+    "model": "employee.employee",
+    "fields": {
+        "tenure": "PERM",
+        "user": 5,
+        "middle_name": "Lular",
+        "company_id": "2829345"
+    },
+    "pk": 5
+},
+{
+    "model": "employee.employee",
+    "fields": {
+        "tenure": "TEMP",
+        "user": 6,
+        "middle_name": "Jerrod",
+        "company_id": "8065441"
+    },
+    "pk": 6
+},
+{
+    "model": "employee.employee",
+    "fields": {
+        "tenure": "PERM",
+        "user": 7,
+        "middle_name": "Norma",
+        "company_id": "6618215"
+    },
+    "pk": 7
+},
+{
+    "model": "employee.employee",
+    "fields": {
+        "tenure": "TEMP",
+        "user": 8,
+        "middle_name": "Nettie",
+        "company_id": "7270573"
+    },
+    "pk": 8
+},
+{
+    "model": "employee.employee",
+    "fields": {
+        "tenure": "PERM",
+        "user": 9,
+        "middle_name": "Myrtle",
+        "company_id": "1673578"
+    },
+    "pk": 9
+},
+{
+    "model": "employee.employee",
+    "fields": {
+        "tenure": "TEMP",
+        "user": 10,
+        "middle_name": "Tilman",
+        "company_id": "9002461"
+    },
+    "pk": 10
+},
+{
+    "model": "employee.employee",
+    "fields": {
+        "tenure": "PERM",
+        "user": 11,
+        "middle_name": "Elzie",
+        "company_id": "1804011"
+    },
+    "pk": 11
+},
+{
+    "model": "employee.employee",
+    "fields": {
+        "tenure": "TEMP",
+        "user": 12,
+        "middle_name": "Honora",
+        "company_id": "8427894"
+    },
+    "pk": 12
+},
+{
+    "model": "employee.employee",
+    "fields": {
+        "tenure": "PERM",
+        "user": 13,
+        "middle_name": "Dania",
+        "company_id": "3380147"
+    },
+    "pk": 13
+},
+{
+    "model": "employee.employee",
+    "fields": {
+        "tenure": "TEMP",
+        "user": 14,
+        "middle_name": "Plummer",
+        "company_id": "8550496"
+    },
+    "pk": 14
+},
+{
+    "model": "employee.position",
+    "fields": {
+        "owner": null,
+        "number": "034775",
+        "type": "PERM",
+        "grade": "NM-07"
+    },
+    "pk": 1
+},
+{
+    "model": "employee.position",
+    "fields": {
+        "owner": null,
+        "number": "315354",
+        "type": "TEMP",
+        "grade": "NM-09"
+    },
+    "pk": 2
+},
+{
+    "model": "employee.position",
+    "fields": {
+        "owner": null,
+        "number": "306029",
+        "type": "PERM",
+        "grade": "NM-11"
+    },
+    "pk": 3
+},
+{
+    "model": "employee.position",
+    "fields": {
+        "owner": null,
+        "number": "619055",
+        "type": "TEMP",
+        "grade": "NM-12"
+    },
+    "pk": 4
+},
+{
+    "model": "employee.position",
+    "fields": {
+        "owner": null,
+        "number": "439274",
+        "type": "PERM",
+        "grade": "NM-13"
+    },
+    "pk": 5
+},
+{
+    "model": "employee.position",
+    "fields": {
+        "owner": null,
+        "number": "037184",
+        "type": "TEMP",
+        "grade": "NM-07"
+    },
+    "pk": 6
+},
+{
+    "model": "employee.position",
+    "fields": {
+        "owner": null,
+        "number": "515919",
+        "type": "PERM",
+        "grade": "NM-09"
+    },
+    "pk": 7
+},
+{
+    "model": "employee.position",
+    "fields": {
+        "owner": null,
+        "number": "976255",
+        "type": "TEMP",
+        "grade": "NM-11"
+    },
+    "pk": 8
+},
+{
+    "model": "employee.position",
+    "fields": {
+        "owner": null,
+        "number": "669767",
+        "type": "PERM",
+        "grade": "NM-12"
+    },
+    "pk": 9
+},
+{
+    "model": "employee.position",
+    "fields": {
+        "owner": null,
+        "number": "865960",
+        "type": "TEMP",
+        "grade": "NM-13"
+    },
+    "pk": 10
+},
+{
+    "model": "employee.position",
+    "fields": {
+        "owner": null,
+        "number": "993358",
+        "type": "PERM",
+        "grade": "NM-07"
+    },
+    "pk": 11
+},
+{
+    "model": "employee.position",
+    "fields": {
+        "owner": null,
+        "number": "777150",
+        "type": "TEMP",
+        "grade": "NM-09"
+    },
+    "pk": 12
+},
+{
+    "model": "employee.position",
+    "fields": {
+        "owner": null,
+        "number": "547628",
+        "type": "PERM",
+        "grade": "NM-11"
+    },
+    "pk": 13
+},
+{
+    "model": "employee.position",
+    "fields": {
+        "owner": null,
+        "number": "106440",
+        "type": "TEMP",
+        "grade": "NM-12"
+    },
+    "pk": 14
+},
+{
+    "model": "employee.companygroup",
+    "fields": {
+        "slug": "tino-ns",
+        "name": "TINO-NS",
+        "description": null,
+        "parent_group": null
+    },
+    "pk": 1
+},
+{
+    "model": "employee.companygroupemployeeassignment",
+    "fields": {
+        "end_date": null,
+        "employee": 1,
+        "group": 1,
+        "start_date": "2011-06-30"
+    },
+    "pk": 1
+},
+{
+    "model": "employee.companygroupemployeeassignment",
+    "fields": {
+        "end_date": null,
+        "employee": 2,
+        "group": 1,
+        "start_date": "2012-08-13"
+    },
+    "pk": 2
+},
+{
+    "model": "employee.companygroupemployeeassignment",
+    "fields": {
+        "end_date": null,
+        "employee": 3,
+        "group": 1,
+        "start_date": "1988-03-26"
+    },
+    "pk": 3
+},
+{
+    "model": "employee.companygroupemployeeassignment",
+    "fields": {
+        "end_date": null,
+        "employee": 4,
+        "group": 1,
+        "start_date": "2007-08-10"
+    },
+    "pk": 4
+},
+{
+    "model": "employee.companygroupemployeeassignment",
+    "fields": {
+        "end_date": null,
+        "employee": 5,
+        "group": 1,
+        "start_date": "2006-02-24"
+    },
+    "pk": 5
+},
+{
+    "model": "employee.companygroupemployeeassignment",
+    "fields": {
+        "end_date": null,
+        "employee": 6,
+        "group": 1,
+        "start_date": "1993-12-02"
+    },
+    "pk": 6
+},
+{
+    "model": "employee.companygroupemployeeassignment",
+    "fields": {
+        "end_date": null,
+        "employee": 7,
+        "group": 1,
+        "start_date": "2001-03-24"
+    },
+    "pk": 7
+},
+{
+    "model": "employee.companygroupemployeeassignment",
+    "fields": {
+        "end_date": null,
+        "employee": 8,
+        "group": 1,
+        "start_date": "2002-10-07"
+    },
+    "pk": 8
+},
+{
+    "model": "employee.companygroupemployeeassignment",
+    "fields": {
+        "end_date": null,
+        "employee": 9,
+        "group": 1,
+        "start_date": "2010-05-14"
+    },
+    "pk": 9
+},
+{
+    "model": "employee.companygroupemployeeassignment",
+    "fields": {
+        "end_date": null,
+        "employee": 10,
+        "group": 1,
+        "start_date": "2007-03-01"
+    },
+    "pk": 10
+},
+{
+    "model": "employee.companygroupemployeeassignment",
+    "fields": {
+        "end_date": null,
+        "employee": 11,
+        "group": 1,
+        "start_date": "2000-05-20"
+    },
+    "pk": 11
+},
+{
+    "model": "employee.companygroupemployeeassignment",
+    "fields": {
+        "end_date": null,
+        "employee": 12,
+        "group": 1,
+        "start_date": "2011-02-01"
+    },
+    "pk": 12
+},
+{
+    "model": "employee.companygroupemployeeassignment",
+    "fields": {
+        "end_date": null,
+        "employee": 13,
+        "group": 1,
+        "start_date": "1998-08-12"
+    },
+    "pk": 13
+},
+{
+    "model": "employee.companygroupemployeeassignment",
+    "fields": {
+        "end_date": null,
+        "employee": 14,
+        "group": 1,
+        "start_date": "2001-07-10"
+    },
+    "pk": 14
+},
+{
+    "model": "employee.positionassignment",
+    "fields": {
+        "end_date": null,
+        "position": 1,
+        "employee": 1,
+        "start_date": "1994-04-01"
+    },
+    "pk": 1
+},
+{
+    "model": "employee.positionassignment",
+    "fields": {
+        "end_date": null,
+        "position": 2,
+        "employee": 2,
+        "start_date": "2013-12-01"
+    },
+    "pk": 2
+},
+{
+    "model": "employee.positionassignment",
+    "fields": {
+        "end_date": null,
+        "position": 3,
+        "employee": 3,
+        "start_date": "2000-04-09"
+    },
+    "pk": 3
+},
+{
+    "model": "employee.positionassignment",
+    "fields": {
+        "end_date": null,
+        "position": 4,
+        "employee": 4,
+        "start_date": "2010-12-11"
+    },
+    "pk": 4
+},
+{
+    "model": "employee.positionassignment",
+    "fields": {
+        "end_date": null,
+        "position": 5,
+        "employee": 5,
+        "start_date": "2000-01-15"
+    },
+    "pk": 5
+},
+{
+    "model": "employee.positionassignment",
+    "fields": {
+        "end_date": null,
+        "position": 6,
+        "employee": 6,
+        "start_date": "2002-10-20"
+    },
+    "pk": 6
+},
+{
+    "model": "employee.positionassignment",
+    "fields": {
+        "end_date": null,
+        "position": 7,
+        "employee": 7,
+        "start_date": "2000-01-27"
+    },
+    "pk": 7
+},
+{
+    "model": "employee.positionassignment",
+    "fields": {
+        "end_date": null,
+        "position": 8,
+        "employee": 8,
+        "start_date": "1990-09-11"
+    },
+    "pk": 8
+},
+{
+    "model": "employee.positionassignment",
+    "fields": {
+        "end_date": null,
+        "position": 9,
+        "employee": 9,
+        "start_date": "2011-11-20"
+    },
+    "pk": 9
+},
+{
+    "model": "employee.positionassignment",
+    "fields": {
+        "end_date": null,
+        "position": 10,
+        "employee": 10,
+        "start_date": "2012-02-18"
+    },
+    "pk": 10
+},
+{
+    "model": "employee.positionassignment",
+    "fields": {
+        "end_date": null,
+        "position": 11,
+        "employee": 11,
+        "start_date": "1987-04-26"
+    },
+    "pk": 11
+},
+{
+    "model": "employee.positionassignment",
+    "fields": {
+        "end_date": null,
+        "position": 12,
+        "employee": 12,
+        "start_date": "1993-06-29"
+    },
+    "pk": 12
+},
+{
+    "model": "employee.positionassignment",
+    "fields": {
+        "end_date": null,
+        "position": 13,
+        "employee": 13,
+        "start_date": "1994-12-28"
+    },
+    "pk": 13
+},
+{
+    "model": "employee.positionassignment",
+    "fields": {
+        "end_date": null,
+        "position": 14,
+        "employee": 14,
+        "start_date": "1991-04-02"
+    },
+    "pk": 14
+}
+]

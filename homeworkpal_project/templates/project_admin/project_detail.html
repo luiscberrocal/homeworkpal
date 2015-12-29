@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% block page_title %} {{ project.short_name }} {% endblock page_title %}
+{% block content %}
+<div>
+    <div>
+        {{ project.description }}
+    </div>
+    <div class="row">
+        <div class="col-sm-6"><span class="title">Planned Start Date: </span> {{ project.planned_start_date }}</div>
+        <div class="col-sm-6"><span class="title">Planned End Date: </span> {{ project.planned_end_date }}</div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6"><span class="title">Actual Start Date: </span> {{ project.actual_start_date }}</div>
+        <div class="col-sm-6"><span class="title">Actual End Date: </span> {{ project.actual_end_date }}</div>
+    </div>
+    <div><span class="title">Group: </span> {{ project.group }}</div>
+    <div><span class="title">Planned Man Hours </span> {{ project.planned_man_hours }}</div>
+    <div><span class="title">Project Type: </span> {{ project.type }}</div>
+    <div><span class="title">Priority: </span> {{ project.priority }}</div>
+</div>
+<div class="row">
+    <div class="col-sm-6"><h2>{% trans "Members" %}</h2>
+        {% for member in members %}
+        <div class="row">
+            <div class="member col-sm-6"><span class="{{ member.role|lower }}">&nbsp;</span> {{ member.employee }}
+            </div>
+            <div class="col-sm-2"> {{ member.employee.position.grade }}</div>
+            <div class="col-sm-3"> {{ member.role }}</div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="col-sm-6"><h2>{% trans "Stakholders" %}</h2>
+        {% for stakeholder in project.stakeholders.all %}
+        <div>{{ stakeholder.employee }}</div>
+        {% endfor %}
+    </div>
+</div>
+<div class="row">
+    <h2>{% trans "Risks" %}</h2>
+    {% for risk in project.risks.all %}
+    <div class="row">
+        <div class="col-sm-1">{{ risk.priority }}</div>
+        <div class="col-sm-3">{{ risk.risk_type }}</div>
+        <div class="col-sm-6">{{ risk.description }}</div>
+    </div>
+    {% endfor %}
+</div>
+<div class="row">
+    <h2>{% trans "Corporate Goals" %}</h2>
+    {% for goal_assignment in project.corporate_goals.all %}
+    <div class="row">
+        <div class="col-sm-1">{{ goal_assignment.corporate_goal.number }}</div>
+        <div class="col-sm-3">{{ goal_assignment.corporate_goal.name }}</div>
+        <div class="col-sm-6">{{ goal_assignment.corporate_goal.description }}</div>
+    </div>
+    {% endfor %}
+</div>
+<div class="row">
+    <h2>{% trans "Deliverables" %}</h2>
+    {% for deliverable in project.deliverables.all %}
+    <div class="row">
+        <div class="col-sm-4">{{ deliverable.name }}</div>
+        <div class="col-sm-6">{{ deliverable.description }}</div>
+    </div>
+    {% endfor %}
+</div>
+
+<div>
+    <a class="btn btn-primary" role="button" href="{% url 'project:project_update' project.pk %}">Edit</a>
+    <a class="btn btn-primary" role="button" href="{% url 'project:project_delete' project.pk %}">Delete</a>
+</div>
+</div>
+{% endblock content %}

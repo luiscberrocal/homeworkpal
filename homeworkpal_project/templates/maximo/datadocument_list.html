@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load staticfiles i18n %}
+{% block page_title %}
+{% trans "Uploaded Data" %}
+{% endblock page_title %}
+{% block content %}
+<table class="table">
+    <thead>
+    <tr class="row">
+        <th>{% trans "Filename" %}</th>
+        <th>{% trans "Status" %}</th>
+        <th>{% trans "Processing" %}</th>
+        <th>{% trans "Parsed" %}</th>
+         <th>{% trans "Created" %}</th>
+    </tr>
+    </thead>
+
+{% for document in object_list %}
+<tr class="row">
+    <td class="col-md-3"><a href="{% url 'maximo:document-detail' document.pk %}"> {{ document.filename }} </a></td>
+    <td class="col-md-1">{{ document.status }} </td>
+    <td class="col-md-2">
+        <div>{% trans "Started" %}:{{ document.date_start_processing }}</div>
+         <div>{% trans "Finished" %}:{{ document.date_end_processing }}</div>
+    </td>
+   <td class="col-md-3">
+       <div>{% trans "Tickets" %}: {{ document.results.ticket_results.rows_parsed }}</div>
+       <div>{% trans "Time registries" %}: {{ document.results.time_results.rows_parsed }}</div>
+   </td>
+    <td class="col-md-3">
+       <div>{% trans "Tickets" %}: {{ document.results.ticket_results.created }}</div>
+       <div>{% trans "Time registries" %}: {{ document.results.time_results.created }}</div>
+        <div>{% trans "Time duplicates" %}: {{ document.results.time_results.duplicates }}</div>
+        <div>{% trans "Time Errors" %}: {{ document.results.time_results.errors|length }}</div>
+
+   </td>
+</tr>
+ {% endfor %}
+    </table>
+{% endblock content %}

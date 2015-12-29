@@ -1,7 +1,7 @@
 {% extends "base.html" %}
-{% block page_title %}Homeworks{% endblock page_title %}
+{% block page_title %}Homeworks {% endblock page_title %}
 {% block content %}
-
+<h2>{{ school_level.name }}</h2>
 <div>
     {% for homework in object_list %}
     <div class="alert alert-info" role="alert">

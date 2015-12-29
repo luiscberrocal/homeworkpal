@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load staticfiles bootstrap3 i18n %}
+{% block extra_css %}
+{{ form.media }}
+{% endblock extra_css %}
+
+{% block page_title %}
+  {% trans "Load Maximo Time Register File" %}
+{% endblock page_title %}
+
+{% block content %}
+    <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+         {% bootstrap_form form %}
+        <input class="btn btn-primary" role="button" type="submit" value="Upload"/>
+    </form>
+{% endblock content %}
