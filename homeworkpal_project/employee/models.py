@@ -21,8 +21,6 @@ TENURE_TYPES = (
     )
 
 
-
-
 class Employee(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     middle_name = models.CharField(max_length=30, null=True, blank=True)
@@ -57,6 +55,7 @@ class Employee(models.Model):
             return '%s, %s' % (self.user.last_name, self.user.first_name)
         else:
             return self.user.username
+
 
 class Position(models.Model):
     number = models.CharField(max_length=6, unique=True)
