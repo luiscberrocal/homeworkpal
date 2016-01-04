@@ -7,6 +7,9 @@ from sys import path
 
 ########## PATH CONFIGURATION
 # Absolute filesystem path to the Django project directory:
+import ldap
+from django_auth_ldap.config import LDAPSearch, ActiveDirectoryGroupType
+
 DJANGO_ROOT = dirname(dirname(abspath(__file__)))
 
 # Absolute filesystem path to the top-level project folder:
@@ -274,7 +277,12 @@ LOGGING = {
             'handlers': ['console'],
             'level': 'DEBUG',
             'propagate': True,
-        }
+        },
+        'django_auth_ldap': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
 
     }
 }
@@ -298,3 +306,40 @@ REST_FRAMEWORK = {
 
 BROKER_URL = 'amqp://guest:guest@localhost:5672//'
 CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
+
+
+#### LDAP Configuration
+
+AUTHENTICATION_BACKENDS = (
+    'django_auth_ldap.backend.LDAPBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+AUTH_LDAP_SERVER_URI = "ldap://IT-DC-6"
+
+
+AUTH_LDAP_BIND_DN = r"CN=LBerrocal,OU=FAII,OU=FAI,OU=FA,OU=Corp,DC=canal,DC=acp"
+AUTH_LDAP_BIND_PASSWORD = "*****"
+AUTH_LDAP_USER_SEARCH = LDAPSearch("OU=Corp,DC=canal,DC=acp",
+    ldap.SCOPE_SUBTREE, "(sAMAccountName=%(user)s)")
+AUTH_LDAP_GROUP_SEARCH = LDAPSearch("OU=Corp,DC=canal,DC=acp", ldap.SCOPE_SUBTREE, "(objectClass=groupOfNames)")
+AUTH_LDAP_GROUP_TYPE = ActiveDirectoryGroupType()
+AUTH_LDAP_FIND_GROUP_PERMS = True
+#AUTH_LDAP_CACHE_GROUPS = True
+#AUTH_LDAP_GROUP_CACHE_TIMEOUT = 3600
+AUTH_LDAP_GLOBAL_OPTIONS = {
+    ldap.OPT_X_TLS_REQUIRE_CERT: False,
+    ldap.OPT_REFERRALS: False,
+}
+
+AUTH_LDAP_USER_ATTR_MAP = {
+    "first_name": "givenName",
+    "last_name": "sn",
+    "email": "mail"
+}
+
+
+AUTH_LDAP_CONNECTION_OPTIONS = {
+        ldap.OPT_DEBUG_LEVEL: 0,
+        ldap.OPT_REFERRALS: 0,
+}
