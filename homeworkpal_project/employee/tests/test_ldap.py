@@ -7,4 +7,4 @@ class TestLDAP(TestCase):
     def test_get_user(self):
         user = LDAPBackend().populate_user('OAHerrera')
         self.assertIsNotNone(user)
-        self.assertEqual('Berrocal Cordoba', user.last_name)
+        self.assertEqual('Herrera Valdes', user.last_name)
