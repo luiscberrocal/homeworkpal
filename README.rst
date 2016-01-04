@@ -60,4 +60,25 @@ Dumping data to json
 
 
 
+LDAP
+------
+
+Download pyldap-2.4.22-cp34-none-win32.whl from http://www.lfd.uci.edu/~gohlke/pythonlibs/
+
+Install the whl file using the following command:
+
+::
+
+	> pip install C:\Users\lberrocal\Downloads\pyldap-2.4.22-cp34-none-win32.whl
+
+The install the django-auth-ldap
+
+::
+
+	> pip install django-auth-ldap
+
+
+Reference:
+
+http://www.djm.org.uk/using-django-auth-ldap-active-directory-ldaps/
 
