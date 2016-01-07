@@ -3,6 +3,7 @@ import re
 from django.db.models import Manager
 
 
+
 __author__ = 'lberrocal'
 
 
@@ -35,8 +36,16 @@ class EmployeeManager(Manager):
         return self.get_queryset().filter(pk__in=employees_pk).select_related('user')
 
 
-
 class CompanyGroupEmployeeAssignmentManager(Manager):
 
     def group_members(self, company_group):
         return self.get_queryset().filter(group=company_group, end_date__isnull=True).select_related('employee', 'employee__user')
+
+    def group_leader(self, company_group):
+        from .models import CompanyGroupEmployeeAssignment
+        qs = self.get_queryset().filter(group=company_group, end_date__isnull=True, role=CompanyGroupEmployeeAssignment.LEADER_ROLE).select_related('employee', 'employee__user')
+        if len(qs) == 0:
+            return None
+        elif len(qs) > 1:
+            raise ValueError('Company group %s has more than one leader' % (company_group.name))
+        return qs[0]

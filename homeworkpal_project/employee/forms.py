@@ -1,6 +1,6 @@
 from datetimewidget.widgets import DateWidget, DateTimeWidget
 from django.forms import ModelForm
-from .models import CoachingSession
+from .models import CoachingSession, Achievement
 
 __author__ = 'LBerrocal'
 
@@ -27,3 +27,10 @@ class CoachingSessionForm(ModelForm):
             'start_date_time': DateTimeWidget(options=date_time_options, attrs={'id': "start-date-time"}, usel10n=True, bootstrap_version=3),
             'end_date_time': DateTimeWidget(options=date_time_options, attrs={'id': "end-date-time"}, usel10n=True, bootstrap_version=3)
         }
+
+
+class AchievementForm(ModelForm):
+
+    class Meta:
+        model = Achievement
+        fields = ['employee', 'type', 'description', 'date', 'input_by']

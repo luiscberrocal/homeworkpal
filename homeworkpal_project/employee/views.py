@@ -106,3 +106,9 @@ class CoachingSessionListView(LoginRequiredMixin, ListView):
             qs = CoachingSession.objects.filter(employee__companygroupemployeeassignment__group__slug=self.kwargs['group_slug'])
 
         return qs
+
+
+class AchievementCreateView(LoginRequiredMixin, CreateView):
+    model = CoachingSession
+    context_object_name = 'coaching_session'
+    form_class = CoachingSessionForm

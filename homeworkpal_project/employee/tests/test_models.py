@@ -83,7 +83,6 @@ class TestPositions(TestCase):
         self.assertEqual(employee.position, position)
 
 
-
 class TestCompanyGroupEmployeeAssignment(TestCase):
 
     def test_create(self):
@@ -116,11 +115,19 @@ class TestCompanyGroupEmployeeAssignment(TestCase):
         group_assignment.save()
         employees = EmployeeFactory.create_batch(5)
         for employee in employees[:3]:
-            logger.debug('****')
             group_assignment.group.assign(employee, date.today())
         members = CompanyGroupEmployeeAssignment.objects.group_members(group_assignment.group)
         self.assertEqual(3, len(members))
 
+    def test_group_leader(self):
+        group_assignment = CompanyGroupEmployeeAssignmentFactory.create(role=CompanyGroupEmployeeAssignment.LEADER_ROLE)
+        employees = EmployeeFactory.create_batch(5)
+        for employee in employees:
+            group_assignment.group.assign(employee, date.today())
+        members = CompanyGroupEmployeeAssignment.objects.group_members(group_assignment.group)
+        self.assertEqual(6, len(members))
+        leader_assignment = CompanyGroupEmployeeAssignment.objects.group_leader(group_assignment.group)
+        self.assertEqual(group_assignment.employee.user.username, leader_assignment.employee.user.username)
 
 class TestCompanyGroup(TestCase):
 

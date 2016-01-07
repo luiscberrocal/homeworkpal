@@ -14,7 +14,7 @@ class CompanyGroupAdmin(admin.ModelAdmin):
 
 
 class CompanyGroupEmployeeAssignmentAdmin(admin.ModelAdmin):
-    list_display = ['group', 'employee', 'start_date', 'end_date']
+    list_display = ['group', 'role', 'employee', 'start_date', 'end_date']
     ordering = ['group', 'employee']
 
 
