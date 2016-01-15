@@ -7,8 +7,17 @@ import logging
 logger = logging.getLogger(__name__)
 __author__ = 'lberrocal'
 
+class TestProject(TestCase):
 
-
+    def test_status(self):
+        project = ProjectFactory.create()
+        self.assertEqual('WAITING', project.status)
+        project.actual_start_date = project.planned_start_date
+        project.save()
+        self.assertEqual('RUNNING', project.status)
+        project.actual_end_date = project.planned_start_date
+        project.save()
+        self.assertEqual('CLOSED', project.status)
 
 class TestProjectMember(TestCase):
 
@@ -24,7 +33,6 @@ class TestProjectMember(TestCase):
             ProjectMemberFactory.create(project=member.project, employee=employee)
         assigned = ProjectMember.objects.assigned_to_project(member.project)
         self.assertEqual(6, len(assigned))
-
 
     def test_retrieve_project_member(self):
         member = ProjectMemberFactory.create()

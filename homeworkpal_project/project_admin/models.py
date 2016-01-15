@@ -49,6 +49,14 @@ class Project(models.Model):
         return leader
     leader = property(_leader)
 
+    def _status(self):
+        if self.actual_end_date is not None:
+            return 'CLOSED'
+        if self.actual_start_date is not None:
+            return 'RUNNING'
+        return 'WAITING'
+    status = property(_status)
+
     def remaining_days(self):
         holidays = Holiday()
         from_date = timezone.localtime(timezone.now()).date()

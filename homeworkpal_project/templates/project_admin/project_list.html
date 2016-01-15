@@ -26,7 +26,7 @@ Projects
         </tr>
     </thead>
     {% for project in object_list %}
-    <tr class="row" role="alert">
+    <tr class="row {{ project.status|lower }}" role="alert">
         <td class="col-md-1">
             {{ forloop.counter }}
         </td>
