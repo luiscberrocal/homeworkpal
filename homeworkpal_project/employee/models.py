@@ -83,7 +83,7 @@ class Position(models.Model):
 class CompanyGroup(models.Model):
     name = models.CharField(max_length=10, unique=True)
     description = models.CharField(max_length=120, null=True, blank=True)
-    parent_group = models.ForeignKey('self', null=True, blank=True)
+    parent_group = models.ForeignKey('self', null=True, blank=True, verbose_name='children_groups',)
     slug = AutoSlugField(populate_from='name', max_length=10, unique=True)
 
     def assign(self, employee, start_date):
@@ -112,10 +112,16 @@ class CompanyGroup(models.Model):
 
 
 class CompanyGroupEmployeeAssignment(models.Model):
+    MEMBER_ROLE = 'MEMBER'
+    LEADER_ROLE = 'LEADER'
+    ROLES = ((MEMBER_ROLE, 'Member'),
+             (LEADER_ROLE, 'Leader'))
     group = models.ForeignKey(CompanyGroup)
     employee = models.ForeignKey(Employee)
     start_date = models.DateField()
     end_date = models.DateField(null=True, blank=True)
+    role = models.CharField(max_length=6, choices=ROLES, default=MEMBER_ROLE)
+
 
     objects = CompanyGroupEmployeeAssignmentManager()
 
@@ -163,7 +169,8 @@ class CoachingSession(TimeStampedModel):
     end_date_time = models.DateTimeField(null=True, blank=True)
     comments = models.TextField()
 
-
+    class Meta:
+        ordering = ('start_date_time', )
 
     def time_spent(self):
         if self.end_date_time is None:
@@ -173,3 +180,18 @@ class CoachingSession(TimeStampedModel):
 
     def get_absolute_url(self):
         return reverse('employee:coaching-detail', kwargs={'pk': self.pk})
+
+
+class Achievement(TimeStampedModel):
+    ACHIEVEMENT_TYPE = 'ACHIEVEMENT'
+    INITIATIVE_TYPE = 'INITIATIVE'
+    ACHIEVEMENT_TYPES = ((ACHIEVEMENT_TYPE, 'Achievement'),
+                         (INITIATIVE_TYPE, 'Initiative'))
+
+    employee = models.ForeignKey(Employee, related_name='achievements')
+    evaluator = models.ForeignKey(Employee, related_name='achievement_evaluations')
+    input_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='achievement_inputs')
+    type = models.CharField(max_length=12, choices=ACHIEVEMENT_TYPES)
+    description = models.TextField()
+    date = models.DateField()
+    points = models.IntegerField(default=0)

@@ -6,5 +6,17 @@ span.title {
 span.leader{
     background-image: url(/static/media/captain-america.png);
     background-repeat: no-repeat;
-    background-position: left top; - See more at: http://www.csstutorial.net/css_misc_images.php#sthash.wVsSNe1u.dpuf
+    background-position: left top; /*- See more at: http://www.csstutorial.net/css_misc_images.php#sthash.wVsSNe1u.dpuf*/
+}
+
+tr.running{
+    background-color: #4cae4c;
+}
+
+tr.closed {
+    background-color: #5bc0de;
+}
+
+tr.waiting{
+    background-color: #ce8483;
 }
