@@ -16,6 +16,7 @@ class CandidateAdmin(admin.ModelAdmin):
 class CandidateInCertificateAdmin(admin.ModelAdmin):
     list_display = ('pk', 'certificate', 'certificate_result', 'candidate', 'score', 'explanation')
     list_editable = ( 'certificate_result', 'candidate', 'score', 'explanation')
+    list_filter = ('certificate', )
 
 
 class ContactInfoAdmin(admin.ModelAdmin):
