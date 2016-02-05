@@ -19,3 +19,4 @@ jsonfield==1.0.3
 celery==3.1.19
 django-celery==3.1.17
 django-auth-ldap==1.2.7
+dropbox=5.2.1
