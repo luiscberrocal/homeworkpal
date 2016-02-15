@@ -56,3 +56,4 @@ media/
 test_data/maximo_data.xlsx
 output/
 docs/ldapconfig
+docs/jql.rst
