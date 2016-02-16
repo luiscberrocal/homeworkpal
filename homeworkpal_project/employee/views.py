@@ -101,9 +101,9 @@ class CoachingSessionListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         if self.kwargs.get('employee_pk', None):
             qs = CoachingSession.objects.filter(employee__companygroupemployeeassignment__group__slug=self.kwargs['group_slug'],
-                                                employee__pk=self.kwargs['employee_pk'])
+                                                employee__pk=self.kwargs['employee_pk']).order_by('-start_date_time')
         else:
-            qs = CoachingSession.objects.filter(employee__companygroupemployeeassignment__group__slug=self.kwargs['group_slug'])
+            qs = CoachingSession.objects.filter(employee__companygroupemployeeassignment__group__slug=self.kwargs['group_slug']).order_by('-start_date_time')
 
         return qs
 
