@@ -1,9 +1,12 @@
 import csv
 
 import datetime
+import re
 
-from homeworkpal_project.settings.local_acp import GIT_NAME_DICTIONARY
+from homeworkpal_project.settings.local_acp import GIT_NAME_DICTIONARY, GIT_JIRA_PROJECT_TAGS
+import logging
 
+logger = logging.getLogger(__name__)
 
 class GitName(object):
     '''
@@ -38,11 +41,22 @@ class GitExportParser(object):
         with open(filename, 'r', encoding='utf-8') as pike_file:
             reader = csv.reader(pike_file, delimiter='|')
             for row in reader:
-                hash = row[0]
-                username = self.git_name.get_user(row[1])
+                hash = row[0].strip()
+                username = self.git_name.get_user(row[1].strip())
                 date = datetime.datetime.strptime(row[2].strip(),date_format)
-                description = row[3]
-                commits.append([hash,  username, date, description])
+                description = row[3].strip()
+                project = self.get_project(description)
+                commits.append([hash,  username, date, description, project])
         return commits
+
+    def get_project(self, description, **kwargs):
+        for project_tag in GIT_JIRA_PROJECT_TAGS:
+            regexp_str = r'.*(%s-\d+)\s?' % project_tag[1] #.*(NAV-\d+)\s?
+            logger.debug('Regular expression: %s' % regexp_str)
+            regexp = re.compile(regexp_str)
+            match = regexp.match(description)
+            if match:
+                return project_tag[0]
+
 
 
