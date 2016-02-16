@@ -24,7 +24,15 @@ class TestGitExportParser(TestCase):
         project = parser.get_project(desc)
         self.assertEqual('Navigation Aids', project)
 
+    def test_get_commit_type(self):
+        parser = GitExportParser()
+        desc = 'Adicionar boton para mostrar web page del radar TINO-NS Navigation AidsNAV-13'
+        project = parser.get_commit_type(desc)
+        self.assertEqual('COMMIT', project)
 
+        desc = 'Merge branch \'MMMM\' of http://stashy:4444/ms/ns/myproject into MMMM'
+        project = parser.get_commit_type(desc)
+        self.assertEqual('MERGE', project)
 
 
 class TestGitName(TestCase):

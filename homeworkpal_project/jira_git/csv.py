@@ -46,8 +46,18 @@ class GitExportParser(object):
                 date = datetime.datetime.strptime(row[2].strip(),date_format)
                 description = row[3].strip()
                 project = self.get_project(description)
-                commits.append([hash,  username, date, description, project])
+                commit_type = self.get_commit_type(description)
+                commits.append([hash,  username, date, description, project, commit_type])
         return commits
+
+    def get_commit_type(self, description, **kwargs):
+        regexp_str = r'^Merge\sbranch\s'
+        regexp = re.compile(regexp_str)
+        match = regexp.match(description)
+        if match:
+            return 'MERGE'
+        else:
+            return 'COMMIT'
 
     def get_project(self, description, **kwargs):
         for project_tag in GIT_JIRA_PROJECT_TAGS:

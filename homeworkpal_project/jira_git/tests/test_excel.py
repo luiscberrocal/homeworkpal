@@ -19,4 +19,6 @@ class TestExcelCommitImporter(TestCase):
         output_filename = filename_with_datetime(TEST_OUTPUT_PATH, 'git_commits.xlsx')
         importer = ExcelCommitImporter()
         importer.parse_multiple_files(filenames, output_filename)
+        self.assertTrue(os.path.exists(output_filename))
         logger.debug('Wrote commits to %s' % output_filename)
+
