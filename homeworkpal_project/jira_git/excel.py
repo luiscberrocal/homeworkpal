@@ -10,7 +10,7 @@ class ExcelCommitImporter(object):
     def __init__(self):
         self.pike_parser = GitExportParser()
 
-    def parse_multiple_files(self, filenames, output_filename):
+    def parse_multiple_files(self, filenames, output_filename, **kwargs):
         wb = Workbook()
         sheet = wb.create_sheet(title='Supports')
         row = 1
@@ -20,7 +20,7 @@ class ExcelCommitImporter(object):
             sheet.cell(column=column, row=row, value=header)
             column += 1
         for filename in filenames:
-            commits = self.pike_parser.parse(filename)
+            commits = self.pike_parser.parse(filename, **kwargs)
             for commit in commits:
                 row += 1
                 column = 1

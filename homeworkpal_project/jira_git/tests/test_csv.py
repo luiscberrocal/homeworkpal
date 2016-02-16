@@ -1,5 +1,6 @@
 import os
 
+import datetime
 from django.test import TestCase
 
 from homeworkpal_project.settings.base import TEST_DATA_PATH
@@ -17,6 +18,13 @@ class TestGitExportParser(TestCase):
         self.assertEqual(16, len(commits))
         for commit in commits:
             print(commit)
+
+    def test_parse_date_filtered(self):
+        filename = os.path.join(TEST_DATA_PATH, 'test_git_export.pike')
+        parser = GitExportParser()
+        commits = parser.parse(filename, start_date=datetime.date(2015,11,1), end_date=datetime.date(2015,11,30))
+        self.assertEqual(3, len(commits))
+
 
     def test_get_project(self):
         parser = GitExportParser()

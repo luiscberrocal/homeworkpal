@@ -3,6 +3,8 @@ import csv
 import datetime
 import re
 
+import pytz
+
 from homeworkpal_project.settings.local_acp import GIT_NAME_DICTIONARY, GIT_JIRA_PROJECT_TAGS
 import logging
 
@@ -35,7 +37,7 @@ class GitExportParser(object):
     def __init__(self):
         self.git_name = GitName()
 
-    def parse(self, filename):
+    def parse(self, filename, **kwargs):
         commits = list()
         date_format = '%a, %d %b %Y %H:%M:%S %z'
         with open(filename, 'r', encoding='utf-8') as pike_file:
@@ -47,8 +49,32 @@ class GitExportParser(object):
                 description = row[3].strip()
                 project, issue_number = self.get_project(description)
                 commit_type = self.get_commit_type(description)
-                commits.append([hash,  username, date, description, project, commit_type, issue_number])
+                passed_filter = self.date_filter(date, kwargs.get('start_date', None), kwargs.get('end_date', None))
+                if passed_filter:
+                    commits.append([hash,  username, date, description, project, commit_type, issue_number])
         return commits
+
+    def date_filter(self, commit_date, start_date, end_date):
+        utc = pytz.UTC
+        if start_date is None or end_date is None:
+            return True
+        if isinstance(start_date, datetime.date):
+            start_date = datetime.datetime(year=start_date.year,
+                                           month=start_date.month,
+                                           day=start_date.day,
+                                           hour = 0,
+                                           minute=0,
+                                           second=0,
+                                           tzinfo=utc)
+        if isinstance(end_date, datetime.date):
+            end_date = datetime.datetime(year=end_date.year,
+                                           month=end_date.month,
+                                           day=end_date.day,
+                                           hour = 0,
+                                           minute=0,
+                                           second=0,
+                                           tzinfo=utc)
+        return commit_date >=start_date and commit_date <= end_date
 
     def get_commit_type(self, description, **kwargs):
         regexp_str = r'^Merge\sbranch\s'
