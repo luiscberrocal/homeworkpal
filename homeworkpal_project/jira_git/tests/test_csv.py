@@ -21,7 +21,7 @@ class TestGitExportParser(TestCase):
     def test_get_project(self):
         parser = GitExportParser()
         desc = 'Adicionar boton para mostrar web page del radar TINO-NS Navigation AidsNAV-13'
-        project = parser.get_project(desc)
+        project, issue = parser.get_project(desc)
         self.assertEqual('Navigation Aids', project)
 
     def test_get_commit_type(self):

@@ -14,7 +14,7 @@ class ExcelCommitImporter(object):
         wb = Workbook()
         sheet = wb.create_sheet(title='Supports')
         row = 1
-        headers = ['Commit Hash', 'Username', 'Date', 'Description', 'Project', 'commit_type']
+        headers = ['Commit Hash', 'Username', 'Date', 'Description', 'Project', 'commit_type', 'issue_number']
         column = 1
         for header in headers:
             sheet.cell(column=column, row=row, value=header)
@@ -35,4 +35,7 @@ class ExcelCommitImporter(object):
                 sheet.cell(column=column, row=row, value=commit[4])
                 column += 1
                 sheet.cell(column=column, row=row, value=commit[5])
+                column += 1
+                sheet.cell(column=column, row=row, value=commit[6])
         wb.save(output_filename)
+        return row - 1

@@ -45,9 +45,9 @@ class GitExportParser(object):
                 username = self.git_name.get_user(row[1].strip())
                 date = datetime.datetime.strptime(row[2].strip(),date_format)
                 description = row[3].strip()
-                project = self.get_project(description)
+                project, issue_number = self.get_project(description)
                 commit_type = self.get_commit_type(description)
-                commits.append([hash,  username, date, description, project, commit_type])
+                commits.append([hash,  username, date, description, project, commit_type, issue_number])
         return commits
 
     def get_commit_type(self, description, **kwargs):
@@ -66,7 +66,9 @@ class GitExportParser(object):
             regexp = re.compile(regexp_str)
             match = regexp.match(description)
             if match:
-                return project_tag[0]
+                return project_tag[0], match.group(1)
+            else:
+                return None, None
 
 
 
