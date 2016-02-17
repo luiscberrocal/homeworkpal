@@ -35,3 +35,12 @@ class TestExcelCommitImporter(TestCase):
         self.assertTrue(os.path.exists(output_filename))
         self.assertEqual(222, commit_count)
         logger.debug('Wrote commits to %s' % output_filename)
+
+    def test_parse_multiple_files_single(self):
+        filenames = [os.path.join(TEST_DATA_PATH, 'vessel_display_web.txt')]
+        importer = ExcelCommitImporter()
+        output_filename = filename_with_datetime(TEST_OUTPUT_PATH, 'git_commits_acp_contract.xlsx')
+        commit_count = importer.parse_multiple_files(filenames, output_filename, start_date=datetime.date(2015,10,1), end_date=datetime.date(2016,2,12))
+        self.assertTrue(os.path.exists(output_filename))
+        self.assertEqual(159, commit_count)
+        logger.debug('Wrote commits to %s' % output_filename)

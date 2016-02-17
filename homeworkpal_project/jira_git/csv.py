@@ -87,14 +87,14 @@ class GitExportParser(object):
 
     def get_project(self, description, **kwargs):
         for project_tag in GIT_JIRA_PROJECT_TAGS:
-            regexp_str = r'.*(%s-\d+)\s?' % project_tag[1] #.*(NAV-\d+)\s?
+            regexp_str = r'.*(%s-\d+).*' % project_tag[1] #.*(NAV-\d+)\s?
             logger.debug('Regular expression: %s' % regexp_str)
             regexp = re.compile(regexp_str)
             match = regexp.match(description)
             if match:
                 return project_tag[0], match.group(1)
-            else:
-                return None, None
+
+        return None, None
 
 
 
