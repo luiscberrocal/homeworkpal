@@ -1,3 +1,5 @@
+import os
+
 from openpyxl import Workbook
 from openpyxl.styles import Border, Side, Alignment
 
@@ -30,6 +32,14 @@ class ExcelCommitImporter(object):
                             indent=0)
     def __init__(self):
         self.pike_parser = GitExportParser()
+
+    def parse_folder(self, folder, output_filename, **kwargs):
+        file_list= list()
+        for root, dir, files in os.walk(folder):
+            for file in files:
+                filename = os.path.join(root, file)
+                file_list.append(filename)
+        return self.parse_multiple_files(file_list, output_filename, **kwargs)
 
     def parse_multiple_files(self, filenames, output_filename, **kwargs):
         wb = Workbook()

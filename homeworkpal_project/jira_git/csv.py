@@ -2,7 +2,7 @@ import csv
 
 import datetime
 import re
-
+import os
 import pytz
 
 from homeworkpal_project.settings.local_acp import GIT_NAME_DICTIONARY, GIT_JIRA_PROJECT_TAGS
@@ -37,21 +37,32 @@ class GitExportParser(object):
     def __init__(self):
         self.git_name = GitName()
 
+    def parse_folder(self, folder, **kwargs):
+        file_list= list()
+        commits = list()
+        for root, dir, files in os.walk(folder):
+            for file in files:
+                filename = os.path.join(root, file)
+                #file_list.append(file)
+                file_commits = self.parse(filename, **kwargs)
+                commits += file_commits
+        return commits
+
     def parse(self, filename, **kwargs):
         commits = list()
         date_format = '%a, %d %b %Y %H:%M:%S %z'
         with open(filename, 'r', encoding='utf-8') as pike_file:
             reader = csv.reader(pike_file, delimiter='|')
             for row in reader:
-                hash = row[0].strip()
-                username = self.git_name.get_user(row[1].strip())
                 date = datetime.datetime.strptime(row[2].strip(),date_format)
-                description = row[3].strip()
-                project, issue_number = self.get_project(description)
-                commit_type = self.get_commit_type(description)
                 passed_filter = self.date_filter(date, kwargs.get('start_date', None), kwargs.get('end_date', None))
                 if passed_filter:
-                    commits.append([hash,  username, date, description, project, commit_type, issue_number])
+                    hash_id = row[0].strip()
+                    username = self.git_name.get_user(row[1].strip())
+                    description = row[3].strip()
+                    project, issue_number = self.get_project(description)
+                    commit_type = self.get_commit_type(description)
+                    commits.append([hash_id,  username, date, description, project, commit_type, issue_number])
         return commits
 
     def date_filter(self, commit_date, start_date, end_date):

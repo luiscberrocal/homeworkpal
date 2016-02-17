@@ -3,7 +3,7 @@ import os
 import datetime
 from django.test import TestCase
 
-from homeworkpal_project.settings.base import TEST_DATA_PATH
+from homeworkpal_project.settings.base import TEST_DATA_PATH, TEST_OUTPUT_PATH
 from jira_git.csv import GitName, GitExportParser
 import logging
 
@@ -25,6 +25,11 @@ class TestGitExportParser(TestCase):
         commits = parser.parse(filename, start_date=datetime.date(2015,11,1), end_date=datetime.date(2015,11,30))
         self.assertEqual(3, len(commits))
 
+    def test_parse_folder_filtered(self):
+        folder = os.path.join(TEST_OUTPUT_PATH, 'Orden_de_Compra')
+        parser = GitExportParser()
+        commits = parser.parse_folder(folder, start_date=datetime.date(2015,11,1), end_date=datetime.date(2015,11,30))
+        self.assertEqual(50, len(commits))
 
     def test_get_project(self):
         parser = GitExportParser()

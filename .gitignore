@@ -58,3 +58,6 @@ output/
 docs/ldapconfig
 docs/jql.rst
 test_data/vessel_display_web.txt
+test_data/inventory_ppu_app.txt
+test_data/vessel_inpections_app.txt
+test_data/vessel_scheduling_app.txt
