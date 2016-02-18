@@ -52,6 +52,7 @@ class GitExportParser(object):
         commits = list()
         date_format = '%a, %d %b %Y %H:%M:%S %z'
         with open(filename, 'r', encoding='utf-8') as pike_file:
+            logger.debug('Parsing %s' % filename)
             reader = csv.reader(pike_file, delimiter='|')
             for row in reader:
                 date = datetime.datetime.strptime(row[2].strip(),date_format)
@@ -65,26 +66,24 @@ class GitExportParser(object):
                     commits.append([hash_id,  username, date, description, project, commit_type, issue_number])
         return commits
 
+    def _convert_date_to_dateime(self, unconverted_date, tzinfo= pytz.UTC):
+        converted_datetime = datetime.datetime(year=unconverted_date.year,
+                                           month=unconverted_date.month,
+                                           day=unconverted_date.day,
+                                           hour = 0,
+                                           minute=0,
+                                           second=0,
+                                           tzinfo=tzinfo)
+        return converted_datetime
+
     def date_filter(self, commit_date, start_date, end_date):
-        utc = pytz.UTC
         if start_date is None or end_date is None:
             return True
         if isinstance(start_date, datetime.date):
-            start_date = datetime.datetime(year=start_date.year,
-                                           month=start_date.month,
-                                           day=start_date.day,
-                                           hour = 0,
-                                           minute=0,
-                                           second=0,
-                                           tzinfo=utc)
+            start_date = self._convert_date_to_dateime(start_date)
         if isinstance(end_date, datetime.date):
-            end_date = datetime.datetime(year=end_date.year,
-                                           month=end_date.month,
-                                           day=end_date.day,
-                                           hour = 0,
-                                           minute=0,
-                                           second=0,
-                                           tzinfo=utc)
+            end_date = self._convert_date_to_dateime(end_date)
+
         return commit_date >=start_date and commit_date <= end_date
 
     def get_commit_type(self, description, **kwargs):
