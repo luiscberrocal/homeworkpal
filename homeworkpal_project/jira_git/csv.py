@@ -88,13 +88,16 @@ class GitExportParser(object):
         return commit_date >=start_date and commit_date <= end_date
 
     def get_commit_type(self, description, **kwargs):
-        regexp_str = r'^Merge\sbranch\s'
-        regexp = re.compile(regexp_str)
-        match = regexp.match(description)
-        if match:
-            return 'MERGE'
-        else:
-            return 'COMMIT'
+        classifiers = [['MERGE', r'^Merge\sbranch\s'],
+                       ['RELEASE', r'^Release\sv?(?:(\d+)\.)?(?:(\d+)\.)?(\*|\d+)'],
+                       ['KITS', '^Kits\sv?(?:(\d+)\.)?(?:(\d+)\.)?(\*|\d+)']]
+        for classifier in classifiers:
+            regexp = re.compile(classifier[1])
+            match = regexp.match(description)
+            if match:
+                return classifier[0]
+
+        return 'COMMIT'
 
     def get_project(self, description, **kwargs):
         for project_tag in GIT_JIRA_PROJECT_TAGS:

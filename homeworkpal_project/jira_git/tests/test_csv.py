@@ -47,6 +47,13 @@ class TestGitExportParser(TestCase):
         project = parser.get_commit_type(desc)
         self.assertEqual('MERGE', project)
 
+        desc = 'Kits v1.25.3'
+        project = parser.get_commit_type(desc)
+        self.assertEqual('KITS', project)
+
+        desc = 'Release v10.365.3.4 bal bla'
+        project = parser.get_commit_type(desc)
+        self.assertEqual('RELEASE', project)
 
 class TestGitName(TestCase):
 
