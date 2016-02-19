@@ -46,7 +46,7 @@ class ExcelCommitImporter(object):
         sheet = wb.create_sheet(title='Commits')
         self.setup_column_width(sheet)
         row = 1
-        headers = ['Commit Hash', 'Username', 'Date', 'Description', 'Project', 'commit_type', 'issue_number']
+        headers = ['Commit Hash', 'Username', 'Date', 'Description', 'Project', 'commit_type', 'issue_number', 'source_file']
         column = 1
         for header in headers:
             sheet.cell(column=column, row=row, value=header)
@@ -90,6 +90,11 @@ class ExcelCommitImporter(object):
                 current_cell.alignment = self.alignment
                 current_cell.border = self.border
 
+                column += 1
+                current_cell=sheet.cell(column=column, row=row, value=commit[7])
+                current_cell.alignment = self.alignment
+                current_cell.border = self.border
+
         wb.save(output_filename)
         return row - 1
 
@@ -101,3 +106,4 @@ class ExcelCommitImporter(object):
         sheet.column_dimensions['E'].width = 16
         sheet.column_dimensions['F'].width = 11
         sheet.column_dimensions['G'].width = 12
+        sheet.column_dimensions['H'].width = 12

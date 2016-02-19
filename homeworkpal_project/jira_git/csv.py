@@ -54,6 +54,7 @@ class GitExportParser(object):
         with open(filename, 'r', encoding='utf-8') as pike_file:
             logger.debug('Parsing %s' % filename)
             reader = csv.reader(pike_file, delimiter='|')
+            _, base_filename = os.path.split(filename)
             for row in reader:
                 date = datetime.datetime.strptime(row[2].strip(),date_format)
                 passed_filter = self.date_filter(date, kwargs.get('start_date', None), kwargs.get('end_date', None))
@@ -63,7 +64,8 @@ class GitExportParser(object):
                     description = row[3].strip()
                     project, issue_number = self.get_project(description)
                     commit_type = self.get_commit_type(description)
-                    commits.append([hash_id,  username, date, description, project, commit_type, issue_number])
+                    commits.append([hash_id,  username, date, description,
+                                    project, commit_type, issue_number, base_filename])
         return commits
 
     def _convert_date_to_dateime(self, unconverted_date, tzinfo= pytz.UTC):
