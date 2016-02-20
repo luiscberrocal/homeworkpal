@@ -60,3 +60,16 @@ class Holiday(object):
         day_generator = (start_date + timedelta(x + 1) for x in range((end_date - start_date).days))
         working_days = sum(1 for day in day_generator if day.weekday() < 5 and not self.is_holiday(day))
         return working_days
+
+
+class cd:
+    """Context manager for changing the current working directory"""
+    def __init__(self, newPath):
+        self.newPath = os.path.expanduser(newPath)
+
+    def __enter__(self):
+        self.savedPath = os.getcwd()
+        os.chdir(self.newPath)
+
+    def __exit__(self, etype, value, traceback):
+        os.chdir(self.savedPath)
