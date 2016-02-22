@@ -13,20 +13,19 @@ class GitReporter(object):
     def get_current_branch(self):
         git_command = 'git branch'
         regexp = re.compile(r'^\*\s(.*)')
-        with cd(self.working_directory):
-            stdoutdata = subprocess.getoutput(git_command)
-            branches = stdoutdata.split('\n')
-            for branch in branches:
-                match = regexp.match(branch)
-                if match:
-                    return match.group(1)
+
+        branches = self._run_command(git_command)
+        for branch in branches:
+            match = regexp.match(branch)
+            if match:
+                return match.group(1)
         return None
 
     def _run_command(self, git_command):
         with cd(self.working_directory):
             stdoutdata = subprocess.getoutput(git_command)
-            stdoutdata_splitted = stdoutdata.split('\n')
-            return stdoutdata_splitted
+            stdoutdata_splited = stdoutdata.split('\n')
+            return stdoutdata_splited
 
     def get_repository_name(self):
         '''
@@ -49,7 +48,6 @@ class GitReporter(object):
                 return match.group(1)
         return None
 
-
     def report(self):
         report = dict()
         branch = self.get_current_branch()
@@ -60,7 +58,6 @@ class GitReporter(object):
         assert repo_name is not None, 'Could not find repository name for %s' % self.working_directory
         report['repo_name'] = repo_name
         git_command = 'git log --pretty=format:\'%h| %<(20)%an |%aD |%s\''
-        with cd(self.working_directory):
-            stdoutdata = subprocess.getoutput(git_command)
-            report['commits'] = stdoutdata.split('\n')
+        report['commits']  = self._run_command(git_command)
+
         return report
