@@ -1,15 +1,18 @@
 import os
 import re
+import shlex
 import subprocess
 
 from common.utils import cd
 import logging
 logger = logging.getLogger(__name__)
 
+
 class GitReporter(object):
 
-    def __init__(self, working_directory):
+    def __init__(self, working_directory, reporting_branch='develop'):
         self.working_directory = working_directory
+        self.reporting_branch = reporting_branch
         assert os.path.exists(os.path.join(self.working_directory, '.git')), '%s working directory is not a git repository' % self.working_directory
 
     def get_current_branch(self):
@@ -23,11 +26,33 @@ class GitReporter(object):
                 return match.group(1)
         return None
 
+    def checkout_branch(self, branch_name):
+        git_command = 'git checkout %s' % branch_name
+        result = self._run_command(git_command)
+        regexp = re.compile(r'^(Switched\sto\sbranch|Already\son)\s\'(.*)\'')
+        match = regexp.match(result[0])
+        if match:
+            return branch_name, True
+        else:
+            return None, None
+
+
     def _run_command(self, git_command):
         # '\\'git\\' is not recognized as an internal or external command,'
+        if isinstance(git_command, str):
+            arguments = shlex.split(git_command)
+        elif isinstance(git_command, list):
+            arguments = git_command
+        else:
+            raise ValueError('git_command must be a string or a list')
+        stdoutdata_splited = list()
         with cd(self.working_directory):
-            stdoutdata = subprocess.getoutput(git_command)
-            stdoutdata_splited = stdoutdata.split('\n')
+            p = subprocess.Popen(arguments , shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            for line in p.stdout.readlines():
+                logger.debug(line)
+                stdoutdata_splited.append(line.decode(encoding='utf-8').rstrip('\r\n'))
+            #stdoutdata = subprocess.getoutput(arguments)
+            #stdoutdata_splited = stdoutdata.split('\n')
             return stdoutdata_splited
 
     def get_repository_name(self):
@@ -35,7 +60,7 @@ class GitReporter(object):
         Will extract repository name from git config --list command
         :return: Fetch URl of repository
         '''
-        git_command = 'git config --list'
+        git_command = r'git config --list'
         regexp = re.compile(r'remote\.origin\.url=(.*)$')
         results = self._run_command(git_command)
         for origin_data in results:
@@ -54,7 +79,8 @@ class GitReporter(object):
         repo_name = self.get_repository_name()
         assert repo_name is not None, 'Could not find repository name for %s' % self.working_directory
         report['repo_name'] = repo_name
-        git_command = 'git log --pretty=format:"%h| %<(20)%an |%aD |%s"'
+        #git_command = ['git', 'log', r'--pretty=format:"%h|%an|%aD|%s"']
+        git_command = r'git log --pretty=format:"%h|%an|%aD|%s"'
         report['commits'] = self._run_command(git_command)
 
         return report
