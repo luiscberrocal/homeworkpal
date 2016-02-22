@@ -32,8 +32,8 @@ class TestGitReporter(TestCase):
         repo_name = reporter.get_repository_name()
         self.assertEqual('%s/scm/tinons/tino_application_framework_3.git' % self.stash_url, repo_name)
 
-    # def test_checkout_branch(self):
-    #     wd = r'C:\Users\lberrocal\Documents\codigo_tino_ns\vessel_display_web_datalayer'
-    #     reporter = GitReporter(wd)
-    #     branch, updated = reporter.checkout_branch('develop')
-    #     self.assertEqual(branch, 'develop')
+    def test_checkout_branch(self):
+        wd = r'C:\Users\lberrocal\Documents\codigo_tino_ns\vessel_display_web_datalayer'
+        reporter = GitReporter(wd)
+        branch, updated = reporter.checkout_branch('develop')
+        self.assertEqual(branch, 'develop')

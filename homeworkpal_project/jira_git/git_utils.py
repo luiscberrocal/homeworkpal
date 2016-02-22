@@ -30,7 +30,7 @@ class GitReporter(object):
         git_command = 'git checkout %s' % branch_name
         result = self._run_command(git_command)
         regexp = re.compile(r'^(Switched\sto\sbranch|Already\son)\s\'(.*)\'')
-        match = regexp.match(result[0])
+        match = regexp.match(result[1])
         if match:
             return branch_name, True
         else:
@@ -51,8 +51,6 @@ class GitReporter(object):
             for line in p.stdout.readlines():
                 logger.debug(line)
                 stdoutdata_splited.append(line.decode(encoding='utf-8').rstrip('\r\n'))
-            #stdoutdata = subprocess.getoutput(arguments)
-            #stdoutdata_splited = stdoutdata.split('\n')
             return stdoutdata_splited
 
     def get_repository_name(self):
@@ -74,6 +72,12 @@ class GitReporter(object):
         report = dict()
         branch = self.get_current_branch()
         assert branch is not None, 'Could not find a branch for %s' % self.working_directory
+
+        prev_branch = None
+        if branch != self.reporting_branch:
+            prev_branch = branch
+            branch, updated =self.checkout_branch(self.reporting_branch)
+            assert branch is not None, 'Could not checkout branch %s' % self.reporting_branch
         report['branch'] = branch
 
         repo_name = self.get_repository_name()
@@ -82,5 +86,8 @@ class GitReporter(object):
         #git_command = ['git', 'log', r'--pretty=format:"%h|%an|%aD|%s"']
         git_command = r'git log --pretty=format:"%h|%an|%aD|%s"'
         report['commits'] = self._run_command(git_command)
+
+        if prev_branch:
+            self.checkout_branch(prev_branch)
 
         return report
