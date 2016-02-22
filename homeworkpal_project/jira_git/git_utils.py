@@ -1,3 +1,4 @@
+import os
 import re
 import subprocess
 
@@ -9,6 +10,7 @@ class GitReporter(object):
 
     def __init__(self, working_directory):
         self.working_directory = working_directory
+        assert os.path.exists(os.path.join(self.working_directory, '.git')), '%s working directory is not a git repository' % self.working_directory
 
     def get_current_branch(self):
         git_command = 'git branch'
@@ -22,6 +24,7 @@ class GitReporter(object):
         return None
 
     def _run_command(self, git_command):
+        # '\\'git\\' is not recognized as an internal or external command,'
         with cd(self.working_directory):
             stdoutdata = subprocess.getoutput(git_command)
             stdoutdata_splited = stdoutdata.split('\n')
@@ -29,17 +32,11 @@ class GitReporter(object):
 
     def get_repository_name(self):
         '''
-        Will extract repository name from git remote show origin command
-
-        * remote origin
-          Fetch URL: git@bitbucket.org:luiscberrocal/wilbills.git
-          Push  URL: git@bitbucket.org:luiscberrocal/wilbills.git
-          HEAD branch: master
-
+        Will extract repository name from git config --list command
         :return: Fetch URl of repository
         '''
-        git_command = 'git remote show origin'
-        regexp = re.compile(r'\s*Fetch\sURL:\s(.*)$')
+        git_command = 'git config --list'
+        regexp = re.compile(r'remote\.origin\.url=(.*)$')
         results = self._run_command(git_command)
         for origin_data in results:
             match = regexp.match(origin_data)
@@ -57,7 +54,7 @@ class GitReporter(object):
         repo_name = self.get_repository_name()
         assert repo_name is not None, 'Could not find repository name for %s' % self.working_directory
         report['repo_name'] = repo_name
-        git_command = 'git log --pretty=format:\'%h| %<(20)%an |%aD |%s\''
-        report['commits']  = self._run_command(git_command)
+        git_command = 'git log --pretty=format:"%h| %<(20)%an |%aD |%s"'
+        report['commits'] = self._run_command(git_command)
 
         return report
