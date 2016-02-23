@@ -3,9 +3,28 @@ import re
 import shlex
 import subprocess
 
+import datetime
+
 from common.utils import cd
 import logging
+
+from jira_git.excel import ExcelGitReporter
+
 logger = logging.getLogger(__name__)
+
+
+def create_git_excel(folder, output_filename):
+    for root, dirs, files in os.walk(folder):
+        for directory in dirs:
+            full_path = os.path.join(root, directory)
+            git_reporter = GitReporter(full_path)
+            report = git_reporter.report()
+            excel_reporter = ExcelGitReporter()
+            commit_count = excel_reporter.write(output_filename, report,start_date=datetime.date(2015,10,1), end_date=datetime.date(2016,2,22))
+            logger.debug('Fullpath: %s: commits %d' % (full_path, commit_count))
+        break
+    logger.debug('Wrote %s' % output_filename)
+
 
 
 class GitReporter(object):
@@ -28,13 +47,16 @@ class GitReporter(object):
 
     def checkout_branch(self, branch_name):
         git_command = 'git checkout %s' % branch_name
-        result = self._run_command(git_command)
+        results = self._run_command(git_command)
+        logger.debug(results)
+        #assert len(result) == 2, 'Could not checkout branch %s for working dir %s' % (branch_name, self.working_directory)
         regexp = re.compile(r'^(Switched\sto\sbranch|Already\son)\s\'(.*)\'')
-        match = regexp.match(result[1])
-        if match:
-            return branch_name, True
-        else:
-            return None, None
+        for result in results:
+            match = regexp.match(result)
+            if match:
+                return branch_name, None
+
+        return None, None
 
 
     def _run_command(self, git_command):
@@ -84,7 +106,7 @@ class GitReporter(object):
         assert repo_name is not None, 'Could not find repository name for %s' % self.working_directory
         report['repo_name'] = repo_name
         #git_command = ['git', 'log', r'--pretty=format:"%h|%an|%aD|%s"']
-        git_command = r'git log --pretty=format:"%h|%an|%aD|%s"'
+        git_command = r'git log --pretty=format:"%h|%ae|%aD|%s"'
         report['commits'] = self._run_command(git_command)
 
         if prev_branch:

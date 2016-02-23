@@ -14,25 +14,29 @@ class GitName(object):
     '''
     Class to convert git name to a username
     '''
-
+    regexp = re.compile(r'([\w\.-]+)@([Pp]ancanal.com|logicstudio.net|gmail.com|panacanal.com|TINO?-WKS-\d+.canal.acp|hotmail.com)')
     name_dictionary = GIT_NAME_DICTIONARY
 
     def get_user(self, name):
-        try:
-            return self.name_dictionary[name.strip()]
-        except KeyError:
-            raise ValueError('%s has no user' % name)
+        match = self.regexp.match(name)
+        if match:
+            return match.group(1).lower()
+        else:
+            try:
+                return self.name_dictionary[name.strip()]
+            except KeyError:
+                raise ValueError('%s has no user' % name)
 
 class GitExportParser(object):
     '''
     Class to parse files exported using the git command:
 
-        $ git log --pretty=format:'%h| %<(20)%an |%aD |%s'
+        $ git log --pretty=format:'%h|%ae|%aD|%s'
 
     The result from the command should be something like this:
 
-        8e802b5| Luis C. Berrocal     |Mon, 12 Oct 2015 19:43:26 -0500 |Basic model impl
-        ad88bc6| Luis C. Berrocal     |Sun, 11 Oct 2015 11:10:08 -0500 |First commit
+        8e802b5| bbb@pancanal.com     |Mon, 12 Oct 2015 19:43:26 -0500 |Basic model impl
+        ad88bc6| bbb@pancanal.com     |Sun, 11 Oct 2015 11:10:08 -0500 |First commit
     '''
     def __init__(self):
         self.git_name = GitName()
