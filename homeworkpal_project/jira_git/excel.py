@@ -1,6 +1,6 @@
 import os
 
-from openpyxl import Workbook
+from openpyxl import Workbook, load_workbook
 from openpyxl.styles import Border, Side, Alignment
 
 from jira_git.csv import GitExportParser
@@ -56,11 +56,16 @@ class ExcelGitReporter(AbstractExcel):
                         ['Branch', 'I', 12]]
 
     def write(self, output_filename, dictionary, **kwargs):
-        wb = Workbook()
-        sheet = wb.create_sheet(title='Commits')
-        self.setup_column_width(sheet)
-        row = 1
-        self._write_headers(sheet)
+        if os.path.exists(output_filename):
+            wb = load_workbook(filename=output_filename)
+            sheet = wb['Commits']
+            row = sheet.get_highest_row()
+        else:
+            wb = Workbook()
+            sheet = wb.create_sheet(title='Commits')
+            self.setup_column_width(sheet)
+            row = 1
+            self._write_headers(sheet)
         commits = self.pike_parser.parse_dictionary(dictionary, **kwargs)
         for commit in commits:
             row += 1

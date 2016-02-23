@@ -26,6 +26,21 @@ class TestExcelGitReporter(TestCase):
         self.assertTrue(os.path.exists(output_filename))
         self.assertEqual(len(report['commits']), commit_count)
 
+    def test_write_2(self):
+        reporter = GitReporter(self.working_directory)
+        report = reporter.report()
+
+        reporter = GitReporter(r'C:\Users\lberrocal\Documents\codigo_tino_ns\vessel_display_web')
+        report_2 = reporter.report()
+
+        excel_reporter = ExcelGitReporter()
+        output_filename = filename_with_datetime(TEST_OUTPUT_PATH, 'git_reporter_commits.xlsx')
+        commit_count = excel_reporter.write(output_filename, report,start_date=datetime.date(2015,10,1), end_date=datetime.date(2016,2,22))
+        commit_count_2 = excel_reporter.write(output_filename, report_2, start_date=datetime.date(2015,10,1), end_date=datetime.date(2016,2,22))
+        self.assertTrue(os.path.exists(output_filename))
+        self.assertEqual(len(report['commits']), commit_count)
+        self.assertEqual(len(report_2['commits']), commit_count_2)
+
 class TestExcelCommitImporter(TestCase):
 
     def test_parse_multiple_files(self):
