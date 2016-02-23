@@ -47,13 +47,14 @@ class ExcelGitReporter(AbstractExcel):
         super(ExcelGitReporter, self).__init__()
         self.headers = [['Commit Hash', 'A', 11],
                         ['Username','B', 11],
-                        ['Date', 'C', 19],
-                        ['Description', 'D', 50],
-                        ['Project', 'E', 19],
-                        ['commit_type', 'F', 11],
-                        ['issue_number', 'G', 12],
-                        ['Repo', 'H', 20],
-                        ['Branch', 'I', 12]]
+                        ['Email','C', 25],
+                        ['Date', 'D', 19],
+                        ['Description', 'E', 50],
+                        ['Project', 'F', 19],
+                        ['commit_type', 'G', 11],
+                        ['issue_number', 'H', 12],
+                        ['Repo', 'I', 20],
+                        ['Branch', 'J', 12]]
 
     def write(self, output_filename, dictionary, **kwargs):
         if os.path.exists(output_filename):

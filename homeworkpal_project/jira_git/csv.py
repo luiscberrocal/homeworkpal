@@ -27,6 +27,16 @@ class GitName(object):
             except KeyError:
                 raise ValueError('%s has no user' % name)
 
+    def get_user_info(self, email):
+        regexp = re.compile(r'([\w\.-]+)@([\w\.-]+)')
+        match = regexp.match(email)
+        if match:
+            return match.group(1).lower(), email
+        else:
+            return email, None
+
+
+
 class GitExportParser(object):
     '''
     Class to parse files exported using the git command:
@@ -75,11 +85,11 @@ class GitExportParser(object):
         passed_filter = self.date_filter(date, kwargs.get('start_date', None), kwargs.get('end_date', None))
         if passed_filter:
             hash_id = row[0].strip()
-            username = self.git_name.get_user(row[1].strip())
+            username, email = self.git_name.get_user_info(row[1].strip())
             description = row[3].strip()
             project, issue_number = self.get_project(description)
             commit_type = self.get_commit_type(description)
-            return [hash_id,  username, date, description,
+            return [hash_id,  username, email, date, description,
                     project, commit_type, issue_number]
         return None
 
