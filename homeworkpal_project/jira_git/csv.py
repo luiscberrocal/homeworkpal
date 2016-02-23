@@ -36,6 +36,7 @@ class GitExportParser(object):
     '''
     def __init__(self):
         self.git_name = GitName()
+        self.date_format = '%a, %d %b %Y %H:%M:%S %z'
 
     def parse_folder(self, folder, **kwargs):
         file_list= list()
@@ -48,24 +49,47 @@ class GitExportParser(object):
                 commits += file_commits
         return commits
 
+    def parse_dictionary(self, dictionary, **kwargs):
+        '''
+        Parses a dictionary generated with the report method from gis_utils.GitReporter.
+        :param dictionary: The dictionary contains
+            branch: name of the branch
+            repo_name: name of the repository
+            commits: commits for the repository
+        :return: A list the the parsed commits
+        '''
+
+        commits = list()
+        for commit_str in dictionary['commits']:
+            commit_array = commit_str.split('|')
+            commit = self._process_commit(commit_array)
+            commits.append(commit + [dictionary['repo_name'], dictionary['branch']])
+        return commits
+
+    def _process_commit(self, row, **kwargs):
+        date = datetime.datetime.strptime(row[2].strip(),self.date_format)
+        passed_filter = self.date_filter(date, kwargs.get('start_date', None), kwargs.get('end_date', None))
+        if passed_filter:
+            hash_id = row[0].strip()
+            username = self.git_name.get_user(row[1].strip())
+            description = row[3].strip()
+            project, issue_number = self.get_project(description)
+            commit_type = self.get_commit_type(description)
+            return [hash_id,  username, date, description,
+                    project, commit_type, issue_number]
+        return None
+
     def parse(self, filename, **kwargs):
         commits = list()
-        date_format = '%a, %d %b %Y %H:%M:%S %z'
+
         with open(filename, 'r', encoding='utf-8') as pike_file:
             logger.debug('Parsing %s' % filename)
             reader = csv.reader(pike_file, delimiter='|')
             _, base_filename = os.path.split(filename)
             for row in reader:
-                date = datetime.datetime.strptime(row[2].strip(),date_format)
-                passed_filter = self.date_filter(date, kwargs.get('start_date', None), kwargs.get('end_date', None))
-                if passed_filter:
-                    hash_id = row[0].strip()
-                    username = self.git_name.get_user(row[1].strip())
-                    description = row[3].strip()
-                    project, issue_number = self.get_project(description)
-                    commit_type = self.get_commit_type(description)
-                    commits.append([hash_id,  username, date, description,
-                                    project, commit_type, issue_number, base_filename])
+                commit = self._process_commit(row, **kwargs)
+                if commit:
+                    commits.append(commit + [base_filename])
         return commits
 
     def _convert_date_to_dateime(self, unconverted_date, tzinfo= pytz.UTC):
