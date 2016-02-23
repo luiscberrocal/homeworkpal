@@ -30,6 +30,7 @@ class TestGitExportParser(TestCase):
         parser = GitExportParser()
         commits = parser.parse_folder(folder, start_date=datetime.date(2015,11,1), end_date=datetime.date(2015,11,30))
         self.assertEqual(50, len(commits))
+        self.assertEqual(8, len(commits[0]))
 
     def test_get_project(self):
         parser = GitExportParser()

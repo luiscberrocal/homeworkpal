@@ -1,15 +1,11 @@
 import os
 
-from openpyxl import Workbook
+from openpyxl import Workbook, load_workbook
 from openpyxl.styles import Border, Side, Alignment
 
 from jira_git.csv import GitExportParser
 
-
-class ExcelCommitImporter(object):
-    '''
-    Class to import list created with GitExportParser
-    '''
+class AbstractExcel(object):
     border = Border(left=Side(border_style='thin', color='FF000000'),
                     right=Side(border_style='thin', color='FF000000'),
                     top=Side(border_style='thin', color='FF000000'),
@@ -30,8 +26,75 @@ class ExcelCommitImporter(object):
                             wrap_text=True,
                             shrink_to_fit=False,
                             indent=0)
+
     def __init__(self):
         self.pike_parser = GitExportParser()
+
+    def _write_headers(self, sheet, row=1):
+        column = 1
+        for header in self.headers:
+            sheet.cell(column=column, row=row, value=header[0])
+            column += 1
+
+    def setup_column_width(self, sheet):
+        for header in self.headers:
+            sheet.column_dimensions[header[1]].width = header[2]
+
+
+class ExcelGitReporter(AbstractExcel):
+
+    def __init__(self):
+        super(ExcelGitReporter, self).__init__()
+        self.headers = [['Commit Hash', 'A', 11],
+                        ['Username','B', 11],
+                        ['Email','C', 25],
+                        ['Date', 'D', 19],
+                        ['Description', 'E', 50],
+                        ['Project', 'F', 19],
+                        ['commit_type', 'G', 11],
+                        ['issue_number', 'H', 12],
+                        ['Repo', 'I', 20],
+                        ['Branch', 'J', 12]]
+
+    def write(self, output_filename, dictionary, **kwargs):
+        if os.path.exists(output_filename):
+            wb = load_workbook(filename=output_filename)
+            sheet = wb['Commits']
+            row = sheet.get_highest_row()
+        else:
+            wb = Workbook()
+            sheet = wb.create_sheet(title='Commits')
+            self.setup_column_width(sheet)
+            row = 1
+            self._write_headers(sheet)
+        commits = self.pike_parser.parse_dictionary(dictionary, **kwargs)
+        for commit in commits:
+            row += 1
+            column = 1
+            for data in commit:
+                current_cell=sheet.cell(column=column, row=row, value=data)
+                current_cell.alignment = self.alignment
+                current_cell.border = self.border
+                column += 1
+        wb.save(output_filename)
+        return row - 1
+
+
+class ExcelCommitImporter(AbstractExcel):
+    '''
+    Class to import list created with GitExportParser
+    '''
+
+    def __init__(self):
+        super(ExcelCommitImporter, self).__init__()
+        self.headers = [['Commit Hash', 'A', 11],
+                        ['Username','B', 11],
+                        ['Date', 'C', 19],
+                        ['Description', 'D', 50],
+                        ['Project', 'E', 19],
+                        ['commit_type', 'F', 11],
+                        ['issue_number','G', 12],
+                        ['source_file', 'H', 12]]
 
     def parse_folder(self, folder, output_filename, **kwargs):
         file_list= list()
@@ -46,11 +109,7 @@ class ExcelCommitImporter(object):
         sheet = wb.create_sheet(title='Commits')
         self.setup_column_width(sheet)
         row = 1
-        headers = ['Commit Hash', 'Username', 'Date', 'Description', 'Project', 'commit_type', 'issue_number', 'source_file']
-        column = 1
-        for header in headers:
-            sheet.cell(column=column, row=row, value=header)
-            column += 1
+        self._write_headers(sheet)
         for filename in filenames:
             commits = self.pike_parser.parse(filename, **kwargs)
             for commit in commits:
@@ -98,12 +157,3 @@ class ExcelCommitImporter(object):
         wb.save(output_filename)
         return row - 1
 
-    def setup_column_width(self, sheet):
-        sheet.column_dimensions['A'].width = 11
-        sheet.column_dimensions['B'].width = 11
-        sheet.column_dimensions['C'].width = 19
-        sheet.column_dimensions['D'].width = 50
-        sheet.column_dimensions['E'].width = 16
-        sheet.column_dimensions['F'].width = 11
-        sheet.column_dimensions['G'].width = 12
-        sheet.column_dimensions['H'].width = 12
