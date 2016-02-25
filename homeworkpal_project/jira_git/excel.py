@@ -44,8 +44,12 @@ class ExcelLineCounterReporter(AbstractExcel):
 
     def __init__(self):
         super(ExcelLineCounterReporter, self).__init__()
-        self.headers = [['Filename', 'A', 40],
-                        ['Count','B', 11],]
+        self.headers = [['Base Folder', 'A', 15, 'base_folder'],
+                        ['Filename', 'B', 15, 'filename'],
+                        ['Full Path', 'C', 40, 'file'],
+                        ['Extension', 'D', 8, 'extension'],
+                        ['Count','E', 11, 'lines'],]
+
         self.sheet_name = 'Lines of Code'
 
     def write(self, output_filename, file_list, **kwargs):
@@ -63,14 +67,12 @@ class ExcelLineCounterReporter(AbstractExcel):
         for count_data in file_list:
             row += 1
             column = 1
+            for header in self.headers:
+                current_cell=sheet.cell(column=column, row=row, value=count_data[header[3]])
+                current_cell.alignment = self.alignment
+                current_cell.border = self.border
+                column += 1
 
-            current_cell=sheet.cell(column=column, row=row, value=count_data['file'])
-            current_cell.alignment = self.alignment
-            current_cell.border = self.border
-
-            column += 1
-            current_cell=sheet.cell(column=column, row=row, value=count_data['lines'])
-            current_cell.alignment = self.alignment
             current_cell.border = self.border
         wb.save(output_filename)
         return row - 1
