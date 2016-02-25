@@ -9,16 +9,17 @@ logger = logging.getLogger(__name__)
 class LinesOfCodeCounter(object):
 
     def __init__(self, folder):
-        self.excluded_folders = ['.git']
+        self.excluded_folders = ['.git','dojo-release-1.10.3']
         self.root_folder = folder
         self.code_files=  ['*.vb', '*.cs', '*.xml', '*.xsd', '*.js',
                            '*.xsx', '*.resx', '*.vdproj', '*.vbproj', '*.csproj'
-                           '*.json','*.html', '*.css', '*.cshtml', '*.less', '*.sql']
+                           '*.json','*.html', '*.css', '*.cshtml', '*.less',
+                           '*.sql', '*.xslt', '*.config', '*.txt']
 
         self.blacjk_list = {'*.js': [re.compile(r'jquery[-]?[\w\.-]*(\.js)'),
-                                     re.compile(r'bootstrap-?(\.\w+)*(\.js)'),
+                                     re.compile(r'bootstrap-?(\.?\w+)*(\.js)'),
                                      re.compile(r'highcharts-?(\.\w+)*(\.js)'),
-                                     re.compile(r'modernizr-?(\.\w+)*(\.js)'),
+                                     re.compile(r'modernizr-?(\.?\w+)*(\.js)'),
                                      re.compile(r'^dataTables(\.\w+)*(\.js)$'),
                                      re.compile(r'^(googlemaps|arcgismaps|select2)(\.\w+)*(\.js)$'),
                                      ],
@@ -47,7 +48,7 @@ class LinesOfCodeCounter(object):
 
     def _walk_folders(self, root, patterns=['*'], recurse=True, ):
         for path, subdirs, files in os.walk(root, topdown=True):
-            #subdirs[:] = [d for d in subdirs if d not in self.excluded_folder]
+            subdirs[:] = [d for d in subdirs if d not in self.excluded_folders]
             for name in files:
                 found = False
                 for pattern in patterns:

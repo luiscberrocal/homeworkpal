@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 class TestExcelLineCounterReporter(TestCase):
 
-    code_folder = r'C:\Users\lberrocal\Documents\codigo_tino_ns'
+    code_folder = r'C:\Users\lberrocal\Documents\codigo_tino_ns_graveyard'
 
     def test_write(self):
         folder_name = 'vs_transit_times'
