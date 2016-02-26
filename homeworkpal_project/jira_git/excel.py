@@ -40,6 +40,44 @@ class AbstractExcel(object):
         for header in self.headers:
             sheet.column_dimensions[header[1]].width = header[2]
 
+class ExcelLineCounterReporter(AbstractExcel):
+
+    def __init__(self):
+        super(ExcelLineCounterReporter, self).__init__()
+        self.headers = [['Base Folder', 'A', 15, 'base_folder'],
+                        ['Filename', 'B', 15, 'filename'],
+                        ['Full Path', 'C', 40, 'file'],
+                        ['Extension', 'D', 8, 'extension'],
+                        ['Count','E', 11, 'lines'],]
+
+        self.sheet_name = 'Lines of Code'
+
+    def write(self, output_filename, file_list, **kwargs):
+        if os.path.exists(output_filename):
+            wb = load_workbook(filename=output_filename)
+            sheet = wb[self.sheet_name]
+            row = sheet.get_highest_row()
+        else:
+            wb = Workbook()
+            sheet = wb.create_sheet(title=self.sheet_name)
+            self.setup_column_width(sheet)
+            row = 1
+            self._write_headers(sheet)
+
+        for count_data in file_list:
+            row += 1
+            column = 1
+            for header in self.headers:
+                current_cell=sheet.cell(column=column, row=row, value=count_data[header[3]])
+                current_cell.alignment = self.alignment
+                current_cell.border = self.border
+                column += 1
+
+            current_cell.border = self.border
+        wb.save(output_filename)
+        return row - 1
+
+
 
 class ExcelGitReporter(AbstractExcel):
 
@@ -67,6 +105,7 @@ class ExcelGitReporter(AbstractExcel):
             self.setup_column_width(sheet)
             row = 1
             self._write_headers(sheet)
+
         commits = self.pike_parser.parse_dictionary(dictionary, **kwargs)
         for commit in commits:
             row += 1

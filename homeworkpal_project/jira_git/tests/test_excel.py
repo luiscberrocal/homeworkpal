@@ -5,12 +5,41 @@ from django.test import TestCase
 
 from common.utils import filename_with_datetime
 from homeworkpal_project.settings.base import TEST_DATA_PATH, TEST_OUTPUT_PATH
-from jira_git.excel import ExcelCommitImporter, ExcelGitReporter
+from jira_git.cloc import LinesOfCodeCounter
+from jira_git.excel import ExcelCommitImporter, ExcelGitReporter, ExcelLineCounterReporter
 import logging
 
 from jira_git.git_utils import GitReporter
 
 logger = logging.getLogger(__name__)
+
+
+class TestExcelLineCounterReporter(TestCase):
+
+    code_folder = r'C:\Users\lberrocal\Documents\codigo_tino_ns_graveyard'
+
+    def test_write(self):
+        folder_name = 'vs_transit_times'
+        code_path = os.path.join(self.code_folder, folder_name)
+        output_filename = filename_with_datetime(TEST_OUTPUT_PATH, '%s.xlsx' % folder_name)
+        cloc = LinesOfCodeCounter(code_path)
+        results = cloc.count()
+        reporter = ExcelLineCounterReporter()
+        reporter.write(output_filename, results)
+        self.assertTrue(os.path.exists(output_filename))
+
+    def test_write_multiple(self):
+        output_filename = filename_with_datetime(TEST_OUTPUT_PATH, 'tino_ns_lines_of_code.xlsx')
+        reporter = ExcelLineCounterReporter()
+        for path, sub_folders, files in os.walk(self.code_folder):
+            for folder in sub_folders:
+                inspection_folder = os.path.join(self.code_folder, folder)
+                cloc = LinesOfCodeCounter(inspection_folder)
+                results = cloc.count()
+                reporter.write(output_filename, results)
+            break
+        self.assertTrue(os.path.exists(output_filename))
+
 
 class TestExcelGitReporter(TestCase):
 
