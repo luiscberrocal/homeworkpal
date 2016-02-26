@@ -20,7 +20,8 @@ def create_git_excel(folder, output_filename):
             git_reporter = GitReporter(full_path)
             report = git_reporter.report()
             excel_reporter = ExcelGitReporter()
-            commit_count = excel_reporter.write(output_filename, report,start_date=datetime.date(2015,10,1), end_date=datetime.date(2016,2,22))
+            #commit_count = excel_reporter.write(output_filename, report,start_date=datetime.date(2015,10,1), end_date=datetime.date(2016,2,22))
+            commit_count = excel_reporter.write(output_filename, report)
             logger.debug('Fullpath: %s: commits %d' % (full_path, commit_count))
         break
     logger.debug('Wrote %s' % output_filename)
@@ -28,6 +29,9 @@ def create_git_excel(folder, output_filename):
 
 
 class GitReporter(object):
+    '''
+    This class is designed to extract git commits to create a rerport from a folder.
+    '''
 
     def __init__(self, working_directory, reporting_branch='develop'):
         self.working_directory = working_directory

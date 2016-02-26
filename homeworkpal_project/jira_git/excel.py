@@ -105,6 +105,7 @@ class ExcelGitReporter(AbstractExcel):
             self.setup_column_width(sheet)
             row = 1
             self._write_headers(sheet)
+
         commits = self.pike_parser.parse_dictionary(dictionary, **kwargs)
         for commit in commits:
             row += 1

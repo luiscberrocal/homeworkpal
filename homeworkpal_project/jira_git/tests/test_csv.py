@@ -30,7 +30,7 @@ class TestGitExportParser(TestCase):
         parser = GitExportParser()
         commits = parser.parse_folder(folder, start_date=datetime.date(2015,11,1), end_date=datetime.date(2015,11,30))
         self.assertEqual(50, len(commits))
-        self.assertEqual(8, len(commits[0]))
+        self.assertEqual(9, len(commits[0]))
 
     def test_get_project(self):
         parser = GitExportParser()
@@ -55,6 +55,13 @@ class TestGitExportParser(TestCase):
         desc = 'Release v10.365.3.4 bal bla'
         project = parser.get_commit_type(desc)
         self.assertEqual('RELEASE', project)
+
+    def test_find_tags(self):
+        parser = GitExportParser()
+        desc = 'Adicionar boton para mostrar web page del radar TINO-NS Navigation AidsNAV-13'
+        tags = parser.find_tags(desc)
+        self.assertEqual(tags[0][0], 'NAV')
+
 
 class TestGitName(TestCase):
 

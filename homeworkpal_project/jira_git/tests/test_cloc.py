@@ -6,7 +6,7 @@ from jira_git.cloc import LinesOfCodeCounter
 class TestLinesOfCodeCounter(TestCase):
 
     def test_count(self):
-        code_path = r'C:\Users\lberrocal\Documents\codigo_tino_ns\cientific_application_framework_2'
+        code_path = r'C:\Users\lberrocal\Documents\codigo_tino_ns\scientific_application_framework_2'
         cloc = LinesOfCodeCounter(code_path)
         results = cloc.count()
-        self.assertEqual(5, len(results))
+        self.assertTrue(len(results) > 900)

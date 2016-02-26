@@ -81,13 +81,16 @@ class GitExportParser(object):
         return commits
 
     def _process_commit(self, row, **kwargs):
-        date = datetime.datetime.strptime(row[2].strip(),self.date_format)
+        date = datetime.datetime.strptime(row[2].strip(), self.date_format)
         passed_filter = self.date_filter(date, kwargs.get('start_date', None), kwargs.get('end_date', None))
         if passed_filter:
             hash_id = row[0].strip()
             username, email = self.git_name.get_user_info(row[1].strip())
             description = row[3].strip()
-            project, issue_number = self.get_project(description)
+            tags = self.find_tags(description)
+            project = self.get_project_tag(tags)
+            issue_number = self.get_issues(tags)
+            #project, issue_number = self.get_project(description)
             commit_type = self.get_commit_type(description)
             return [hash_id,  username, email, date, description,
                     project, commit_type, issue_number]
@@ -121,9 +124,9 @@ class GitExportParser(object):
             return True
         if isinstance(start_date, datetime.date):
             start_date = self._convert_date_to_dateime(start_date)
+
         if isinstance(end_date, datetime.date):
             end_date = self._convert_date_to_dateime(end_date)
-
         return commit_date >=start_date and commit_date <= end_date
 
     def get_commit_type(self, description, **kwargs):
@@ -138,10 +141,30 @@ class GitExportParser(object):
 
         return 'COMMIT'
 
+    def get_issues(self, tags):
+        concatenated_tags = ''
+        if tags:
+            for tag in tags:
+                concatenated_tags += '%s-%s ' % (tag)
+        return concatenated_tags.strip()
+
+    def get_project_tag(self, tags):
+        if tags:
+            return tags[0][0]
+        else:
+            None
+
+
+    def find_tags(self, description):
+        regexp_str = r'([A-Z]{3,})-(\d+)[\s,;]?'
+        regexp = re.compile(regexp_str)
+        match = regexp.findall(description)
+        return match
+
     def get_project(self, description, **kwargs):
         for project_tag in GIT_JIRA_PROJECT_TAGS:
             regexp_str = r'.*(%s-\d+).*' % project_tag[1] #.*(NAV-\d+)\s?
-            logger.debug('Regular expression: %s' % regexp_str)
+            #logger.debug('Regular expression: %s' % regexp_str)
             regexp = re.compile(regexp_str)
             match = regexp.match(description)
             if match:
