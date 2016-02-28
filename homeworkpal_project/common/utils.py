@@ -1,5 +1,7 @@
 import datetime
 import os
+
+import pytz
 from django.utils import timezone
 from datetime import datetime, date, timedelta
 
@@ -57,9 +59,15 @@ class Holiday(object):
         return event_date in self.holidays
 
     def working_days_between(self, start_date, end_date):
-        day_generator = (start_date + timedelta(x + 1) for x in range((end_date - start_date).days))
+        day_generator =  Holiday.days_in_range_generator(start_date, end_date) #(start_date + timedelta(x + 1) for x in range((end_date - start_date).days))
         working_days = sum(1 for day in day_generator if day.weekday() < 5 and not self.is_holiday(day))
         return working_days
+
+    @staticmethod
+    def days_in_range_generator(start_date, end_date):
+        start_date = start_date - timedelta(1)
+        day_generator = (start_date + timedelta(x + 1) for x in range((end_date - start_date).days))
+        return day_generator
 
 
 class cd:
@@ -73,3 +81,14 @@ class cd:
 
     def __exit__(self, etype, value, traceback):
         os.chdir(self.savedPath)
+
+
+def force_date_to_dateime(unconverted_date, tzinfo= pytz.UTC):
+    converted_datetime = datetime(year=unconverted_date.year,
+                                           month=unconverted_date.month,
+                                           day=unconverted_date.day,
+                                           hour = 0,
+                                           minute=0,
+                                           second=0,
+                                           tzinfo=tzinfo)
+    return converted_datetime
