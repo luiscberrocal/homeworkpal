@@ -5,6 +5,7 @@ import re
 import os
 import pytz
 
+from common.utils import force_date_to_dateime
 from homeworkpal_project.settings.local_acp import GIT_NAME_DICTIONARY, GIT_JIRA_PROJECT_TAGS
 import logging
 
@@ -110,13 +111,7 @@ class GitExportParser(object):
         return commits
 
     def _convert_date_to_dateime(self, unconverted_date, tzinfo= pytz.UTC):
-        converted_datetime = datetime.datetime(year=unconverted_date.year,
-                                           month=unconverted_date.month,
-                                           day=unconverted_date.day,
-                                           hour = 0,
-                                           minute=0,
-                                           second=0,
-                                           tzinfo=tzinfo)
+        converted_datetime = force_date_to_dateime(unconverted_date=unconverted_date, tzinfo=tzinfo)
         return converted_datetime
 
     def date_filter(self, commit_date, start_date, end_date):
@@ -127,7 +122,12 @@ class GitExportParser(object):
 
         if isinstance(end_date, datetime.date):
             end_date = self._convert_date_to_dateime(end_date)
+<<<<<<< HEAD
         return commit_date >=start_date and commit_date <= end_date
+=======
+
+        return commit_date.date() >=start_date.date() and commit_date.date() <= end_date.date()
+>>>>>>> feature/git_jira_factories
 
     def get_commit_type(self, description, **kwargs):
         classifiers = [['MERGE', r'^Merge\sbranch\s'],

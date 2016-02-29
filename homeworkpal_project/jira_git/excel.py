@@ -107,6 +107,7 @@ class ExcelGitReporter(AbstractExcel):
             self._write_headers(sheet)
 
         commits = self.pike_parser.parse_dictionary(dictionary, **kwargs)
+        written_rows = 0
         for commit in commits:
             row += 1
             column = 1
@@ -115,8 +116,9 @@ class ExcelGitReporter(AbstractExcel):
                 current_cell.alignment = self.alignment
                 current_cell.border = self.border
                 column += 1
+            written_rows += 1
         wb.save(output_filename)
-        return row - 1
+        return written_rows
 
 
 class ExcelCommitImporter(AbstractExcel):

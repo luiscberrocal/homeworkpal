@@ -39,3 +39,12 @@ class TestHolidays(TestCase):
         start_date = datetime.date(2016, 1,1)
         end_date = datetime.date(2016,1,31)
         self.assertEqual(19, holiday_manager.working_days_between(start_date, end_date))
+
+    def test_days_in_range_generator(self):
+        holiday_manager = Holiday()
+        start_date = datetime.date(2016, 1,1)
+        end_date = datetime.date(2016,1,31)
+        jan_days = list(holiday_manager.days_in_range_generator(start_date, end_date))
+        self.assertEqual(31, len(jan_days))
+        self.assertEqual(jan_days[0], start_date)
+        self.assertEqual(jan_days[30], end_date)
