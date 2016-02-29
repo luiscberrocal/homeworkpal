@@ -101,7 +101,7 @@ def create_fake_commits_file(filename, **kwargs):
     commits_per_day = kwargs.get('commits_per_day', 2)
 
     commit_factory = CommitFactory()
-    with open(filename, 'w', encoding='utf-8') as pike_file:
+    with open(filename, 'w', encoding='utf-8',  newline='') as pike_file:
         writer = csv.writer(pike_file, delimiter='|')
         if start_date and end_date:
             commits = commit_factory.create_in_date_range(start_date, end_date, commits_per_day)
