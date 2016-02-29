@@ -94,24 +94,31 @@ class TestExcelCommitImporter(TestCase):
         logger.debug('Wrote commits to %s' % output_filename)
 
     def test_parse_multiple_files_2(self):
-        filenames = [os.path.join(TEST_DATA_PATH, 'vessel_display_web.txt'),
-                     os.path.join(TEST_DATA_PATH, 'vessel_scheduling_app.txt'),
-                     os.path.join(TEST_DATA_PATH, 'vessel_inpections_app.txt'),
-                     os.path.join(TEST_DATA_PATH, 'inventory_ppu_app.txt')]
+        factory = CommitFactory()
+        folder = os.path.join(TEST_OUTPUT_PATH, 'test_parse_multiple_files_2')
+        if os.path.exists(folder):
+            shutil.rmtree(folder)
+        filenames = factory.create_commit_folder(folder, 2015, [9,10,11,12], 1)
+
         importer = ExcelCommitImporter()
         output_filename = filename_with_datetime(TEST_OUTPUT_PATH, 'git_commits_acp_contract_02.xlsx')
-        commit_count = importer.parse_multiple_files(filenames, output_filename, start_date=datetime.date(2015,10,1), end_date=datetime.date(2016,2,12))
+        commit_count = importer.parse_multiple_files(filenames, output_filename, start_date=datetime.date(2015,10,1), end_date=datetime.date(2015,12,31))
         self.assertTrue(os.path.exists(output_filename))
-        self.assertEqual(376, commit_count)
+        self.assertEqual(92, commit_count)
         logger.debug('Wrote commits to %s' % output_filename)
 
 
     def test_parse_folder(self):
-        folder = os.path.join(TEST_OUTPUT_PATH, 'Orden_de_Compra')
+        factory = CommitFactory()
+        folder = os.path.join(TEST_OUTPUT_PATH, 'test_parse_folder')
+        if os.path.exists(folder):
+            shutil.rmtree(folder)
+        filenames = factory.create_commit_folder(folder, 2015, [9,10,11,12], 1)
+
         importer = ExcelCommitImporter()
         output_filename = filename_with_datetime(TEST_OUTPUT_PATH, 'git_commits_parse_folder.xlsx')
-        commit_count = importer.parse_folder(folder, output_filename, start_date=datetime.date(2015,10,1), end_date=datetime.date(2016,2,12))
+        commit_count = importer.parse_folder(folder, output_filename, start_date=datetime.date(2015,10,1), end_date=datetime.date(2015,10,31))
         self.assertTrue(os.path.exists(output_filename))
-        self.assertEqual(222, commit_count)
+        self.assertEqual(31, commit_count)
         logger.debug('Wrote commits to %s' % output_filename)
 
