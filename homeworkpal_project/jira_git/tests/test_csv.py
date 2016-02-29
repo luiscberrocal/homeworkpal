@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 class TestGitExportParser(TestCase):
 
-    clean_output = False
+    clean_output = True
 
     def test_parse(self):
         filename = filename_with_datetime(TEST_OUTPUT_PATH, 'TestGitExportParser_test_parse.pike')
