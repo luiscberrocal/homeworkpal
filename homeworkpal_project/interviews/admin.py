@@ -6,11 +6,12 @@ from .models import ElegibilityCertificate, Candidate, CandidateInCertificate, C
 
 
 class ElegibilityCertificateAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('number', 'grade', 'vacant_positions', 'expires')
 
 
 class CandidateAdmin(admin.ModelAdmin):
     list_display = ('pk', 'last_name', 'first_name', 'national_id')
+    ordering = ('last_name', 'first_name')
 
 
 class CandidateInCertificateAdmin(admin.ModelAdmin):
