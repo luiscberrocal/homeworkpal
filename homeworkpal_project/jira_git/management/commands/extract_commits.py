@@ -10,6 +10,9 @@ __author__ = 'lberrocal'
 
 
 class Command(BaseCommand):
+    '''
+    This command will extract into an excel file all commits of git respositories found on a folder
+    '''
     def add_arguments(self, parser):
         parser.add_argument('folder')
         parser.add_argument("-o", "--output",

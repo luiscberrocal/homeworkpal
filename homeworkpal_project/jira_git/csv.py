@@ -122,12 +122,9 @@ class GitExportParser(object):
 
         if isinstance(end_date, datetime.date):
             end_date = self._convert_date_to_dateime(end_date)
-<<<<<<< HEAD
-        return commit_date >=start_date and commit_date <= end_date
-=======
 
         return commit_date.date() >=start_date.date() and commit_date.date() <= end_date.date()
->>>>>>> feature/git_jira_factories
+
 
     def get_commit_type(self, description, **kwargs):
         classifiers = [['MERGE', r'^Merge\sbranch\s'],

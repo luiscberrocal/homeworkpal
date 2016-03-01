@@ -142,7 +142,7 @@ class TestExcelCommitImporter(TestCase):
         folder = os.path.join(TEST_OUTPUT_PATH, 'test_parse_folder')
         if os.path.exists(folder):
             shutil.rmtree(folder)
-        filenames = factory.create_commit_folder(folder, 2015, [9,10,11,12], 1)
+        factory.create_commit_folder(folder, 2015, [9,10,11,12], 1)
 
         importer = ExcelCommitImporter()
         output_filename = filename_with_datetime(TEST_OUTPUT_PATH, 'git_commits_parse_folder.xlsx')

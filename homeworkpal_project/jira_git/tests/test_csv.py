@@ -69,14 +69,11 @@ class TestGitExportParser(TestCase):
                                      end_date=date_info['end_date'],
                                      commits_per_day=1)
         parser = GitExportParser()
-<<<<<<< HEAD
-        commits = parser.parse_folder(folder, start_date=datetime.date(2015,11,1), end_date=datetime.date(2015,11,30))
-        self.assertEqual(50, len(commits))
-=======
+
         commits = parser.parse_folder(folder, start_date=datetime.date(2015,11,1),
                                       end_date=datetime.date(2015,11,30))
         self.assertEqual(30, len(commits))
->>>>>>> feature/git_jira_factories
+
         self.assertEqual(9, len(commits[0]))
 
     def test_get_project(self):
