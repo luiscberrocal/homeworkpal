@@ -34,16 +34,35 @@ def decimal_to_time(decimal_hours):
 
 
 class AbstractMaximoData(object):
+    '''
+    The report TINO-NS-FY16 has the following columns
+        acp_empnum	0
+        acp_hours	1
+        acp_pagorelevo	2
+        acp_timingdate	3
+        enterby	4
+        laborcode	5
+        memo	6
+        payrate	7
+        refwo	8
+        regularhrs	9
+        skilllevel	10
+        ticketclass	11
+        ticketid	12
+        total_rec	13
+        params_where	14
+
+    '''
     LOAD_TICKETS = 'LOAD_TICKETS'
     LOAD_TIME = 'LOAD_TIME'
     LOAD_ALL = 'LOAD_ALL'
 
-    def __init__(self, stdout=None):
+    def __init__(self, stdout=None, **kwargs):
         self.ticket_mappings = {'ticket_type': 0, 'number': 1, 'name': 2}
-        self.time_register_mappings = {'company_id': 0,
-                                       'regular_hours': 1,
-                                       'date': 3,
-                                       'username': 5,
+        self.time_register_mappings = {'company_id': 0, #acp_num on the report
+                                       'regular_hours': 1, #acp_hours on the report
+                                       'date': 3, #acp_timpingdate on the report
+                                       'username': 5, #laborcode on the report
                                        'pay_rate': 7,
                                        'wo_number': 8,
                                        'ticket_type': 11,
@@ -57,13 +76,16 @@ class AbstractMaximoData(object):
             self.stdout.write(msg)
 
     def _get_maximo_ticket_info(self, row):
+        valid_ticket_types =  [MaximoTicket.MAXIMO_WORKORDER, MaximoTicket.MAXIMO_INCIDENT, MaximoTicket.MAXIMO_SR]
         ticket_type = row[self.time_register_mappings['ticket_type']]
         if not isinstance(ticket_type, str):
             ticket_type = ticket_type.value
-
-        if ticket_type not in [MaximoTicket.MAXIMO_SR]:
+        if ticket_type is None:
             ticket_type = MaximoTicket.MAXIMO_WORKORDER
-        if ticket_type == MaximoTicket.MAXIMO_WORKORDER:
+        assert ticket_type is not None, 'Could not find ticket type'
+        ticket_type = ticket_type.strip()
+        assert ticket_type in valid_ticket_types, 'Invalid ticket type: "%s"' % ticket_type
+        if ticket_type in valid_ticket_types[:1]:
             number = row[self.time_register_mappings['wo_number']]
         else:
             number = row[self.time_register_mappings['ticket_number']]
@@ -73,6 +95,10 @@ class AbstractMaximoData(object):
 
 
 class MaximoCSVData(AbstractMaximoData):
+
+    def __init__(self, stdout=None, **kwargs):
+        super(MaximoCSVData, self).__init__(stdout=stdout, **kwargs)
+        self.delimiter = kwargs.get('delimiter', ',')
 
     def _parse_date(self, str_date):
         return datetime.strptime(str_date, '%b %d, %Y').date()
@@ -89,7 +115,7 @@ class MaximoCSVData(AbstractMaximoData):
         duplicate_count = 0
         errors = list()
         with open(filename, 'r', encoding='utf-8') as csv_file:
-            csv_reader = csv.reader(csv_file, delimiter=',')
+            csv_reader = csv.reader(csv_file, delimiter=self.delimiter)
             next(csv_reader, None)
             for row in csv_reader:
                 attributes = dict()
@@ -139,14 +165,15 @@ class MaximoCSVData(AbstractMaximoData):
                     username = row[self.time_register_mappings['username']]
                     msg = 'Employee with id %s and username %s ' \
                           'on row %d does not exist time registe was not loaded' % (company_id, username, row_num)
-                    logger.warn(msg)
+                    logger.error(msg)
                     error = {'row_num': row_num,
                              'type': 'Employee does not exist',
                              'message': msg}
                     errors.append(error)
+                    #raise ValueError()
                 except MaximoTicket.DoesNotExist:
                     msg = '%s with number %s on line %d does not exist' % (ticket_type, number, row_num)
-                    logger.warn(msg)
+                    logger.error(msg)
                     error = {'row_num': row_num,
                              'type': 'Ticket does not exist',
                              'message': msg}
@@ -165,6 +192,14 @@ class MaximoCSVData(AbstractMaximoData):
                              'type': 'Value Error',
                              'message': msg}
                     errors.append(error)
+                except AssertionError as e:
+                    msg = '%s on row %d' % (e, row_num)
+                    logger.error(msg)
+                    error = {'row_num': row_num,
+                             'type': 'Assertion Error',
+                             'message': msg}
+                    errors.append(error)
+
                 row_num += 1
         time_results['rows_parsed'] = row_num - 1
         time_results['created'] = created_count

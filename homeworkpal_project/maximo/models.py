@@ -15,9 +15,11 @@ from project_admin.models import Project
 class MaximoTicket(TimeStampedModel):
     MAXIMO_SR = 'SR'
     MAXIMO_WORKORDER = 'WO'
+    MAXIMO_INCIDENT = 'INCIDENT'
     MAXIMO_TICKET_TYPES = ((MAXIMO_SR, _('Service Request')),
-                           (MAXIMO_WORKORDER, _('Work Order')))
-    ticket_type = models.CharField(max_length=2, choices=MAXIMO_TICKET_TYPES, default=MAXIMO_SR)
+                           (MAXIMO_WORKORDER, _('Work Order')),
+                           (MAXIMO_INCIDENT, _('Incident')),)
+    ticket_type = models.CharField(max_length=8, choices=MAXIMO_TICKET_TYPES, default=MAXIMO_SR)
     number = models.CharField(max_length=7, validators=[RegexValidator(regex=r'\d{5,6}')])
     name = models.CharField(max_length=120)
     is_open = models.BooleanField(default=True)
