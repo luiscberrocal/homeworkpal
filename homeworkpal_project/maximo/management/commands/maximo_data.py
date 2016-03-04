@@ -2,7 +2,7 @@ import os
 
 from django.core.management import BaseCommand
 from openpyxl import load_workbook
-from common.utils import filename_with_datetime
+from common.utils import filename_with_datetime, Timer
 from homeworkpal_project.settings.base import TEST_OUTPUT_PATH
 from maximo.excel import MaximoExcelData, MaximoCSVData
 from maximo.models import MaximoTicket, MaximoTimeRegister
@@ -82,10 +82,13 @@ class Command(BaseCommand):
                 self.stdout.write('Parsed: %s' % options['filename'])
                 self.stdout.write('Created Registers: %d of %d' % (results['created'], results['rows_parsed']))
             elif extension == '.pike':
-                excel_data = MaximoCSVData(stdout=self.stdout, delimiter='|')
-                results = excel_data.load_time_registers(options['filename'])
+                with Timer() as stopwatch:
+                    excel_data = MaximoCSVData(stdout=self.stdout, delimiter='|')
+                    results = excel_data.load_time_registers(options['filename'])
+
                 self.stdout.write('Parsed: %s' % options['filename'])
                 self.stdout.write('Created Registers: %d of %d' % (results['created'], results['rows_parsed']))
+                self.stdout.write('Elapsed %s' % stopwatch.elapsed)
 
         elif options['export_time']:
             excel_data = MaximoExcelData(stdout=self.stdout)

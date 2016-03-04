@@ -80,7 +80,7 @@ class AbstractMaximoData(object):
         ticket_type = row[self.time_register_mappings['ticket_type']]
         if not isinstance(ticket_type, str):
             ticket_type = ticket_type.value
-        if ticket_type is None:
+        if ticket_type is None or len(ticket_type) == 0:
             ticket_type = MaximoTicket.MAXIMO_WORKORDER
         assert ticket_type is not None, 'Could not find ticket type'
         ticket_type = ticket_type.strip()
@@ -118,6 +118,7 @@ class MaximoCSVData(AbstractMaximoData):
             csv_reader = csv.reader(csv_file, delimiter=self.delimiter)
             next(csv_reader, None)
             for row in csv_reader:
+                row_num += 1
                 attributes = dict()
                 company_id = row[self.time_register_mappings['company_id']]
                 try:
@@ -200,7 +201,7 @@ class MaximoCSVData(AbstractMaximoData):
                              'message': msg}
                     errors.append(error)
 
-                row_num += 1
+
         time_results['rows_parsed'] = row_num - 1
         time_results['created'] = created_count
         time_results['duplicates'] = duplicate_count
