@@ -2,7 +2,7 @@ import os
 
 from django.core.management import BaseCommand
 from openpyxl import load_workbook
-from common.utils import filename_with_datetime
+from common.utils import filename_with_datetime, Timer
 from homeworkpal_project.settings.base import TEST_OUTPUT_PATH
 from maximo.excel import MaximoExcelData, MaximoCSVData
 from maximo.models import MaximoTicket, MaximoTimeRegister
@@ -12,7 +12,19 @@ __author__ = 'lberrocal'
 
 class Command(BaseCommand):
     '''
-    python manage.py /path/to/excel.xlsx --load-time
+    To load Maximo data to the data base use this the --load-time command following these steps:
+    1. Create a maximo query using http://127.0.0.1:8000/maximo/sql/. Select the appropiate date ranges. Click on
+    copy to clipboard
+    2. Open Maximo using Firefox and paste the where clause
+    3. Select report TINO-NS-FY16
+    4. Export the data to pike separatated data.
+    5. Rename the file with the extension .pike
+    6. Run
+        python manage.py /path/to/data.pike --load-time
+
+    This will have loaded the data to the database
+
+
     '''
 
     def add_arguments(self, parser):
@@ -69,6 +81,15 @@ class Command(BaseCommand):
                 results = excel_data.load_time_registers(options['filename'])
                 self.stdout.write('Parsed: %s' % options['filename'])
                 self.stdout.write('Created Registers: %d of %d' % (results['created'], results['rows_parsed']))
+            elif extension == '.pike':
+                with Timer() as stopwatch:
+                    excel_data = MaximoCSVData(stdout=self.stdout, delimiter='|')
+                    results = excel_data.load_time_registers(options['filename'])
+
+                self.stdout.write('Parsed: %s' % options['filename'])
+                self.stdout.write('Created Registers: %d of %d' % (results['created'], results['rows_parsed']))
+                self.stdout.write('Elapsed %s' % stopwatch.elapsed)
+
         elif options['export_time']:
             excel_data = MaximoExcelData(stdout=self.stdout)
             registers = MaximoTimeRegister.objects.all()

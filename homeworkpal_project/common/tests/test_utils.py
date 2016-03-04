@@ -48,3 +48,11 @@ class TestHolidays(TestCase):
         self.assertEqual(31, len(jan_days))
         self.assertEqual(jan_days[0], start_date)
         self.assertEqual(jan_days[30], end_date)
+
+    def test_working_days_for_fiscal_year(self):
+        holiday_manager = Holiday()
+        months = holiday_manager.working_days_for_fiscal_year(2016)
+        self.assertTrue(len(months)==12)
+        for month in months:
+            logger.debug('%s: %d' % (month['month'], month['working_days']))
+

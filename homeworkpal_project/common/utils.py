@@ -1,9 +1,11 @@
+import calendar
 import datetime
 import os
 
 import pytz
 from django.utils import timezone
 from datetime import datetime, date, timedelta
+import time
 
 __author__ = 'lberrocal'
 
@@ -59,8 +61,32 @@ class Holiday(object):
         return event_date in self.holidays
 
     def working_days_between(self, start_date, end_date):
-        day_generator =  Holiday.days_in_range_generator(start_date, end_date) #(start_date + timedelta(x + 1) for x in range((end_date - start_date).days))
+        day_generator = Holiday.days_in_range_generator(start_date, end_date) #(start_date + timedelta(x + 1) for x in range((end_date - start_date).days))
         working_days = sum(1 for day in day_generator if day.weekday() < 5 and not self.is_holiday(day))
+        return working_days
+
+    def working_days_for_fiscal_year(self, fiscal_year):
+        working_days = list()
+        months =[(fiscal_year-1, 10),
+                 (fiscal_year-1, 11),
+                 (fiscal_year-1, 12),
+                 (fiscal_year, 1),
+                 (fiscal_year, 2),
+                 (fiscal_year, 3),
+                 (fiscal_year, 4),
+                 (fiscal_year, 5),
+                 (fiscal_year, 6),
+                 (fiscal_year, 7),
+                 (fiscal_year, 8),
+                 (fiscal_year, 9)]
+        for month in months:
+            data = dict()
+            last_day = calendar.monthrange(month[0],month[1])[1]
+            data['start_date'] = date(month[0],month[1], 1)
+            data['end_date'] = date(month[0],month[1], last_day)
+            data['month'] = data['start_date'].strftime('%b-%Y')
+            data['working_days'] = self.working_days_between(data['start_date'], data['end_date'])
+            working_days.append(data)
         return working_days
 
     @staticmethod
@@ -92,3 +118,35 @@ def force_date_to_dateime(unconverted_date, tzinfo= pytz.UTC):
                                            second=0,
                                            tzinfo=tzinfo)
     return converted_datetime
+
+class Timer:
+    def __init__(self, func=time.perf_counter):
+        self.elapsed = 0.0
+        self._func = func
+        self._start = None
+
+    def start(self):
+        if self._start is not None:
+            raise RuntimeError('Already started')
+        self._start = self._func()
+
+    def stop(self):
+        if self._start is None:
+            raise RuntimeError('Not started')
+        end = self._func()
+        self.elapsed += end - self._start
+        self._start = None
+
+    def reset(self):
+        self.elapsed = 0.0
+
+    @property
+    def running(self):
+        return self._start is not None
+
+    def __enter__(self):
+        self.start()
+        return self
+
+    def __exit__(self, *args):
+        self.stop()
