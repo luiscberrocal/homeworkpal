@@ -22,7 +22,7 @@ class Command(BaseCommand):
     6. Run
         python manage.py /path/to/data.pike --load-time
 
-    This will have loaded the data to the database
+    This will have loaded the data to the database. You shoulfd open the log file homeworkpal_project.log for errors
 
 
     '''
