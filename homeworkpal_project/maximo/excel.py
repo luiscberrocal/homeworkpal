@@ -165,7 +165,7 @@ class MaximoCSVData(AbstractMaximoData):
                 except Employee.DoesNotExist:
                     username = row[self.time_register_mappings['username']]
                     msg = 'Employee with id %s and username %s ' \
-                          'on row %d does not exist time registe was not loaded' % (company_id, username, row_num)
+                          'on row %d does not exist time register was not loaded' % (company_id, username, row_num)
                     logger.error(msg)
                     error = {'row_num': row_num,
                              'type': 'Employee does not exist',
@@ -173,7 +173,8 @@ class MaximoCSVData(AbstractMaximoData):
                     errors.append(error)
                     #raise ValueError()
                 except MaximoTicket.DoesNotExist:
-                    msg = '%s with number %s on line %d does not exist' % (ticket_type, number, row_num)
+                    msg = 'User %s registered on %s time for %s with number %s on line %d that does not exist' % \
+                          (attributes['employee'], attributes['date'].strftime('%Y-%m-%d'),  ticket_type, number, row_num)
                     logger.error(msg)
                     error = {'row_num': row_num,
                              'type': 'Ticket does not exist',

@@ -24,7 +24,7 @@ class TestGitReporter(TestCase):
         report = reporter.report()
         for commit in report['commits']:
             logger.debug(commit)
-        self.assertEqual(190, len(report['commits']))
+            self.assertEqual(7, len(commit.split('|')))
         self.assertEqual('develop', report['branch'])
         #self.assertEqual('git@bitbucket.org:luiscberrocal/wilbills.git', report['repo_name'])
         self.assertEqual('%s/scm/tinons/tino_application_framework_3.git' % self.stash_url, report['repo_name'])
@@ -45,6 +45,13 @@ class TestGitReporter(TestCase):
         branch, updated = reporter.checkout_branch('develop')
         self.assertEqual(branch, 'develop')
 
-    def test_create_git_excel(self):
-        output_filename = filename_with_datetime(TEST_OUTPUT_PATH, 'codigo_tino_ns.xlsx')
-        filename = create_git_excel(self.base_path, output_filename)
+    def test_get_repository_info(self):
+        reporter = GitReporter(self.working_directory)
+        url, project, repo = reporter.get_repository_info()
+        self.assertEqual('%s/scm/tinons/tino_application_framework_3.git' % self.stash_url, url)
+        self.assertEqual('tinons', project)
+        self.assertEqual('tino_application_framework_3.git', repo)
+
+    # def test_create_git_excel(self):
+    #     output_filename = filename_with_datetime(TEST_OUTPUT_PATH, 'codigo_tino_ns.xlsx')
+    #     filename = create_git_excel(self.base_path, output_filename)

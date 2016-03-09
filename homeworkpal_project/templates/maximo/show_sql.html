@@ -6,6 +6,14 @@
 {% endblock extra_css %}
 {% block page_title %} Maximo Where Clause {% endblock page_title %}
 {% block content %}
+
+
+    <div>
+    <h2>Members</h2>
+    {% for employee in employees %}
+        <div> {{ employee}}</div>
+    {% endfor %}
+    </div>
 <div id="where-clause">
 {{ sql }}
     </div>

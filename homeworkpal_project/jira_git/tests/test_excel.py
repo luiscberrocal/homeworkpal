@@ -12,7 +12,7 @@ from jira_git.excel import ExcelCommitImporter, ExcelGitReporter, ExcelLineCount
 import logging
 
 from jira_git.git_utils import GitReporter
-from jira_git.tests.factories import CommitFactory
+from jira_git.tests.factories import CommitFactory, create_fake_commits_file
 
 logger = logging.getLogger(__name__)
 
@@ -47,6 +47,7 @@ class TestExcelLineCounterReporter(TestCase):
 class TestExcelGitReporter(TestCase):
 
     working_directory = r'C:\Users\lberrocal\Documents\codigo_tino_ns\tino_application_framework_3' #'/Users/luiscberrocal/PycharmProjects/wildbills_project'
+    clean_output = False
 
     def test_write(self):
         reporter = GitReporter(self.working_directory)
@@ -57,6 +58,8 @@ class TestExcelGitReporter(TestCase):
         commit_count = excel_reporter.write(output_filename, report,start_date=datetime.date(2015,10,1), end_date=datetime.date(2016,2,22))
         self.assertTrue(os.path.exists(output_filename))
         self.assertEqual(len(report['commits']), commit_count)
+        if self.clean_output:
+            os.remove(output_filename)
 
     def test_write_2(self):
         reporter = GitReporter(self.working_directory)
@@ -72,6 +75,9 @@ class TestExcelGitReporter(TestCase):
         self.assertTrue(os.path.exists(output_filename))
         self.assertEqual(len(report['commits']), commit_count)
         self.assertEqual(len(report_2['commits']), commit_count_2)
+        if self.clean_output:
+            os.remove(output_filename)
+
 
 class TestExcelCommitImporter(TestCase):
 
@@ -114,13 +120,18 @@ class TestExcelCommitImporter(TestCase):
             shutil.rmtree(folder)
 
     def test_parse_multiple_files_single(self):
-        filenames = [os.path.join(TEST_DATA_PATH, 'vessel_display_web.txt')]
+        filename = filename_with_datetime(TEST_OUTPUT_PATH, 'vessel_display_web.txt')
+        create_fake_commits_file(filename, start_date=datetime.date(2015,10,1), end_date=datetime.date(2016,1,1), commits_per_day=1)
+        filenames = [filename]
         importer = ExcelCommitImporter()
         output_filename = filename_with_datetime(TEST_OUTPUT_PATH, 'git_commits_acp_contract.xlsx')
-        commit_count = importer.parse_multiple_files(filenames, output_filename, start_date=datetime.date(2015,10,1), end_date=datetime.date(2016,2,12))
+        commit_count = importer.parse_multiple_files(filenames, output_filename, start_date=datetime.date(2015,10,1), end_date=datetime.date(2015,10,31))
         self.assertTrue(os.path.exists(output_filename))
-        self.assertEqual(159, commit_count)
+        self.assertEqual(31, commit_count)
         logger.debug('Wrote commits to %s' % output_filename)
+        if self.clean_output:
+            os.remove(output_filename)
+            os.remove(filename)
 
     def test_parse_multiple_files_2(self):
         factory = CommitFactory()
@@ -150,4 +161,7 @@ class TestExcelCommitImporter(TestCase):
         self.assertTrue(os.path.exists(output_filename))
         self.assertEqual(31, commit_count)
         logger.debug('Wrote commits to %s' % output_filename)
+        if self.clean_output:
+            os.remove(output_filename)
+            shutil.rmtree(folder)
 
