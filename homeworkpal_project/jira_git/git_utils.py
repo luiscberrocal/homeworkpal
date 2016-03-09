@@ -78,20 +78,35 @@ class GitReporter(object):
                 stdoutdata_splited.append(line.decode(encoding='utf-8').rstrip('\r\n'))
             return stdoutdata_splited
 
-    def get_repository_name(self):
-        '''
-        Will extract repository name from git config --list command
-        :return: Fetch URl of repository
-        '''
+    def get_repository_info(self):
+        regexp = re.compile(r'remote\.origin\.url=(http:\/\/([\w\.-]+)@stash.canal.acp:\d+(.*)(\/([\w_]+))+\/([\w_]+\.git))$')
         git_command = r'git config --list'
-        regexp = re.compile(r'remote\.origin\.url=(.*)$')
         results = self._run_command(git_command)
         for origin_data in results:
             match = regexp.match(origin_data)
             #logger.debug(origin_data)
             if match:
-                return match.group(1)
-        return None
+                stash_url = match.group(1)
+                stash_project = match.group(5)
+                repo_name = match.group(6)
+                return stash_url, stash_project, repo_name
+        return None, None, None
+
+    def get_repository_name(self):
+        '''
+        Will extract repository name from git config --list command
+        :return: Fetch URl of repository
+        '''
+        return self.get_repository_info()[0]
+        # git_command = r'git config --list'
+        # regexp = re.compile(r'remote\.origin\.url=(.*)$')
+        # results = self._run_command(git_command)
+        # for origin_data in results:
+        #     match = regexp.match(origin_data)
+        #     #logger.debug(origin_data)
+        #     if match:
+        #         return match.group(1)
+        #return None
 
     def report(self, number_of_commits=0):
         report = dict()
