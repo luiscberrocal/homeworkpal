@@ -27,11 +27,11 @@ class TestGitExportParser(TestCase):
         self.assertEqual(25, len(commits))
         for commit in commits:
             self.assertEqual(9, len(commit))
-            self.assertRegex(commit[0], '[a-z0-9]{7}')
-            self.assertRegex(commit[1], '^[\w._]{2,}$')
-            self.assertRegex(commit[2], '^[\w._]+@[\w.-]+\.[A-Za-z]{2,}$')
-            self.assertIsInstance(commit[3], datetime.datetime)
-            self.assertIsNotNone(commit[3].tzinfo)
+            self.assertRegex(commit['hash_id'], '[a-z0-9]{7}')
+            self.assertRegex(commit['username'], '^[\w._]{2,}$')
+            self.assertRegex(commit['email'], '^[\w._]+@[\w.-]+\.[A-Za-z]{2,}$')
+            self.assertIsInstance(commit['date'], datetime.datetime)
+            self.assertIsNotNone(commit['date'].tzinfo)
         if self.clean_output:
             os.remove(filename)
 

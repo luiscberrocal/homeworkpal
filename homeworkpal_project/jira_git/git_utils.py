@@ -62,7 +62,6 @@ class GitReporter(object):
 
         return None, None
 
-
     def _run_command(self, git_command):
         # '\\'git\\' is not recognized as an internal or external command,'
         if isinstance(git_command, str):
@@ -75,7 +74,7 @@ class GitReporter(object):
         with cd(self.working_directory):
             p = subprocess.Popen(arguments , shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             for line in p.stdout.readlines():
-                logger.debug(line)
+                #logger.debug(line)
                 stdoutdata_splited.append(line.decode(encoding='utf-8').rstrip('\r\n'))
             return stdoutdata_splited
 
@@ -89,12 +88,12 @@ class GitReporter(object):
         results = self._run_command(git_command)
         for origin_data in results:
             match = regexp.match(origin_data)
-            logger.debug(origin_data)
+            #logger.debug(origin_data)
             if match:
                 return match.group(1)
         return None
 
-    def report(self):
+    def report(self, number_of_commits=0):
         report = dict()
         branch = self.get_current_branch()
         assert branch is not None, 'Could not find a branch for %s' % self.working_directory
@@ -110,8 +109,26 @@ class GitReporter(object):
         assert repo_name is not None, 'Could not find repository name for %s' % self.working_directory
         report['repo_name'] = repo_name
         #git_command = ['git', 'log', r'--pretty=format:"%h|%an|%aD|%s"']
-        git_command = r'git log --pretty=format:"%h|%ae|%aD|%s"'
-        report['commits'] = self._run_command(git_command)
+        git_command = r'git log --shortstat --pretty=format:"%h|%ae|%aD|%s"'
+        if number_of_commits != 0:
+            git_command += ' -n %d' % number_of_commits
+
+        lines = self._run_command(git_command)
+        report['commits'] = list()
+        current_line = 0
+        regexp = re.compile(r'(\d+)\sfiles?\schanged,\s(\d+)\sinsertions?\(\+\),\s(\d+)\sdeletions?\(\-\)')
+        for line in lines:
+            if len(line) == 0:
+                current_line += 1
+                continue
+            match = regexp.findall(line)
+            if len(match) != 0:
+                commit_details = lines[current_line-1].split('|')
+                commit_details.append(match[0][0]) #Files Changed
+                commit_details.append(match[0][1]) #Insertions
+                commit_details.append(match[0][2]) #Deletions
+                report['commits'].append('|'.join(commit_details))
+            current_line += 1
 
         if prev_branch:
             self.checkout_branch(prev_branch)

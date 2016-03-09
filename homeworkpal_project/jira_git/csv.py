@@ -1,21 +1,21 @@
 import csv
-
 import datetime
 import re
 import os
 import pytz
-
 from common.utils import force_date_to_dateime
 from homeworkpal_project.settings.local_acp import GIT_NAME_DICTIONARY, GIT_JIRA_PROJECT_TAGS
 import logging
 
 logger = logging.getLogger(__name__)
 
+
 class GitName(object):
     '''
     Class to convert git name to a username
     '''
-    regexp = re.compile(r'([\w\.-]+)@([Pp]ancanal.com|logicstudio.net|gmail.com|panacanal.com|TINO?-WKS-\d+.canal.acp|hotmail.com)')
+    regexp = re.compile(
+        r'([\w\.-]+)@([Pp]ancanal.com|logicstudio.net|gmail.com|panacanal.com|TINO?-WKS-\d+.canal.acp|hotmail.com)')
     name_dictionary = GIT_NAME_DICTIONARY
 
     def get_user(self, name):
@@ -37,7 +37,6 @@ class GitName(object):
             return email, None
 
 
-
 class GitExportParser(object):
     '''
     Class to parse files exported using the git command:
@@ -49,17 +48,18 @@ class GitExportParser(object):
         8e802b5| bbb@pancanal.com     |Mon, 12 Oct 2015 19:43:26 -0500 |Basic model impl
         ad88bc6| bbb@pancanal.com     |Sun, 11 Oct 2015 11:10:08 -0500 |First commit
     '''
+
     def __init__(self):
         self.git_name = GitName()
         self.date_format = '%a, %d %b %Y %H:%M:%S %z'
 
     def parse_folder(self, folder, **kwargs):
-        file_list= list()
+        file_list = list()
         commits = list()
         for root, dir, files in os.walk(folder):
             for file in files:
                 filename = os.path.join(root, file)
-                #file_list.append(file)
+                # file_list.append(file)
                 file_commits = self.parse(filename, **kwargs)
                 commits += file_commits
         return commits
@@ -78,10 +78,27 @@ class GitExportParser(object):
         for commit_str in dictionary['commits']:
             commit_array = commit_str.split('|')
             commit = self._process_commit(commit_array)
-            commits.append(commit + [dictionary['repo_name'], dictionary['branch']])
+            commit['repo_name'] = dictionary['repo_name']
+            commit['branch'] = dictionary['branch']
+            commits.append(commit)
         return commits
 
     def _process_commit(self, row, **kwargs):
+        '''
+        Will process a row of pike separated data the data. The row contains the following data:
+        Commit Hash	0
+        Email	1
+        Date	2
+        Description	3
+        Files changed	4
+        Insertions	5
+        Deletions	6
+
+        :param row:
+        :param kwargs:
+        :return: A dictionary of parsed information
+        '''
+        assert len(row) == 7 or len(row) == 4, 'The row must contain 7 or 4 items it contains %d items' % len(row)
         date = datetime.datetime.strptime(row[2].strip(), self.date_format)
         passed_filter = self.date_filter(date, kwargs.get('start_date', None), kwargs.get('end_date', None))
         if passed_filter:
@@ -91,10 +108,21 @@ class GitExportParser(object):
             tags = self.find_tags(description)
             project = self.get_project_tag(tags)
             issue_number = self.get_issues(tags)
-            #project, issue_number = self.get_project(description)
+            # project, issue_number = self.get_project(description)
             commit_type = self.get_commit_type(description)
-            return [hash_id,  username, email, date, description,
-                    project, commit_type, issue_number]
+            results = {'hash_id': hash_id,
+                       'username': username,
+                       'email': email,
+                       'date': date,
+                       'description': description,
+                       'project': project,
+                       'commit_type': commit_type,
+                       'issue_number': issue_number}
+            if len(row) == 7:
+                results['files_changed'] = int(row[4])
+                results['insertions'] = int(row[5])
+                results['deletions'] = int(row[6])
+            return results
         return None
 
     def parse(self, filename, **kwargs):
@@ -104,13 +132,19 @@ class GitExportParser(object):
             logger.debug('Parsing %s' % filename)
             reader = csv.reader(pike_file, delimiter='|')
             _, base_filename = os.path.split(filename)
+            line_count=0
             for row in reader:
-                commit = self._process_commit(row, **kwargs)
-                if commit:
-                    commits.append(commit + [base_filename])
+                line_count += 1
+                try:
+                    commit = self._process_commit(row, **kwargs)
+                    if commit:
+                        commit['base_filename'] = base_filename
+                        commits.append(commit)
+                except AssertionError as e:
+                    raise ValueError('%s. Error ocurred on file %s line %d' % (e, filename, line_count))
         return commits
 
-    def _convert_date_to_dateime(self, unconverted_date, tzinfo= pytz.UTC):
+    def _convert_date_to_dateime(self, unconverted_date, tzinfo=pytz.UTC):
         converted_datetime = force_date_to_dateime(unconverted_date=unconverted_date, tzinfo=tzinfo)
         return converted_datetime
 
@@ -123,8 +157,7 @@ class GitExportParser(object):
         if isinstance(end_date, datetime.date):
             end_date = self._convert_date_to_dateime(end_date)
 
-        return commit_date.date() >=start_date.date() and commit_date.date() <= end_date.date()
-
+        return commit_date.date() >= start_date.date() and commit_date.date() <= end_date.date()
 
     def get_commit_type(self, description, **kwargs):
         classifiers = [['MERGE', r'^Merge\sbranch\s'],
@@ -151,7 +184,6 @@ class GitExportParser(object):
         else:
             None
 
-
     def find_tags(self, description):
         regexp_str = r'([A-Z]{3,})-(\d+)[\s,;]?'
         regexp = re.compile(regexp_str)
@@ -160,14 +192,11 @@ class GitExportParser(object):
 
     def get_project(self, description, **kwargs):
         for project_tag in GIT_JIRA_PROJECT_TAGS:
-            regexp_str = r'.*(%s-\d+).*' % project_tag[1] #.*(NAV-\d+)\s?
-            #logger.debug('Regular expression: %s' % regexp_str)
+            regexp_str = r'.*(%s-\d+).*' % project_tag[1]  # .*(NAV-\d+)\s?
+            # logger.debug('Regular expression: %s' % regexp_str)
             regexp = re.compile(regexp_str)
             match = regexp.match(description)
             if match:
                 return project_tag[0], match.group(1)
 
         return None, None
-
-
-
