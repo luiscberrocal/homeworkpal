@@ -120,9 +120,12 @@ class GitReporter(object):
             assert branch is not None, 'Could not checkout branch %s' % self.reporting_branch
         report['branch'] = branch
 
-        repo_name = self.get_repository_name()
+        url, stash_project, repo_name = self.get_repository_info()
         assert repo_name is not None, 'Could not find repository name for %s' % self.working_directory
         report['repo_name'] = repo_name
+        report['stash_project'] = stash_project
+        report['url'] = url
+
         #git_command = ['git', 'log', r'--pretty=format:"%h|%an|%aD|%s"']
         git_command = r'git log --shortstat --pretty=format:"%h|%ae|%aD|%s"'
         if number_of_commits != 0:

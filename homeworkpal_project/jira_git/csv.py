@@ -80,6 +80,7 @@ class GitExportParser(object):
             commit = self._process_commit(commit_array)
             commit['repo_name'] = dictionary['repo_name']
             commit['branch'] = dictionary['branch']
+            commit['stash_project'] = dictionary['stash_project']
             commits.append(commit)
         return commits
 

@@ -9,6 +9,7 @@ logger = logging.getLogger(__name__)
 class LinesOfCodeCounter(object):
 
     def __init__(self, folder):
+        assert os.path.exists(folder), 'Folder %s does not exist. Cannot count lines' % folder
         self.excluded_folders = ['.git','dojo-release-1.10.3']
         self.root_folder = folder
         self.code_files=  ['*.vb', '*.cs', '*.xml', '*.xsd', '*.js',
