@@ -27,7 +27,7 @@ class TestGitReporter(TestCase):
             self.assertEqual(7, len(commit.split('|')))
         self.assertEqual('develop', report['branch'])
         #self.assertEqual('git@bitbucket.org:luiscberrocal/wilbills.git', report['repo_name'])
-        self.assertEqual('%s/scm/tinons/tino_application_framework_3.git' % self.stash_url, report['repo_name'])
+        self.assertEqual('tino_application_framework_3.git', report['repo_name'])
 
     def test_get_current_branch(self):
         reporter = GitReporter(self.working_directory)

@@ -96,7 +96,8 @@ class ExcelGitReporter(AbstractExcel):
                         ['Insertions', 'J', 12, 'insertions'],
                         ['Deletions', 'K', 12, 'deletions'],
                         ['Repo', 'L', 20, 'repo_name'],
-                        ['Branch', 'M', 12,'branch']]
+                        ['Stash Project', 'M', 20, 'stash_project'],
+                        ['Branch', 'N', 12,'branch']]
 
     def write(self, output_filename, dictionary, **kwargs):
         if os.path.exists(output_filename):

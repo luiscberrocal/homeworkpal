@@ -40,10 +40,10 @@ class TestExcelLineCounterReporter(TestCase):
 
         self.assertEqual(516, len(results))
 
-        results = self.excel_adapter.convert_to_list(output_filename, 'Lines of Code')
-        self.assertEqual(516, len(results))
-        self.assertEqual(5, len(results[0]))
-        self.assertEqual(folder_name, results[0][0])
+        excel_data = self.excel_adapter.convert_to_list(output_filename, 'Lines of Code')
+        self.assertEqual(516, len(excel_data))
+        self.assertEqual(5, len(excel_data[0]))
+        self.assertEqual(folder_name, excel_data[0][0])
 
         if self.clean_output:
             os.remove(output_filename)
@@ -68,8 +68,20 @@ class TestExcelLineCounterReporter(TestCase):
             os.remove(output_filename)
 
 
+class AbstractTestExcelGit(TestCase):
 
-class TestExcelGitReporter(TestCase):
+    def assertCommitRow(self, row):
+        self.assertEqual(14, len(row))
+        self.assertRegex(row[0], '[a-z0-9]{7}')
+        self.assertRegex(row[1], r'^[\w._-]{2,}$')
+        self.assertRegex(row[2], r'^[\w._-]+@[\w.-]+\.[A-Za-z]{2,}$')
+        self.assertIsInstance(row[3], datetime.datetime)
+        #self.assertRegex(row[3], r'^\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}$')
+        self.assertIsInstance(row[8],int)
+        self.assertIsInstance(row[9], int)
+        self.assertIsInstance(row[10], int)
+
+class TestExcelGitReporter(AbstractTestExcelGit):
 
     working_directory = r'C:\Users\lberrocal\Documents\codigo_tino_ns\tino_application_framework_3' #'/Users/luiscberrocal/PycharmProjects/wildbills_project'
     clean_output = False
@@ -91,10 +103,7 @@ class TestExcelGitReporter(TestCase):
         self.assertEqual(commit_count, len(results))
 
         for result in results:
-            self.assertEqual(13, len(result))
-            self.assertRegex(result[0], '[a-z0-9]{7}')
-            self.assertRegex(result[1], '^[\w._-]{2,}$')
-            self.assertRegex(result[2], '^[\w._-]+@[\w.-]+\.[A-Za-z]{2,}$')
+            self.assertCommitRow(result)
 
         if self.clean_output:
             os.remove(output_filename)
@@ -118,10 +127,7 @@ class TestExcelGitReporter(TestCase):
         #self.assertEqual(commit_count + commit_count_2, len(results)) TODO 20160310 commits arent adding up
 
         for result in results:
-            self.assertEqual(13, len(result))
-            self.assertRegex(result[0], '[a-z0-9]{7}')
-            self.assertRegex(result[1], '^[\w._-]{2,}$')
-            self.assertRegex(result[2], '^[\w._-]+@[\w.-]+\.[A-Za-z]{2,}$')
+            self.assertCommitRow(result)
 
         if self.clean_output:
             os.remove(output_filename)
