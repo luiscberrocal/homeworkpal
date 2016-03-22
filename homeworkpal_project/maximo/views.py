@@ -1,3 +1,4 @@
+import datetime
 from braces.views import LoginRequiredMixin
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.shortcuts import render
@@ -35,7 +36,7 @@ class MaximoView(TemplateView):
         labor_code_condition = self._build_labor_condition(employees)
         where_parts[1] = mark_safe(labor_code_condition)
         where_parts[3] = '2015-10-01'
-        where_parts[5] = '2015-10-30'
+        where_parts[5] = datetime.date.today().strftime('%Y-%m-%d')
 
         ctx['employees'] = employees
         ctx['where_parts'] = where_parts

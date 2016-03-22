@@ -1,6 +1,6 @@
 import datetime
 from django.test import TestCase
-from ..utils import get_fiscal_year, Holiday
+from ..utils import get_fiscal_year, Holiday, Timer
 import logging
 logger = logging.getLogger(__name__)
 __author__ = 'lberrocal'
@@ -55,4 +55,13 @@ class TestHolidays(TestCase):
         self.assertTrue(len(months)==12)
         for month in months:
             logger.debug('%s: %d' % (month['month'], month['working_days']))
+
+class TestTimer(TestCase):
+
+    def test_get_elpased(self):
+        with Timer() as stopwatch:
+            import time
+            time.sleep(33)
+        hours, mins, sec = stopwatch.get_elapsed_time()
+        self.assertTrue(sec<=33)
 
