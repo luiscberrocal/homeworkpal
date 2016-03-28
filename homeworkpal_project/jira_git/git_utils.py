@@ -117,7 +117,7 @@ class GitReporter(object):
         if branch != self.reporting_branch:
             prev_branch = branch
             branch, updated =self.checkout_branch(self.reporting_branch)
-            assert branch is not None, 'Could not checkout branch %s' % self.reporting_branch
+            assert branch is not None, 'Could not checkout branch %s for %s' % (self.reporting_branch, self.working_directory)
         report['branch'] = branch
 
         url, stash_project, repo_name = self.get_repository_info()
