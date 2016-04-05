@@ -3,9 +3,13 @@ import csv
 import os
 import pytz
 from datetime import timedelta, datetime, date
+
+from factory import LazyAttribute, SubFactory
+from factory.django import DjangoModelFactory
 from faker import Factory as FakerFactory
 
 from common.utils import force_date_to_dateime, Holiday, filename_with_datetime
+from jira_git.models import StashProject, StashRepository
 
 faker = FakerFactory.create()
 
@@ -26,6 +30,21 @@ class TagFactory(object):
         return '%s-%d' % (tag_name, number)
 
 
+
+class StashProjectFactory(DjangoModelFactory):
+
+    class Meta:
+        model = StashProject
+    name = LazyAttribute(lambda x: faker.sentence(nb_words=3))
+
+class StashRepositoryFactory(DjangoModelFactory):
+
+    class Meta:
+        model = StashRepository
+
+    name = LazyAttribute(lambda x: faker.name())
+    project = SubFactory(StashProjectFactory)
+    software_name = LazyAttribute(lambda x: faker.sentence(nb_words=3))
 
 
 class CommitFactory(object):

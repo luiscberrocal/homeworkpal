@@ -63,5 +63,6 @@ class TestTimer(TestCase):
             import time
             time.sleep(33)
         hours, mins, sec = stopwatch.get_elapsed_time()
+        logger.debug('%d hrs %d min %.2f' % (hours, mins, sec))
         self.assertTrue(sec<=33)
 
