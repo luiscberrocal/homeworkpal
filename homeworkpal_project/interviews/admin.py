@@ -5,14 +5,13 @@ from .models import ElegibilityCertificate, Candidate, CandidateInCertificate, C
     CertificateResult, Interview
 
 
+class CandidateInCertificateInLine(admin.TabularInline):
+    model = CandidateInCertificate
+
+
 class ElegibilityCertificateAdmin(admin.ModelAdmin):
-    list_display = ('number', 'grade', 'vacant_positions', 'expires')
-
-
-class CandidateAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'last_name', 'first_name', 'national_id')
-    ordering = ('last_name', 'first_name')
-
+    list_display = ('number', 'grade', 'vacant_positions', 'expires', 'date_closed')
+    inlines = (CandidateInCertificateInLine, )
 
 class CandidateInCertificateAdmin(admin.ModelAdmin):
     list_display = ('pk', 'certificate', 'certificate_result', 'candidate', 'score', 'explanation')
@@ -23,6 +22,13 @@ class CandidateInCertificateAdmin(admin.ModelAdmin):
 class ContactInfoAdmin(admin.ModelAdmin):
     list_display = ('pk', 'candidate', 'number', 'email', 'instructions', 'comments', 'valid')
 
+class ContactInfoInLine(admin.TabularInline):
+    model = ContactInfo
+
+class CandidateAdmin(admin.ModelAdmin):
+    list_display = ('pk', 'last_name', 'first_name', 'national_id')
+    ordering = ('last_name', 'first_name')
+    inlines = (ContactInfoInLine,)
 
 class ContactAttemptAdmin(admin.ModelAdmin):
     list_display = ('contact_method', 'candidate_certificate', 'succesful_contact', 'contact_datetime', 'comments')

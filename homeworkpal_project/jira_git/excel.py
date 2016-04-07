@@ -56,7 +56,7 @@ class ExcelLineCounterReporter(AbstractExcel):
         if os.path.exists(output_filename):
             wb = load_workbook(filename=output_filename)
             sheet = wb[self.sheet_name]
-            row = sheet.get_highest_row()
+            row = sheet.max_row
         else:
             wb = Workbook()
             sheet = wb.create_sheet(title=self.sheet_name)
@@ -103,7 +103,7 @@ class ExcelGitReporter(AbstractExcel):
         if os.path.exists(output_filename):
             wb = load_workbook(filename=output_filename)
             sheet = wb['Commits']
-            row = sheet.get_highest_row()
+            row = sheet.max_row
         else:
             wb = Workbook()
             sheet = wb.create_sheet(title='Commits')

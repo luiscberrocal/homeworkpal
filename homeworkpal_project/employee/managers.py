@@ -3,7 +3,6 @@ import re
 from django.db.models import Manager
 
 
-
 __author__ = 'lberrocal'
 
 
@@ -22,16 +21,21 @@ class EmployeeManager(Manager):
             return False
 
     def from_group(self, company_group):
-        from .models import CompanyGroupEmployeeAssignment
+        from .models import CompanyGroupEmployeeAssignment, CompanyGroup
         if isinstance(company_group, str):
-            if self._is_slug(company_group):
-                group_assignemnts = CompanyGroupEmployeeAssignment.objects.filter(group__slug=company_group).select_related('employee', 'employee__user')
-            else:
-                group_assignemnts = CompanyGroupEmployeeAssignment.objects.filter(group__name=company_group).select_related('employee', 'employee__user')
-        else:
-            group_assignemnts = CompanyGroupEmployeeAssignment.objects.filter(group=company_group).select_related('employee', 'employee__user')
+            try:
+                if self._is_slug(company_group):
+                    company_group = CompanyGroup.objects.get(slug=company_group)
+                    #group_assignemnts = CompanyGroupEmployeeAssignment.objects.filter(group__slug=company_group, end_date=None).select_related('employee', 'employee__user')
+                else:
+                    company_group = CompanyGroup.objects.get(name=company_group)
+                    #group_assignemnts = CompanyGroupEmployeeAssignment.objects.filter(group__name=company_group, end_date=None).select_related('employee', 'employee__user')
+            except CompanyGroup.DoesNotExist:
+                company_group = None
+
+        group_assignments = CompanyGroupEmployeeAssignment.objects.group_members(company_group=company_group)
         employees_pk = list()
-        for group in group_assignemnts:
+        for group in group_assignments:
             employees_pk.append(group.employee.pk)
         return self.get_queryset().filter(pk__in=employees_pk).select_related('user')
 

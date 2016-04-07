@@ -140,6 +140,11 @@ class Timer:
     def reset(self):
         self.elapsed = 0.0
 
+    def get_elapsed_time(self):
+        hours, remainder = divmod(self.elapsed, 3600)
+        mins, secs = divmod(remainder, 60)
+        return int(hours), int(mins), secs
+
     @property
     def running(self):
         return self._start is not None

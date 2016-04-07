@@ -13,6 +13,7 @@ class ElegibilityCertificate(TimeStampedModel):
     emitted = models.DateField()
     expires = models.DateField()
     salary_per_year = models.DecimalField(max_digits=8, decimal_places=2)
+    date_closed = models.DateField(null=True, blank=True)
 
     def monthly_salary(self):
         return self.salary_per_year/12.0
@@ -22,7 +23,7 @@ class ElegibilityCertificate(TimeStampedModel):
 
 
 class Candidate(TimeStampedModel):
-    national_id = models.CharField(max_length=15)
+    national_id = models.CharField(max_length=15, unique=True)
     first_name = models.CharField(max_length=30)
     middle_name = models.CharField(max_length=30, blank=True)
     last_name = models.CharField(max_length=30)

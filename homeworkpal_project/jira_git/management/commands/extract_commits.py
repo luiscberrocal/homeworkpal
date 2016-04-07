@@ -26,4 +26,4 @@ class Command(BaseCommand):
 
         self.stdout.write('Parsed:  %s' % options['folder'])
         self.stdout.write('Wrote %s' % output_filename)
-        self.stdout.write('Elapsed %s' % stopwatch.elapsed)
+        self.stdout.write('Elapsed %d hours %d minutes %0.2f seconds' % stopwatch.get_elapsed_time())
