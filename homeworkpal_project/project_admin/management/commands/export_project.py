@@ -3,6 +3,8 @@ import os
 from django.core.management import BaseCommand
 from django.utils import timezone
 from openpyxl import Workbook, load_workbook
+
+from common.utils import filename_with_datetime
 from homeworkpal_project.settings.base import TEST_DATA_PATH
 from project_admin.models import Project
 
@@ -12,9 +14,35 @@ __author__ = 'lberrocal'
 class Command(BaseCommand):
 
     def add_arguments(self, parser):
-        parser.add_argument('project_id')
+        parser.add_argument('project_id', nargs='?')
+        parser.add_argument('--all',
+                            action='store_true',
+                            dest='process_all',
+                            help='Export all projects')
 
     def handle(self, *args, **options):
+        if options['process_all']:
+            self.export_all_projects()
+        else:
+            self.export_single_project(options)
+
+    def export_all_projects(self):
+        row =1
+        wb = Workbook()
+        sheet = wb.active
+        output_filename = filename_with_datetime(TEST_DATA_PATH, 'tino-ns-projects.xlsx')
+        for project in Project.objects.all():
+            sheet['A%d' % row] = project.short_name
+            sheet['B%d' % row] = project.description
+            sheet['C%d' % row] = project.actual_start_date
+            sheet['D%d' % row] = project.actual_end_date
+            row += 1
+        wb.save(output_filename)
+        self.stdout.write('Wrote: %s' % (output_filename))
+
+
+
+    def export_single_project(self, options):
         project = Project.objects.get(pk=int(options['project_id']))
         template_filename = os.path.join(TEST_DATA_PATH, '1680_v2.xlsx')
         now = timezone.localtime(timezone.now())
