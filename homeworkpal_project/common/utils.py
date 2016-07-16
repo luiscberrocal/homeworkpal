@@ -36,6 +36,23 @@ def filename_with_datetime(file_path, base_filename):
     return os.path.join(file_path, '%s_%s.%s' % (parts[0], str_date, parts[1]))
 
 
+def add_date_to_filename(filename, **kwargs):
+    new_filename = dict()
+    path, file = os.path.split(filename)
+    new_filename['path'] = path
+    parts = file.split('.')
+    new_filename['extension'] = parts[-1]
+    new_filename['separator'] = os.sep
+    new_filename['filename_with_out_extension'] = '.'.join(parts[:-1])
+    new_filename['datetime'] = timezone.localtime(timezone.now()).strftime('%Y%m%d_%H%M')
+    date_position = kwargs.get('date_position', 'suffix')
+    if date_position=='suffix':
+        return '{path}{separator}{filename_with_out_extension}_{datetime}.{extension}'.format(**new_filename)
+    else:
+        return '{path}{separator}{datetime}_{filename_with_out_extension}.{extension}'.format(**new_filename)
+
+
+
 class Holiday(object):
     holidays = (
         date(2015, 11, 3),

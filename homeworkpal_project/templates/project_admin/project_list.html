@@ -1,63 +1,79 @@
 {% extends "base.html" %}
 {% load staticfiles i18n %}
 {% block page_title %}
-{% if view.status == 'running' %}
-Running Projects
-{% else %}
-Projects
-{% endif %}
+    {% if view.status == 'running' %}
+        Running Projects
+    {% else %}
+        Projects
+    {% endif %}
 {% endblock page_title %}
 {% block content %}
-<table class="table">
-    <thead>
+    <table class="table">
+        <thead>
         <tr class="row">
             <td>
                 {% trans "No." %}
             </td>
-        <td>
+            <td>
                 {% trans "Project" %}
             </td>
-        <td>
+            <td>
+                {% trans "Tickets" %}
+            </td>
+            <td>
                 {% trans "Information" %}
             </td>
-        <td>
+            <td>
 
-        </td>
+            </td>
         </tr>
-    </thead>
-    {% for project in object_list %}
-    <tr class="row {{ project.status|lower }}" role="alert">
-        <td class="col-md-1">
-            {{ forloop.counter }}
-        </td>
-        <td class="col-md-7">
-            <div><strong>Project: </strong> <a href="{% url 'project:project_detail' project.pk %}">{{project.short_name}}</a>
-            </div>
-             <div><strong>Priority: </strong>{{project.priority}}
-            </div>
-            <div><strong>Planned End Date: </strong> {{ project.planned_end_date }} ({{project.remaining_days}}
-                working days)
-            </div>
-            <div><strong>Leader: </strong> {{ project.leader }}</div>
-        </td>
-        <td class="col-md-2">
-            <div><strong>Members: </strong> {{ project.members.count }}</a>
-            </div>
-            <div><strong>Deliverables: </strong> {{ project.deliverables.count }}
-            </div>
-             <div><strong>Corporate Goals: </strong> {{ project.corporate_goals.count }}
-            </div>
-            <div>
-                <span class="title">{% trans "Regular Hours" %}</span> {{ project.total_regular_hours }}
-            </div>
-        </td>
-        <td class="col-md-2">
-            <a class="btn btn-primary btn-sm" role="button" href="{% url 'project:project_update' project.pk %}">Edit</a>
-            <a class="btn btn-primary btn-sm" role="button" href="{% url 'project:project_detail' project.pk %}">View</a>
-            <a class="btn btn-primary btn-sm" role="button" href="{% url 'project:project_delete' project.pk %}">Delete</a>
-        </td>
-    </tr>
-    {% endfor %}
+        </thead>
+        {% for project in object_list %}
+            <tr class="row {{ project.status|lower }}" role="alert">
+                <td class="col-md-1">
+                    {{ forloop.counter }}
+                </td>
+                <td class="col-md-5">
+                    <div><strong>Project: </strong> <a
+                            href="{% url 'project:project_detail' project.pk %}">{{ project.short_name }}</a>
+                    </div>
+                    <div><strong>Priority: </strong>{{ project.priority }}
+                    </div>
+                    <div><strong>Planned End Date: </strong> {{ project.planned_end_date }}
+                        ({{ project.remaining_days }}
+                        working days)
+                    </div>
+                    <div><strong>Leader: </strong> {{ project.leader }}</div>
+                    <div><strong>Actual Start: </strong> {{ project.actual_start_date }}</div>
+                    <div><strong>Actual End: </strong> {{ project.actual_end_date }}</div>
 
-</table>
+                </td>
+                <td class="col-md-2">
+                    {% for maximo_ticket in project.maximo_tickets.all %}
+                        <td> {{ maximo_ticket }}</td>
+                    {% endfor %}
+                </td>
+                <td class="col-md-2">
+                    <div><strong>Members: </strong> {{ project.members.count }}</a>
+                    </div>
+                    <div><strong>Deliverables: </strong> {{ project.deliverables.count }}
+                    </div>
+                    <div><strong>Corporate Goals: </strong> {{ project.corporate_goals.count }}
+                    </div>
+                    <div>
+                        <span class="title">{% trans "Regular Hours" %}</span> {{ project.total_regular_hours }}
+                    </div>
+                </td>
+                <td class="col-md-2">
+                    <a class="btn btn-primary btn-sm" role="button"
+                       href="{% url 'project:project_update' project.pk %}">Edit</a>
+                    <a class="btn btn-primary btn-sm" role="button"
+                       href="{% url 'project:project_detail' project.pk %}">View</a>
+                    <a class="btn btn-primary btn-sm" role="button"
+                       href="{% url 'project:project_delete' project.pk %}">Delete</a>
+                </td>
+            </tr>
+        {% endfor %}
+
+    </table>
 {% endblock content %}
