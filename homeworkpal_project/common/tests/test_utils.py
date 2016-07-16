@@ -1,6 +1,9 @@
 import datetime
+from unittest import mock
+
+import pytz
 from django.test import TestCase
-from ..utils import get_fiscal_year, Holiday, Timer
+from ..utils import get_fiscal_year, Holiday, Timer, add_date_to_filename
 import logging
 logger = logging.getLogger(__name__)
 __author__ = 'lberrocal'
@@ -66,3 +69,23 @@ class TestTimer(TestCase):
         logger.debug('%d hrs %d min %.2f' % (hours, mins, sec))
         self.assertTrue(sec<=33)
 
+    @mock.patch('django.utils.timezone.now')
+    def test_add_date_to_filename(self, mock_now):
+        mock_now.return_value = pytz.timezone('America/Panama').localize(
+            datetime.datetime.strptime('2016-07-07 16:40', '%Y-%m-%d %H:%M'))
+        filename = r'c:\kilo\poli\namos.txt'
+        new_filename = add_date_to_filename(filename)
+        self.assertEquals(r'c:\kilo\poli\namos_20160707_1640.txt', new_filename)
+
+        filename = r'c:\kilo\poli\namos.nemo.txt'
+        new_filename = add_date_to_filename(filename)
+        self.assertEquals(r'c:\kilo\poli\namos.nemo_20160707_1640.txt', new_filename)
+
+    @mock.patch('django.utils.timezone.now')
+    def test_add_date_to_filename_preffice(self, mock_now):
+        mock_now.return_value = pytz.timezone('America/Panama').localize(
+            datetime.datetime.strptime('2016-07-07 16:40', '%Y-%m-%d %H:%M'))
+        filename = r'c:\kilo\poli\namos.txt'
+        new_filename = add_date_to_filename(filename, date_position='prefix')
+
+        self.assertEquals(r'c:\kilo\poli\20160707_1640_namos.txt', new_filename)
