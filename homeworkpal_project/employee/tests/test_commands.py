@@ -12,6 +12,8 @@ from maximo.tests.test_excel import TestExcel
 class TestMaximoCommand(TestCase):
     fixtures = ['employee_fixtures.json', 'maximo_ticket_fixtures.json']
 
+    clean_output = True
+
     def test_export_employees(self):
         TestExcel.create_time_registers(date(2015, 9, 1), date(2015, 9, 30))
         content = StringIO()
@@ -21,11 +23,11 @@ class TestMaximoCommand(TestCase):
         lines = content.readlines()
         filename = None
         for line in lines:
+            if line.startswith('File export '):
+                filename = line.replace('File export ', '').strip()
             regexp = r'^File\sexport\s([\w,\-,\\,:]+)(\.xlsx)'
-            pattern  = re.compile(regexp)
-            match = pattern.match(line)
-            if match:
-                filename =  match.group(1) + match.group(2)
-                #print(filename)
-            #print(line)
         self.assertTrue(os.path.exists(filename))
+        if self.clean_output:
+            os.remove(filename)
+            self.assertFalse(os.path.exists(filename))
+
