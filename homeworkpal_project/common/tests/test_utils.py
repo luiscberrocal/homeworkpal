@@ -60,6 +60,41 @@ class TestHolidays(TestCase):
         for month in months:
             logger.debug('%s: %d' % (month['month'], month['working_days']))
 
+
+class MockPerfCounter(object):
+
+    def __init__(self):
+        self.t = 0
+
+    def increment(self, n):
+        self.t += n
+
+    def perf_counter(self):
+        return self.t
+
+
+class TestTimer(TestCase):
+
+
+    def test_get_elapsed_time_str(self):
+        clock = MockPerfCounter()
+        with mock.patch('time.perf_counter', clock.perf_counter):
+            #clock.increment(3600.0)
+            stopwatch = Timer()
+            stopwatch.start()
+            clock.increment(120.5)
+            stopwatch.stop()
+            self.assertEqual('0 h 2 m 0.50 s', stopwatch.get_elapsed_time_str())
+
+    def test_get_elapsed_time_str_with(self):
+        clock = MockPerfCounter()
+        with mock.patch('time.perf_counter', clock.perf_counter):
+            #clock.increment(3600.0)
+            with Timer() as stopwatch:
+                clock.increment(360.25)
+            self.assertEqual('0 h 6 m 0.25 s', stopwatch.get_elapsed_time_str())
+
+
 class TestAddDateToFilename(TestCase):
 
     def setUp(self):

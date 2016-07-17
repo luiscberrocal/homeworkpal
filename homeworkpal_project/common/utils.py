@@ -154,21 +154,20 @@ def force_date_to_dateime(unconverted_date, tzinfo= pytz.UTC):
     return converted_datetime
 
 
-class Timer(object):
-    def __init__(self, func=time.perf_counter):
+class Timer:
+    def __init__(self):
         self.elapsed = 0.0
-        self._func = func
         self._start = None
 
     def start(self):
         if self._start is not None:
             raise RuntimeError('Already started')
-        self._start = self._func()
+        self._start = time.perf_counter()
 
     def stop(self):
         if self._start is None:
             raise RuntimeError('Not started')
-        end = self._func()
+        end = time.perf_counter()
         self.elapsed += end - self._start
         self._start = None
 
@@ -179,6 +178,9 @@ class Timer(object):
         hours, remainder = divmod(self.elapsed, 3600)
         mins, secs = divmod(remainder, 60)
         return int(hours), int(mins), secs
+
+    def get_elapsed_time_str(self):
+        return '%d h %d m %.2f s' % self.get_elapsed_time()
 
     @property
     def running(self):
