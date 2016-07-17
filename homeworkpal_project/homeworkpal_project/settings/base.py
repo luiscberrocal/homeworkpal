@@ -209,7 +209,6 @@ LOCAL_APPS = (
     'maximo',
     'common',
     'interviews',
-    'jira_git',
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -290,11 +289,7 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': True,
         },
-        'jira_git': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
+
     }
 }
 ########## END LOGGING CONFIGURATION
