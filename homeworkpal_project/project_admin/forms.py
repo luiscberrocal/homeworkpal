@@ -26,7 +26,7 @@ class RequiredFirstInlineFormSet(BaseInlineFormSet):
 class ProjectForm(ModelForm):
     class Meta:
         model = Project
-        fields = ['short_name', 'description', 'planned_start_date',
+        fields = ['short_name', 'on_dashboard','description', 'planned_start_date',
                   'planned_end_date', 'actual_start_date', 'actual_end_date',
                   'planned_man_hours', 'type', 'group', 'priority']
         widgets = {

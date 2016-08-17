@@ -61,3 +61,6 @@ test_data/vessel_display_web.txt
 test_data/inventory_ppu_app.txt
 test_data/vessel_inpections_app.txt
 test_data/vessel_scheduling_app.txt
+test_data/tino-ns-db-projects_20160801_1417.xlsx
+test_data/tino-ns-db-projects_20160801_1519.xlsx
+test_data/tino-ns-projects_20160801_1347.xlsx

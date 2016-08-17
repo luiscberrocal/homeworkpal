@@ -38,6 +38,7 @@ class Project(models.Model):
                                    validators=[RegexValidator(regex=r'^AF\d{2}$',
                                                               message=_('Fiscal year must us format AFYY. '
                                                                         'For example AF16 for fiscal year 2016'))])
+    on_dashboard = models.BooleanField()
     objects = ProjectManager()
 
     def _leader(self):
