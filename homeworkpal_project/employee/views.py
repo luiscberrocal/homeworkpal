@@ -103,7 +103,7 @@ class CoachingSessionListView(LoginRequiredMixin, ListView):
             qs = CoachingSession.objects.filter(employee__companygroupemployeeassignment__group__slug=self.kwargs['group_slug'],
                                                 employee__pk=self.kwargs['employee_pk']).order_by('-start_date_time')
         else:
-            qs = CoachingSession.objects.filter(employee__companygroupemployeeassignment__group__slug=self.kwargs['group_slug']).order_by('-start_date_time')
+            qs = CoachingSession.objects.filter(employee__companygroupemployeeassignment__group__slug=self.kwargs['group_slug']).select_related().order_by('-start_date_time')
 
         return qs
 

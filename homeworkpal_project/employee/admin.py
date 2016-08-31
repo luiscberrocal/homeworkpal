@@ -6,7 +6,7 @@ from employee.models import Employee, CompanyGroup, CompanyGroupEmployeeAssignme
 
 
 class EmployeeAdmin(admin.ModelAdmin):
-    list_display = ['user', 'company_id', 'tenure']
+    list_display = ['user', 'company_id', 'tenure', 'group']
 
 
 class CompanyGroupAdmin(admin.ModelAdmin):

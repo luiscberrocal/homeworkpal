@@ -20,10 +20,7 @@ class ProjectFactory(DjangoModelFactory):
     short_name = LazyAttribute(lambda x: faker.sentence(nb_words=6, variable_nb_words=True))
     description =  LazyAttribute(lambda x: faker.paragraphs(nb=2))
     planned_start_date = LazyAttribute(lambda x: faker.date_time_between(start_date="+1m", end_date="+1y"))
-    # planned_end_date
-    # actual_start_date
-    # actual_end_date
-    # slug
+    on_dashboard = False
     planned_man_hours = 1500
     type = 'PROJECT'
     group = SubFactory(CompanyGroupFactory)
