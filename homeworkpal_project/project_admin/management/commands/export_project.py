@@ -5,7 +5,7 @@ from django.utils import timezone
 from openpyxl import Workbook, load_workbook
 
 from common.utils import filename_with_datetime
-from homeworkpal_project.settings.base import TEST_DATA_PATH
+from homeworkpal_project.settings.base import TEST_DATA_PATH, TEST_OUTPUT_PATH
 from project_admin.models import Project
 
 __author__ = 'lberrocal'
@@ -28,7 +28,9 @@ class Command(BaseCommand):
         if options['process_all']:
             self.export_all_projects()
         elif ['export_dashboard']:
-            self.export_on_dashboard()
+            filename_base_name = 'tino-ns-db-projects.xlsx'
+            query_set = Project.objects.filter(on_dashboard=True)
+            self.export_to_excel(filename_base_name, query_set)
         else:
             self.export_single_project(options)
 
@@ -36,7 +38,7 @@ class Command(BaseCommand):
         row = 1
         wb = Workbook()
         sheet = wb.active
-        output_filename = filename_with_datetime(TEST_DATA_PATH, 'tino-ns-projects.xlsx')
+        output_filename = filename_with_datetime(TEST_OUTPUT_PATH, 'tino-ns-projects.xlsx')
         for project in Project.objects.all():
             sheet['A%d' % row] = project.short_name
             sheet['B%d' % row] = project.description
@@ -50,8 +52,27 @@ class Command(BaseCommand):
         row = 1
         wb = Workbook()
         sheet = wb.active
-        output_filename = filename_with_datetime(TEST_DATA_PATH, 'tino-ns-db-projects.xlsx')
+        output_filename = filename_with_datetime(TEST_OUTPUT_PATH, 'tino-ns-db-projects.xlsx')
         for project in Project.objects.filter(on_dashboard=True):
+            sheet['A%d' % row] = project.short_name
+            sheet['B%d' % row] = project.description
+            sheet['C%d' % row] = project.actual_start_date
+            sheet['D%d' % row] = project.actual_end_date
+            row += 1
+        wb.save(output_filename)
+        self.stdout.write('Wrote: %s' % (output_filename))
+
+    def export_to_excel(self, filename_base_name, query_set):
+        row = 1
+        wb = Workbook()
+        sheet = wb.active
+        output_filename = filename_with_datetime(TEST_OUTPUT_PATH, filename_base_name)
+        sheet['A%d' % row] = 'Project'
+        sheet['B%d' % row] = 'Description'
+        sheet['C%d' % row] = 'Start Date'
+        sheet['D%d' % row] = 'End Date'
+        row += 1
+        for project in query_set.all():
             sheet['A%d' % row] = project.short_name
             sheet['B%d' % row] = project.description
             sheet['C%d' % row] = project.actual_start_date
@@ -62,7 +83,7 @@ class Command(BaseCommand):
 
     def export_single_project(self, options):
         project = Project.objects.get(pk=int(options['project_id']))
-        template_filename = os.path.join(TEST_DATA_PATH, '1680_v2.xlsx')
+        template_filename = os.path.join(TEST_OUTPUT_PATH, '1680_v2.xlsx')
         now = timezone.localtime(timezone.now())
         output_filename = os.path.join(TEST_DATA_PATH,
                                        '%s_%s.xlsx' % (project.slug.replace('-', '_'), now.strftime('%Y%m%d_%H%M')))

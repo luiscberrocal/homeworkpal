@@ -1,12 +1,11 @@
 from django.core.urlresolvers import reverse
 from django.test import TestCase
-from with_asserts.mixin import AssertHTMLMixin
 from employee.tests.factories import UserFactory
 from interviews.tests.factories import ElegibilityCertificateFactory
 
 __author__ = 'LBerrocal'
 
-class TestInterviewsViews(AssertHTMLMixin, TestCase):
+class TestInterviewsViews(TestCase):
 
     def setUp(self):
         # self.client = Client()
