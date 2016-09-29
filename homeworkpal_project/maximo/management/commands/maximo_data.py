@@ -1,5 +1,6 @@
 import os
 
+from acp_calendar.models import FiscalYear
 from django.core.management import BaseCommand
 from openpyxl import load_workbook
 from common.utils import filename_with_datetime, Timer
@@ -20,7 +21,7 @@ class Command(BaseCommand):
     4. Export the data to pike separatated data.
     5. Rename the file with the extension .pike
     6. Run
-        python manage.py /path/to/data.pike --load-time
+        python manage.py maximo_data /path/to/data.pike --load-time
 
     This will have loaded the data to the database. You shoulfd open the log file homeworkpal_project.log for errors
 
@@ -60,12 +61,19 @@ class Command(BaseCommand):
                             default=None,
                             help='End Date')
 
+        parser.add_argument( '--fiscal-year',
+                            action='store',
+                            dest='fiscal_year',
+                            default=None,
+                            help='Fiscal year')
 
     def update_projects(self):
         tickets_with_projects = MaximoTicket.objects.filter(project__isnull=False)
         for ticket in tickets_with_projects:
-            orphan_time_registers = MaximoTimeRegister.objects.filter(ticket=ticket, project__isnull=True).update(project=ticket.project)
-            self.stdout.write('Updated %d tickets for %s with project %s' % (orphan_time_registers, ticket.name, ticket.project.short_name))
+            orphan_time_registers = MaximoTimeRegister.objects.filter(ticket=ticket, project__isnull=True).update(
+                project=ticket.project)
+            self.stdout.write('Updated %d tickets for %s with project %s' % (
+            orphan_time_registers, ticket.name, ticket.project.short_name))
 
     def handle(self, *args, **options):
 
@@ -75,7 +83,8 @@ class Command(BaseCommand):
                 excel_data = MaximoExcelData(stdout=self.stdout)
                 results = excel_data.load(options['filename'], action=MaximoExcelData.LOAD_TIME)
                 self.stdout.write('Parsed: %s' % options['filename'])
-                self.stdout.write('Created Registers: %d of %d' % (results['time_results']['created'], results['time_results']['rows_parsed']))
+                self.stdout.write('Created Registers: %d of %d' % (
+                results['time_results']['created'], results['time_results']['rows_parsed']))
             elif extension == '.csv':
                 excel_data = MaximoCSVData(stdout=self.stdout)
                 results = excel_data.load_time_registers(options['filename'])
@@ -92,7 +101,13 @@ class Command(BaseCommand):
 
         elif options['export_time']:
             excel_data = MaximoExcelData(stdout=self.stdout)
-            registers = MaximoTimeRegister.objects.all()
+            if options['fiscal_year']:
+                fy = int(options['fiscal_year'])
+                fiscal_year = FiscalYear(fy)
+                registers = MaximoTimeRegister.objects.filter(date__gte=fiscal_year.start_date,
+                                                       date__lte=fiscal_year.end_date)
+            else:
+                registers = MaximoTimeRegister.objects.all()
             if options['filename']:
                 filename = options['filename']
             else:
